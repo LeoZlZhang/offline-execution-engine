@@ -1,0 +1,31 @@
+package leo.carnival;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Proxy;
+import java.util.Map;
+
+@SuppressWarnings("unchecked")
+public class AnnotationUtils {
+
+    public static Object changeAnnotationValue(Annotation annotation, String key, Object newValue) throws Exception {
+        Object handler = Proxy.getInvocationHandler(annotation);
+        Field f = handler.getClass().getDeclaredField("memberValues");
+        f.setAccessible(true);
+        Map<String, Object> memberValues = (Map<String, Object>) f.get(handler);
+        Object oldValue = memberValues.get(key);
+        if (oldValue == null || oldValue.getClass() != newValue.getClass()) {
+            throw new IllegalArgumentException();
+        }
+        memberValues.put(key, newValue);
+        return oldValue;
+    }
+
+    public static Object showAnnotationValue(Annotation annotation, String key) throws NoSuchFieldException, IllegalAccessException {
+        Object handler = Proxy.getInvocationHandler(annotation);
+        Field f = handler.getClass().getDeclaredField("memberValues");
+        f.setAccessible(true);
+        Map<String, Object> memberValues = (Map<String, Object>) f.get(handler);
+        return memberValues.get(key);
+    }
+}
