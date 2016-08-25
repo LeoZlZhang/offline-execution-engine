@@ -1,43 +1,115 @@
 package leo.carnival;
 
 
-import com.vipabc.vliveshow.TestExecutionEngine.TestCase.Annotation.AutoWired;
+import com.google.gson.Gson;
+import leo.carnival.annotations.AutoWired;
+import leo.carnival.workers.baseType.Processor;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class UpdateInstanceUtil {
+public class InstanceUpdater<T> implements Processor<T, T> {
 
     private static final String regInjectionField = "(\\{\\{([\\w\\W]+?)}})";
     private static final Pattern patternInjectionField = Pattern.compile(regInjectionField);
 
-    public static <T> void update(T targetInstance, Map<String, Object> profile) throws Exception {
+    protected Map<String, Object> referenceMap;
+
+
+    public InstanceUpdater(Map<String, Object> referenceMap) {
+        this.referenceMap = referenceMap == null ? new HashMap<>() : referenceMap;
+    }
+
+
+    @Override
+    public T process(T targetInstance) {
         if (targetInstance == null)
-            return;
+            return targetInstance;
+
         for (Field field : targetInstance.getClass().getDeclaredFields()) {
             if (field.getAnnotation(AutoWired.class) == null || !field.getAnnotation(AutoWired.class).allowUpdate())
                 continue;
             if (field.getType().isPrimitive())
                 continue;
-            field.setAccessible(true);
-            Object value = field.get(targetInstance);
 
-            if (value == null)
-                continue;
+            try {
+                field.setAccessible(true);
+                Object value = field.get(targetInstance);
 
-            if (value instanceof String)
-                field.set(targetInstance, fetchValueFromProfile(value, profile));
+                if (value == null)
+                    continue;
 
-            else if (isDataStructure(value))
-                updateDataStructure(value, profile);
+                if (value instanceof String)
+                    field.set(targetInstance, fetchValueFromProfile(value, referenceMap));
 
-            else
-                update(value, profile);
+                else if (isDataStructure(value))
+                    updateDataStructure(value, profile);
 
+                else
+                    update(value, profile);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
+
+    }
+
+
+    @Override
+    public T execute(T targetInstance) {
+        if (targetInstance == null)
+            return null;
+
+        Gson gson = new Gson();
+        String targetJsonString = gson.toJson(targetInstance);
+        Map targetMap = gson.fromJson(targetJsonString, Map.class);
+
+        updateMap(targetMap);
+
+        targetJsonString = gson.toJson(targetMap);
+        return gson.fromJson(targetJsonString, );
+    }
+
+    private Object updateObject(Object targetObj) {
+        if (targetObj instanceof List)
+            updateList((List) targetObj);
+        else if (targetObj instanceof Map)
+            updateMap((Map) targetObj);
+        return targetObj;
+    }
+
+    private void updateMap(Map targetMap) {
+        if (targetMap == null)
+            return;
+        for (Object key : targetMap.keySet()) {
+            Object targetValue = targetMap.get(key);
+            if (targetValue instanceof String)
+                targetMap.put(key, updateString((String) targetValue));
+            else
+                updateObject(targetValue);
+        }
+    }
+
+    private void updateList(List targetList) {
+        if (targetList == null)
+            return;
+        for (int i = 0, len = targetList.size(); i < len; i++){
+            Object targetOjbect  = targetList.get(i);
+            if(targetList.get(i) instanceof String)
+                targetList.set(i, updateString((String) targetOjbect));
+            else
+                updateObject(targetOjbect);
+        }
+    }
+
+    private String updateString(String targetStr) {
+
+        return "";
     }
 
 

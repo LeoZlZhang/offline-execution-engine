@@ -1,6 +1,6 @@
-package leo.carnival.worker;
+package leo.carnival.workers;
 
-import leo.carnival.worker.baseType.Processor;
+import leo.carnival.workers.baseType.Processor;
 
 import java.util.ArrayList;
 import java.util.List;

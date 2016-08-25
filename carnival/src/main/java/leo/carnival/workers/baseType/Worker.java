@@ -1,4 +1,4 @@
-package leo.carnival.worker.baseType;
+package leo.carnival.workers.baseType;
 
 /**
  * Created by leo_zlzhang on 8/24/2016.

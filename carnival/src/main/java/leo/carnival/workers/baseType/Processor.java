@@ -1,4 +1,4 @@
-package leo.carnival.worker.baseType;
+package leo.carnival.workers.baseType;
 
 
 public interface Processor<T, G> extends Worker<T, G> {
