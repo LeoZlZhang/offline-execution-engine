@@ -1,8 +1,8 @@
 package leo.carnival.worker;
 
-import leo.carnival.worker.baseType.Executable;
+import leo.carnival.worker.baseType.Worker;
 
-public abstract class Filter<T> implements Executable<T, Boolean> {
+public abstract class Filter<T> implements Worker<T, Boolean> {
 
 
 }

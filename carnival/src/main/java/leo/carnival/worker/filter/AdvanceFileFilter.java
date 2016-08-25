@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class AdvanceFileFilter implements Filter {
+public class AdvanceFileFilter implements com.vipabc.vliveshow.TestExecutionEngine.Util.Worker.Filter<File>, Processor<File, List<File>> {
     private FileFilter baseFilter;
     private String[] regex;
 
