@@ -1,16 +1,15 @@
 package Engine;
 
 
-import com.vipabc.vliveshow.TestExecutionEngine.Engine.util.ArrayUtil;
-import com.vipabc.vliveshow.TestExecutionEngine.TestCase.TestCase;
-import com.vipabc.vliveshow.TestExecutionEngine.TestProfile.Assert.TestFail;
-import com.vipabc.vliveshow.TestExecutionEngine.TestProfile.Assert.TestPass;
-import com.vipabc.vliveshow.TestExecutionEngine.TestProfile.Assert.TestResult;
-import com.vipabc.vliveshow.TestExecutionEngine.TestProfile.Flow.Flow;
-import com.vipabc.vliveshow.TestExecutionEngine.TestProfile.Gear.Gear;
-import com.vipabc.vliveshow.TestExecutionEngine.TestProfile.Step.ConsistentSteps;
-import com.vipabc.vliveshow.TestExecutionEngine.TestProfile.Step.Step;
-import com.vipabc.vliveshow.TestExecutionEngine.Util.GsonUtil;
+import TestCase.TestCase;
+import engineFoundation.Assert.TestFail;
+import engineFoundation.Assert.TestPass;
+import engineFoundation.Assert.TestResult;
+import engineFoundation.Flow.Flow;
+import engineFoundation.Gear.Gear;
+import engineFoundation.Step.Step;
+import leo.carnival.GsonUtils;
+import leo.carnival.MyArrayUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,20 +21,19 @@ public class EngineImpl extends AbstractEngine {
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(EngineImpl.class);
 
     @Override
-    public boolean loadGear(File gearFile) {
+    public void loadGear(File gearFile) {
         try {
-            this.gear = GsonUtil.toObject(gearFile, Gear.class);
+            this.gear= GsonUtils.firstOneFromJson(gearFile, Gear.class);
+
         } catch (IOException e) {
             e.printStackTrace();
-            return false;
         }
-        return true;
     }
 
     @Override
     public TestResult execute(TestCase testcase) {
         Map<String, Object> executingMap = new HashMap<>(context);
-        executingMap.put(ConsistentSteps.TestCase.name(), testcase);
+        executingMap.put("TestCase", testcase);
         return execute(executingMap, testcase.getTestingFlow());
     }
 
@@ -47,7 +45,7 @@ public class EngineImpl extends AbstractEngine {
     @Override
     public TestResult execute(Map<String, Object> context, String flowName, Object... obj) {
         try {
-            Flow flow = ArrayUtil.searchArray(gear.getFlows(), flowName);
+            Flow flow = MyArrayUtils.searchArray(gear.getFlows(), flowName);
             assert flow != null;
 
             Class sourceClass = Class.forName(flow.getSourceClass());

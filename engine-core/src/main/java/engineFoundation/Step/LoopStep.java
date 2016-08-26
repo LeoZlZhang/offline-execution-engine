@@ -28,9 +28,9 @@ public class LoopStep extends Step {
                 logger.info(String.format("[%d][%s][%s]...", Thread.currentThread().getId(), getMethod(), step.getMethod()));
                 step.execute(context, FlowInstance);
 
-                if (context.containsKey(ConsistentSteps.BreakLoop.name()) && (Boolean) context.get(ConsistentSteps.BreakLoop.name())) {
+                if (context.containsKey("BreakLoop") && (Boolean) context.get("BreakLoop")) {
                     loop = false;
-                    context.remove(ConsistentSteps.BreakLoop.name());
+                    context.remove("BreakLoop");
                     break;
                 }
             }

@@ -1,16 +1,16 @@
 package engineFoundation.Flow;
 
-import com.vipabc.vliveshow.TestExecutionEngine.TestProfile.Step.GeneralStep;
-import com.vipabc.vliveshow.TestExecutionEngine.TestProfile.Step.LoopStep;
-import com.vipabc.vliveshow.TestExecutionEngine.TestProfile.Step.Step;
-import com.vipabc.vliveshow.TestExecutionEngine.Util.EEArrayUtil;
+
+import engineFoundation.Step.GeneralStep;
+import engineFoundation.Step.LoopStep;
+import engineFoundation.Step.Step;
+import leo.carnival.MyArrayUtils;
 
 @SuppressWarnings("unused")
 public class Flow {
     private String name;
     private String sourceClass;
     private Step[] steps;
-    private FlowType type;
 
     @Override
     public String toString() {
@@ -37,28 +37,24 @@ public class Flow {
 
             i += rtnSteps[j].countInnerStepNum();
         }
-        return EEArrayUtil.trimToSize(rtnSteps);
-    }
-
-    public FlowType getType() {
-        return type;
+        return MyArrayUtils.trimToSize(rtnSteps);
     }
 
 
     private LoopStep compressToLoopStep(Step[] steps, int startIndex, int loopId, Integer... endLoopIds) throws InstantiationException, IllegalAccessException {
         Step[] rtnSteps = new Step[steps.length - startIndex]; // rest length
         for (int i = 0, len = steps.length; startIndex < len; i++, startIndex++) {
-            if (EEArrayUtil.containElementByDeepCompare(endLoopIds, steps[startIndex].getLoop()))
+            if (MyArrayUtils.containElementByDeepCompare(endLoopIds, steps[startIndex].getLoop()))
                 break;
             else if (steps[startIndex].getLoop() == loopId)
                 rtnSteps[i] = steps[startIndex].transferToChild(GeneralStep.class);
             else
-                rtnSteps[i] = compressToLoopStep(steps, startIndex, steps[startIndex].getLoop(), EEArrayUtil.appendArray(endLoopIds, Integer.class, loopId));
+                rtnSteps[i] = compressToLoopStep(steps, startIndex, steps[startIndex].getLoop(), MyArrayUtils.appendArray(endLoopIds, Integer.class, loopId));
         }
 
 
         LoopStep rtnLoopStep = new LoopStep();
-        rtnLoopStep.setSteps(EEArrayUtil.trimToSize(rtnSteps));
+        rtnLoopStep.setSteps(MyArrayUtils.trimToSize(rtnSteps));
         rtnLoopStep.setLoopIndex(loopId);
         return rtnLoopStep;
     }

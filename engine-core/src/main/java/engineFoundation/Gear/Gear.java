@@ -1,13 +1,11 @@
 package engineFoundation.Gear;
 
-import com.vipabc.vliveshow.TestExecutionEngine.TestCase.Annotation.AutoWired;
-import com.vipabc.vliveshow.TestExecutionEngine.TestProfile.Flow.Flow;
+
+import engineFoundation.Flow.Flow;
 
 public class Gear {
-    @AutoWired
     private String name;
 
-    @AutoWired
     private Flow[] flows;
 
     public String getName() {

@@ -1,9 +1,10 @@
 package TestCaseFactory;
 
 
-import com.vipabc.vliveshow.TestExecutionEngine.TestCase.TestCase;
-import com.vipabc.vliveshow.TestExecutionEngine.TestCaseFactory.DataProvider.AbstractDataProvider;
-import com.vipabc.vliveshow.TestExecutionEngine.Util.Worker.ListCloner;
+
+import TestCase.TestCase;
+import TestCaseFactory.DataProvider.AbstractDataProvider;
+import leo.carnival.workers.ListCloner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,4 +38,8 @@ public class TestCaseFactoryImpl extends AbstractTestCaseFactory {
         return tcs;
     }
 
+    @Override
+    public List<TestCase> execute(TestCase testCase) {
+        return process(testCase);
+    }
 }

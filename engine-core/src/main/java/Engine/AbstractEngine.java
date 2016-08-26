@@ -1,10 +1,11 @@
 package Engine;
 
 
-import com.vipabc.vliveshow.TestExecutionEngine.TestCase.TestCase;
-import com.vipabc.vliveshow.TestExecutionEngine.TestProfile.Assert.TestFail;
-import com.vipabc.vliveshow.TestExecutionEngine.TestProfile.Assert.TestResult;
-import com.vipabc.vliveshow.TestExecutionEngine.TestProfile.Gear.Gear;
+
+import TestCase.TestCase;
+import engineFoundation.Assert.TestFail;
+import engineFoundation.Assert.TestResult;
+import engineFoundation.Gear.Gear;
 
 import java.io.File;
 import java.util.HashMap;
@@ -22,7 +23,7 @@ public abstract class AbstractEngine
         context.put("TestResult", new TestFail("No test result."));
     }
 
-    public abstract boolean loadGear(File gearFile);
+    public abstract void loadGear(File gearFile);
     public abstract TestResult execute(String flowName);
     public abstract TestResult execute(TestCase testcase);
     public abstract TestResult execute(Map<String, Object> context, String flowName, Object... obj);

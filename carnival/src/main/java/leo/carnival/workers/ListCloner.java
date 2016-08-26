@@ -7,17 +7,22 @@ import java.util.List;
 
 public class ListCloner implements Processor<List, List> {
 
-    private int cloneNum;
-    public ListCloner(int cloneNum) {
-        this.cloneNum = cloneNum;
+    private int n;
+    public ListCloner(int n) {
+        this.n = n;
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public List process(List list) {
         List rtnList = new ArrayList<>(list);
-        for(int i=0;i<cloneNum;i++)
+        for(int i = 0; i< n; i++)
             rtnList.addAll(list);
         return rtnList;
+    }
+
+    @Override
+    public List execute(List list) {
+        return process(list);
     }
 }

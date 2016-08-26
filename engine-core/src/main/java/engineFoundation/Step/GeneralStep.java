@@ -1,7 +1,7 @@
 package engineFoundation.Step;
 
 
-import com.vipabc.vliveshow.TestExecutionEngine.Engine.util.ReflectUtil;
+import leo.carnival.workers.filter.ReflectMethodFilter;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -10,16 +10,16 @@ import java.util.Map;
 public class GeneralStep extends Step {
 
     @Override
-    public void execute(Map<String, Object> context, Object FlowInstance) throws InvocationTargetException, IllegalAccessException {
+    public void execute(Map<String, Object> context, Object flowInstance) throws InvocationTargetException, IllegalAccessException {
         //Step inputs
         Object[] inputParamArray = genParameterFromContext(context);
 
         //Step method
-        Method method = ReflectUtil.findMethod(FlowInstance.getClass(), obj -> obj.getName().equals(getMethod()) && obj.getParameterCount() == inputParamArray.length);
+        Method method = new ReflectMethodFilter(flowInstance).process(getMethod(), inputParamArray.length);
 
         //Invoke step
         assert method != null;
-        Object[] returnObj = (Object[]) method.invoke(FlowInstance, inputParamArray);
+        Object[] returnObj = (Object[]) method.invoke(flowInstance, inputParamArray);
 
         //Insert step result into context
         updateContext(context, returnObj);

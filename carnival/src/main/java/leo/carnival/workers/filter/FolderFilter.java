@@ -6,9 +6,6 @@ import java.util.List;
 
 public class FolderFilter extends FileFilter {
 
-    public FolderFilter(String... regex) {
-        super(regex);
-    }
 
     @Override
     protected List<File> search(File searchStartFile, List<File> rtnFileList) {
@@ -18,13 +15,18 @@ public class FolderFilter extends FileFilter {
         files = files == null ? new File[0] : files;
 
         for (File file : files)
-            if (file.isDirectory()) {
-                evaluate(file, rtnFileList);
-                search(file, rtnFileList);
-            }
+            if (file.isDirectory())
+                if (folderEvaluator == null || folderEvaluator.evaluate(file))
+                    rtnFileList.add(file);
+                else
+                    search(file, rtnFileList);
 
         return rtnFileList;
     }
 
+
+    public static FolderFilter build() throws InstantiationException, IllegalAccessException {
+        return FolderFilter.class.newInstance();
+    }
 
 }

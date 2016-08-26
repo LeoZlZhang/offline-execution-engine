@@ -1,16 +1,7 @@
-import com.vipabc.vliveshow.TestExecutionEngine.Engine.AbstractEngine;
-import com.vipabc.vliveshow.TestExecutionEngine.Engine.EngineImpl;
-import com.vipabc.vliveshow.TestExecutionEngine.Engine.util.ReflectUtil;
-import com.vipabc.vliveshow.TestExecutionEngine.TestCase.TestCase;
-import com.vipabc.vliveshow.TestExecutionEngine.TestCaseFactory.DataProvider.JsonDataProvider;
-import com.vipabc.vliveshow.TestExecutionEngine.TestCaseFactory.DataProvider.StringInjector;
-import com.vipabc.vliveshow.TestExecutionEngine.TestCaseFactory.TestCaseFactoryImpl;
-import com.vipabc.vliveshow.TestExecutionEngine.Util.Filter.AdvanceFileFilter;
-import com.vipabc.vliveshow.TestExecutionEngine.Util.Filter.FileFilter;
-import com.vipabc.vliveshow.TestExecutionEngine.Util.Filter.FileSearchUtil;
-import com.vipabc.vliveshow.TestExecutionEngine.Util.Filter.FolderFilter;
-import com.vipabc.vliveshow.TestExecutionEngine.Util.GsonUtil;
-import com.vipabc.vliveshow.TestExecutionEngine.Util.Worker.ListCloner;
+import Engine.AbstractEngine;
+import Engine.EngineImpl;
+import leo.carnival.workers.filter.FileFilter;
+import leo.carnival.workers.filter.FolderFilter;
 import org.json.JSONException;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
@@ -35,12 +26,12 @@ public abstract class AbstractMainTest {
     @BeforeSuite
     public void initialize() throws Exception {
         iniTestInfo();
-
-
-        List<File> profileFileList = FileSearchUtil.findAllFile(resourceFolderPath, new FileFilter(testInfo.profileFolderName()));
+        List<File> profileFolder = FolderFilter.build().setRegex(testInfo.profileFolderName()).process(new File(resourceFolderPath));
+        List<File> profileFileList = FileFilter.build().setRegex(".*").process(profileFolder.get(0));
         profilePicker = new ProfilePicker(profileFileList, testInfo.threadNumber());
 
-        List<File> gear = FileSearchUtil.findAllFile(resourceFolderPath, new FileFilter("gear\\.json"));
+        List<File> gear = new FileFilter("gear\\.json").process(new File(resourceFolderPath));
+        FileSearchUtil.findAllFile(resourceFolderPath, new FileFilter("gear\\.json"));
         engine.loadGear(gear.get(0));
 
         engine.execute("BeforeTestFlow");
@@ -76,8 +67,8 @@ public abstract class AbstractMainTest {
             TestCaseFactoryImpl tcFactory = new TestCaseFactoryImpl();
             tcFactory.setDataProvider(jdp);
             tcFactory.setResultCloner(new ListCloner(testInfo.repeatTime()));
-             tcList = tcFactory.process(testInfo.testCaseClass().newInstance());
-        }catch (Exception e){
+            tcList = tcFactory.process(testInfo.testCaseClass().newInstance());
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return dataProviderBoxing(tcList);
