@@ -13,12 +13,14 @@ public class MyArrayUtils {
         return Arrays.copyOf(oriArray, sizeOfNotNull(oriArray));
     }
 
-    public static <T> T[] appendArray(T[] oriArray, Class<T> cls, T... ele) {
+    public static <T> T[] appendArray(T[] oriArray, T... ele) {
         if (oriArray == null)
             return null;
 
         if (ele == null)
             return oriArray;
+
+        Class<T> cls = (Class<T>) oriArray.getClass().getComponentType();
 
         int sizeofNotNull = sizeOfNotNull(oriArray);
         T[] rtnArray = (T[]) Array.newInstance(cls, sizeofNotNull + ele.length);

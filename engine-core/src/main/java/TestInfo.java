@@ -1,4 +1,4 @@
-import TestCase.TestCase;
+import testCase.TestCase;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

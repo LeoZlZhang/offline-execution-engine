@@ -1,5 +1,6 @@
 package engineFoundation.Assert;
 
+import com.google.common.base.Throwables;
 import org.testng.Assert;
 
 public class TestFail extends TestResult {
@@ -11,19 +12,12 @@ public class TestFail extends TestResult {
     }
 
     public TestFail(String message){
-        super("","",message);
-
+        super("","","");
+        e = new Exception(message);
     }
 
     @Override
     public void Assert() {
-        try {
-            Thread.sleep(100);
-        e.getCause().printStackTrace();
-            Thread.sleep(10);
-        } catch (InterruptedException e1) {
-            e1.printStackTrace();
-        }
-        Assert.fail("");
+        Assert.fail(Throwables.getStackTraceAsString(e));
     }
 }

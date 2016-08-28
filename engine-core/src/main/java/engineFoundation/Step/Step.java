@@ -1,12 +1,14 @@
 package engineFoundation.Step;
 
+import engineFoundation.ApplicationContext;
+import leo.carnival.workers.baseType.Executor;
 import org.apache.log4j.Logger;
 
 import java.util.Arrays;
 import java.util.Map;
 
 @SuppressWarnings("unused")
-public class Step {
+public class Step implements Executor<ApplicationContext, Boolean>{
     protected static final Logger logger = Logger.getLogger(Step.class);
     public static final int NoLooping = -999;
 
@@ -83,5 +85,11 @@ public class Step {
         rtnStep.setInput(Arrays.copyOf(this.getInput(),this.getInput().length));
         rtnStep.setOutput(Arrays.copyOf(this.getOutput(),this.getOutput().length));
         return rtnStep;
+    }
+
+    @Override
+    public Boolean execute(ApplicationContext applicationContext) {
+        todo
+        return null;
     }
 }

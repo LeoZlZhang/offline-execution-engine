@@ -1,9 +1,12 @@
 package engineFoundation.Gear;
 
 
+import engineFoundation.Assert.TestResult;
 import engineFoundation.Flow.Flow;
+import leo.carnival.workers.baseType.Executor;
+import testCase.TestCase;
 
-public class Gear {
+public class Gear implements Executor<TestCase, TestResult>{
     private String name;
 
     private Flow[] flows;
@@ -20,5 +23,10 @@ public class Gear {
     @Override
     public String toString() {
         return name;
+    }
+
+    @Override
+    public TestResult execute(TestCase testCase) {
+        return null;
     }
 }

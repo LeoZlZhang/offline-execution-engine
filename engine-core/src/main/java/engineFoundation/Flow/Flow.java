@@ -5,9 +5,10 @@ import engineFoundation.Step.GeneralStep;
 import engineFoundation.Step.LoopStep;
 import engineFoundation.Step.Step;
 import leo.carnival.MyArrayUtils;
+import leo.carnival.workers.baseType.Executor;
 
 @SuppressWarnings("unused")
-public class Flow {
+public class Flow implements Executor<{
     private String name;
     private String sourceClass;
     private Step[] steps;
