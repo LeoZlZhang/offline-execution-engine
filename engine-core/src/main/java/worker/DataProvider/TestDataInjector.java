@@ -1,11 +1,11 @@
 package worker.DataProvider;
 
 
-import leo.carnival.workers.baseType.Processor;
-import leo.carnival.workers.impl.CollectionUtils.FirstElementPicker;
-import leo.carnival.workers.impl.FileUtils.Evaluator.FileEvaluator;
-import leo.carnival.workers.impl.FileUtils.Evaluator.RegexEvaluator;
-import leo.carnival.workers.impl.FileUtils.FileFilter;
+import leo.carnival.workers.prototype.Processor;
+import leo.carnival.workers.implementation.CollectionUtils.FirstElementPicker;
+import leo.carnival.workers.implementation.FileUtils.Evaluator.FileEvaluator;
+import leo.carnival.workers.implementation.FileUtils.Evaluator.RegexEvaluator;
+import leo.carnival.workers.implementation.FileUtils.FileFilter;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class TestDataInjector implements Processor<String, String> {
 
     private File extractFileFolder;

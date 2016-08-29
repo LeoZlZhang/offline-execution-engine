@@ -1,5 +1,7 @@
 package engineFoundation.Step;
 
+import engineFoundation.ApplicationContext;
+
 import java.util.Map;
 
 public class LoopStep extends Step {
@@ -21,12 +23,12 @@ public class LoopStep extends Step {
     }
 
     @Override
-    public void execute(Map<String, Object> context, Object FlowInstance) throws Exception {
+    public LoopStep execute(ApplicationContext applicationContext) {
+        Map<String, Object> context = applicationContext.getContext();
         boolean loop = true;
         while (loop) {
             for (Step step : steps) {
-                logger.info(String.format("[%d][%s][%s]...", Thread.currentThread().getId(), getMethod(), step.getMethod()));
-                step.execute(context, FlowInstance);
+                step.execute(applicationContext);
 
                 if (context.containsKey("BreakLoop") && (Boolean) context.get("BreakLoop")) {
                     loop = false;
@@ -35,6 +37,7 @@ public class LoopStep extends Step {
                 }
             }
         }
+        return this;
     }
 
     @Override

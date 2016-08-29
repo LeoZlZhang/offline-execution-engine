@@ -3,6 +3,7 @@ package engineFoundation.Assert;
 import com.google.common.base.Throwables;
 import org.testng.Assert;
 
+@SuppressWarnings("unused")
 public class TestFail extends TestResult {
     private Exception e;
 

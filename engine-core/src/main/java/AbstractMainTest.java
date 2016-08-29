@@ -1,52 +1,69 @@
-import engine.AbstractEngine;
-import engine.EngineImpl;
-import testCase.TestCase;
+import engineFoundation.Assert.TestResult;
+import leo.carnival.workers.implementation.JsonUtils.GsonUtils;
+import testData.TestData;
+import testEngine.TestEngine;
 import worker.DataProvider.TestDataInjector;
 import worker.DataProvider.TestCaseGenerator;
-import leo.carnival.workers.baseType.Processor;
-import leo.carnival.workers.impl.ArrayCloner;
-import leo.carnival.workers.impl.CollectionUtils.FirstElementPicker;
-import leo.carnival.workers.baseType.Evaluator;
-import leo.carnival.workers.impl.FileUtils.Evaluator.FileEvaluator;
-import leo.carnival.workers.impl.FileUtils.Evaluator.FolderEvaluator;
-import leo.carnival.workers.impl.FileUtils.Evaluator.RegexEvaluator;
-import leo.carnival.workers.impl.FileUtils.AdvanceFileFilter;
-import leo.carnival.workers.impl.FileUtils.FileFilter;
-import leo.carnival.workers.impl.FileUtils.FolderFilter;
-import leo.carnival.workers.impl.JsonUtils.GsonUtils;
-import leo.carnival.workers.impl.ReflectUtils.ReflectMethodFilter;
+import leo.carnival.workers.prototype.Processor;
+import leo.carnival.workers.implementation.ArrayCloner;
+import leo.carnival.workers.implementation.CollectionUtils.FirstElementPicker;
+import leo.carnival.workers.prototype.Evaluator;
+import leo.carnival.workers.implementation.FileUtils.Evaluator.FileEvaluator;
+import leo.carnival.workers.implementation.FileUtils.Evaluator.FolderEvaluator;
+import leo.carnival.workers.implementation.FileUtils.Evaluator.RegexEvaluator;
+import leo.carnival.workers.implementation.FileUtils.AdvanceFileFilter;
+import leo.carnival.workers.implementation.FileUtils.FileFilter;
+import leo.carnival.workers.implementation.FileUtils.FolderFilter;
+import leo.carnival.workers.implementation.ReflectUtils.ReflectMethodFilter;
 import org.apache.commons.io.FileUtils;
-import org.json.JSONException;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import worker.ProfilePicker;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.*;
 
+@SuppressWarnings({"SynchronizationOnLocalVariableOrMethodParameter", "WeakerAccess", "DefaultAnnotationParam"})
 public abstract class AbstractMainTest {
-    protected AbstractEngine engine = new EngineImpl();
-
+    protected TestEngine engine = new TestEngine();
     private static String resourceFolderPath = System.getProperty("user.dir") + "\\src\\main\\resources\\".replace("\\", File.separator);
-
     private TestInfo testInfo;
     protected ProfilePicker profilePicker;
 
 
     @BeforeSuite
     public void initialize() throws Exception {
-        this.testInfo = searchFistTestInfo();
-        this.profilePicker = initialProfilePicker();
+        this.testInfo = testInfo();
+        this.profilePicker = profilePicker();
 
-        List<File> gear = FileFilter.build(FileEvaluator.build(RegexEvaluator.build("gear\\.json"))).process(new File(resourceFolderPath));
-        engine.loadGear(gear.get(0));
+        List<File> gearFile = FileFilter.build(FileEvaluator.build(RegexEvaluator.build("gear\\.json"))).process(new File(resourceFolderPath));
+        engine.loadGearFromFile(gearFile.get(0));
     }
 
+    @TestInfo(testDataClass = TestData.class,
+            threadNumber = 1,
+            repeatTime = 0,
+            profileFolderName = "MosaiEnvProfile",
+            dataFolderName = "Data",
+            dataFlowFolderName = "DataFlow",
+            testDataFilterRegex = "3_getUserBaseInfo.json")
+    @Test(dataProvider = "DataSource")
+    public void apiTest(TestData testData) throws Exception {
+        Map<String, Object> profile = profilePicker.next();
+        synchronized (profile) {
+            TestResult result = engine.execute(testData.update(profile));
+            result.Assert();
+        }
+    }
 
-    private TestInfo searchFistTestInfo() throws IllegalAccessException, InstantiationException {
+    @AfterSuite
+    public void finalization() {
+    }
+
+    private TestInfo testInfo() throws IllegalAccessException, InstantiationException {
         Method method = ReflectMethodFilter.build(new Evaluator<Method>() {
             @Override
             public boolean evaluate(Method method) {
@@ -61,18 +78,16 @@ public abstract class AbstractMainTest {
         return method != null ? method.getAnnotation(TestInfo.class) : null;
     }
 
-    private ProfilePicker initialProfilePicker() throws Exception {
+    @SuppressWarnings("unchecked")
+    private ProfilePicker profilePicker() throws Exception {
         FolderFilter folderFilter = FolderFilter.build(FolderEvaluator.build(RegexEvaluator.build(testInfo.profileFolderName())));
         FileFilter fileFilter = FileFilter.build(FileEvaluator.build(RegexEvaluator.build(".*\\.json")));
         AdvanceFileFilter advanceFileFilter = AdvanceFileFilter.build().setWorker(folderFilter).setWorker(fileFilter);
-        List<File> profileList = advanceFileFilter.process(new File(resourceFolderPath));
-        return profileList == null || profileList.size() == 0 ? null : new ProfilePicker(profileList, testInfo.threadNumber());
-
-    }
-
-
-    @AfterSuite
-    public void finalization() {
+        List<File> fileList = advanceFileFilter.process(new File(resourceFolderPath));
+        List<Map<String, Object>> profileList = new ArrayList<>(fileList.size());
+        for(File file : fileList)
+            profileList.add(GsonUtils.fromJsonObject(file, Map.class));
+        return ProfilePicker.build(profileList, testInfo.threadNumber());
     }
 
 
@@ -105,60 +120,33 @@ public abstract class AbstractMainTest {
 
 
         //test data in string -> test case objects
-        TestCase[] testCases = TestCaseGenerator.build(testInfo.testCaseClass()).process(testDataStrings);
-        if (testCases == null || testCases.length == 0) {
+        TestData[] testDatas = TestCaseGenerator.build(testInfo.testDataClass()).process(testDataStrings);
+        if (testDatas == null || testDatas.length == 0) {
             return new Object[0][];
         }
 
 
         //Clone test case if need
-        testCases = new ArrayCloner<TestCase>().setCloneNum(testInfo.repeatTime()).process(testCases);
+        testDatas = new ArrayCloner<TestData>().setCloneNum(testInfo.repeatTime()).process(testDatas);
 
-        return new ObjectBoxing().process(testCases);
+        return new ObjectBoxing().process(testDatas);
     }
 
-    public class ObjectBoxing implements Processor<TestCase[], Object[][]> {
+    public class ObjectBoxing implements Processor<TestData[], Object[][]> {
 
         @Override
-        public Object[][] process(TestCase[] testCases) {
-            Object[][] rtnObj = new Object[testCases.length][];
-            for (int i = 0, len = testCases.length; i < len; i++)
-                rtnObj[i] = new Object[]{testCases[i]};
+        public Object[][] process(TestData[] testDatas) {
+            Object[][] rtnObj = new Object[testDatas.length][];
+            for (int i = 0, len = testDatas.length; i < len; i++)
+                rtnObj[i] = new Object[]{testDatas[i]};
             return rtnObj;
         }
 
         @Override
-        public Object[][] execute(TestCase[] testCases) {
-            return process(testCases);
+        public Object[][] execute(TestData[] testDatas) {
+            return process(testDatas);
         }
     }
 
-
-    @SuppressWarnings("WeakerAccess")
-    public class ProfilePicker {
-        private int index = 0;
-        private int factor = 1;
-        private List<Map<String, Object>> profileList = new ArrayList<>();
-
-        ProfilePicker(List<File> profileFileList, int base) throws IOException, JSONException {
-            for (File file : profileFileList)
-                profileList.add(convertProfile(file));
-            assert profileList.size() > 0;
-            this.factor = Math.min(base > 0 ? base : 1, profileList.size());
-        }
-
-        public Map<String, Object> next() {
-            int pos = index % factor;
-            index++;
-            return profileList.get(pos);
-        }
-
-        @SuppressWarnings("unchecked")
-        private Map<String, Object> convertProfile(File file) throws IOException {
-            Map rtnMap = GsonUtils.fromJson(file, Map.class)[0];
-            rtnMap.put("ResourcesPath", resourceFolderPath);
-            return rtnMap;
-        }
-    }
 
 }

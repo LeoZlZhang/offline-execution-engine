@@ -4,7 +4,7 @@ package leo.carnival;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked", "unused"})
 public class MyArrayUtils {
 
     public static <T> T[] trimToSize(T[] oriArray) {
