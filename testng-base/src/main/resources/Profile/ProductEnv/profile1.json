@@ -1,0 +1,20 @@
+{
+  "protocol": "1",
+  "host": "dev.vliveshow.com/vliveshow-api-app",
+  "phoneNumA": "13764086339",
+  "countryCodeA": "86",
+  "userIdA": "6000772",
+  "passwordA": "Vipabc",
+
+  "phoneNumB": "13764086339",
+  "countryCodeB": "86",
+  "userIdB": "6000162",
+  "passwordB": "vipabc",
+
+  "phoneNumC": "13621834011",
+  "countryCodeC": "86",
+  "userIdC": "6000005",
+  "passwordC": "111111",
+
+  "coverPicFile": "jelly.JPG"
+}

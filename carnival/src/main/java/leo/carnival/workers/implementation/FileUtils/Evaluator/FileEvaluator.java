@@ -9,7 +9,7 @@ import java.io.File;
  * Created by leo_zlzhang on 8/26/2016.
  * Evaluate file refer to file name
  */
-public final class FileEvaluator implements Evaluator<File>, EvaluatorSetter<RegexEvaluator> {
+public class FileEvaluator implements Evaluator<File>, EvaluatorSetter<RegexEvaluator> {
 
     private RegexEvaluator regexEvaluator;
 
@@ -36,11 +36,11 @@ public final class FileEvaluator implements Evaluator<File>, EvaluatorSetter<Reg
         return this;
     }
 
-    public static FileEvaluator build() throws IllegalAccessException, InstantiationException {
-        return FileEvaluator.class.newInstance();
+    public static FileEvaluator build() {
+        return new FileEvaluator();
     }
 
-    public static FileEvaluator build(RegexEvaluator regexEvaluator) throws InstantiationException, IllegalAccessException {
+    public static FileEvaluator build(RegexEvaluator regexEvaluator)  {
         return FileEvaluator.build().setWorker(regexEvaluator);
     }
 }

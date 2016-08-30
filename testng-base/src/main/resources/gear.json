@@ -1,0 +1,31 @@
+{
+  "sourceClass": "HelloWorld",
+  "name": "testGear",
+  "flows": [
+    {
+      "name": "testFlow",
+      "steps": [
+        {"method": "say"}
+      ]
+    },
+    {
+      "name": "testStringParam",
+      "steps": [
+        {"method": "say1", "input": ["123"]}
+      ]
+    },
+    {
+      "name": "assertFail",
+      "steps": [
+        {"method": "fail"}
+      ]
+    },
+    {
+      "name": "testParam",
+      "steps": [
+        {"method": "june", "output": ["season"]},
+        {"method": "say1", "input": ["season"]}
+      ]
+    }
+  ]
+}

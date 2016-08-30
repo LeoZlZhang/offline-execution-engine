@@ -1,0 +1,20 @@
+{
+  "protocol": "4",
+  "host": "124.172.174.187:8888/vliveshow-api-app",
+  "phoneNumA": "13764660018",
+  "countryCodeA": "86",
+  "userIdA": "6000074",
+  "tokenA": "8c1385bc7985e82df076db12ebdf401e",
+  "passwordA": "vipabc",
+  "phoneNumB": "13764086339",
+  "countryCodeB": "86",
+  "userIdB": "6000237",
+  "tokenB": "6661e80316c2738934a6282d9a1ad7dd",
+  "passwordB": "vipabc",
+  "phoneNumC": "13621834011",
+  "countryCodeC": "86",
+  "userIdC": "6000005",
+  "tokenC": "25d61f55a4c80ce0df8cb5f3d7f9c45f",
+  "passwordC": "111111",
+  "coverPicFile": "jelly.JPG"
+}

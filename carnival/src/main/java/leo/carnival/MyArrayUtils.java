@@ -13,7 +13,7 @@ public class MyArrayUtils {
         return Arrays.copyOf(oriArray, sizeOfNotNull(oriArray));
     }
 
-    public static <T> T[] appendArray(T[] oriArray, T... ele) {
+    public static <T> T[] mergeArray(T[] oriArray, T... ele) {
         if (oriArray == null)
             return null;
 
@@ -22,15 +22,21 @@ public class MyArrayUtils {
 
         Class<T> cls = (Class<T>) oriArray.getClass().getComponentType();
 
-        int sizeofNotNull = sizeOfNotNull(oriArray);
-        T[] rtnArray = (T[]) Array.newInstance(cls, sizeofNotNull + ele.length);
-        if (sizeofNotNull > 0)
-            System.arraycopy(oriArray, 0, rtnArray, 0, sizeofNotNull);
-        if (ele.length > 0)
-            System.arraycopy(ele, 0, rtnArray, sizeofNotNull, ele.length);
+        int sizeOfNotNull = sizeOfNotNull(oriArray);
+        int sizeOfOriArray = oriArray.length;
+        int sizeOfNotNull_ele = sizeOfNotNull(ele);
 
-        return rtnArray;
+        if (sizeOfNotNull + sizeOfNotNull_ele <= sizeOfOriArray) {
+            System.arraycopy(ele, 0, oriArray, sizeOfNotNull, sizeOfNotNull_ele);
+            return oriArray;
+
+        } else {
+            T[] rtnArray = Arrays.copyOf(oriArray, sizeOfNotNull + sizeOfNotNull_ele);
+            System.arraycopy(ele, 0, rtnArray, sizeOfNotNull, sizeOfNotNull_ele);
+            return rtnArray;
+        }
     }
+
 
     public static <T> boolean containElementByDeepCompare(T[] oriArray, T target) {
         for (T ele : oriArray) {
@@ -56,7 +62,7 @@ public class MyArrayUtils {
 
 
     private static <T> int sizeOfNotNull(T[] array) {
-        if (array == null)
+        if (array == null || array.length == 0)
             return 0;
 
         int sizeofNotNull = 0;
@@ -68,4 +74,5 @@ public class MyArrayUtils {
         }
         return sizeofNotNull;
     }
+
 }

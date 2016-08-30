@@ -37,11 +37,11 @@ public final class FolderEvaluator implements Evaluator<File>, EvaluatorSetter<R
         return this;
     }
 
-    public static FolderEvaluator build() throws IllegalAccessException, InstantiationException {
-        return FolderEvaluator.class.newInstance();
+    public static FolderEvaluator build() {
+        return new FolderEvaluator();
     }
 
-    public static FolderEvaluator build(RegexEvaluator regexEvaluator) throws InstantiationException, IllegalAccessException {
+    public static FolderEvaluator build(RegexEvaluator regexEvaluator) {
         return FolderEvaluator.build().setWorker(regexEvaluator);
     }
 }

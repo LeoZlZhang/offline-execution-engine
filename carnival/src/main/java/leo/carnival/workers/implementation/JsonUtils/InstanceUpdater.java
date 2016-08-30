@@ -36,9 +36,6 @@ public class InstanceUpdater<T> implements Processor<T, T>, ProcessorSetter<MapV
 
     @Override
     public InstanceUpdater<T> setWorker(MapValueUpdater worker) {
-        if (worker == null)
-            return this;
-
         this.mapValueUpdater = worker;
         return this;
     }

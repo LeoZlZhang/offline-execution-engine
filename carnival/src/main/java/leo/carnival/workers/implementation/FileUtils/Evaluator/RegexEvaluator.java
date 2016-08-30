@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 
 @SuppressWarnings("WeakerAccess")
-public final class RegexEvaluator implements Evaluator<String>, EvaluatorSetter<Evaluator<String>> {
+public class RegexEvaluator implements Evaluator<String>, EvaluatorSetter<Evaluator<String>> {
 
     private Evaluator<String> evaluator;
     private String regex = ".*";
@@ -39,15 +39,15 @@ public final class RegexEvaluator implements Evaluator<String>, EvaluatorSetter<
         return this;
     }
 
-    public static RegexEvaluator build() throws IllegalAccessException, InstantiationException {
-        return RegexEvaluator.class.newInstance();
+    public static RegexEvaluator build() {
+        return new RegexEvaluator();
     }
 
-    public static RegexEvaluator build(String regex) throws InstantiationException, IllegalAccessException {
+    public static RegexEvaluator build(String regex) {
         return RegexEvaluator.build().setRegex(regex);
     }
 
-    public static RegexEvaluator build(RegexEvaluator regexEvaluator) throws InstantiationException, IllegalAccessException {
+    public static RegexEvaluator build(RegexEvaluator regexEvaluator) {
         return RegexEvaluator.build().setWorker(regexEvaluator);
     }
 }

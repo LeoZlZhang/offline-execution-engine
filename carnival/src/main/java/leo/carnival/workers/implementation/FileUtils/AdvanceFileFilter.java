@@ -22,17 +22,8 @@ public final class AdvanceFileFilter implements Processor<File, List<File>>, Wor
         if (file == null || !file.exists())
             return null;
 
-        try {
-            fileFilter = fileFilter == null ? FileFilter.build() : fileFilter;
-        } catch (InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            folderFilter = folderFilter == null ? FolderFilter.build() : folderFilter;
-        } catch (InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
+        fileFilter = fileFilter == null ? FileFilter.build() : fileFilter;
+        folderFilter = folderFilter == null ? FolderFilter.build() : folderFilter;
 
         List<File> rtnList = new ArrayList<>();
 
@@ -42,6 +33,7 @@ public final class AdvanceFileFilter implements Processor<File, List<File>>, Wor
 
         return rtnList;
     }
+
 
     @Override
     public List<File> execute(File file) {
@@ -57,7 +49,7 @@ public final class AdvanceFileFilter implements Processor<File, List<File>>, Wor
         return this;
     }
 
-    public static AdvanceFileFilter build() throws IllegalAccessException, InstantiationException {
+    public static AdvanceFileFilter build() {
         return new AdvanceFileFilter();
     }
 

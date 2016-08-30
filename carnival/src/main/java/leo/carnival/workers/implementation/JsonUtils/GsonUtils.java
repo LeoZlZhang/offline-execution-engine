@@ -19,7 +19,7 @@ public final class GsonUtils {
         return ts == null ? null : ts.length == 0 ? null : ts[0];
     }
 
-    public static <T> T firstOneFromJsonArray(String str, Class<T> cls) throws IOException {
+    public static <T> T firstOneFromJsonArray(String str, Class<T> cls) {
         T[] ts = fromJsonArray(str, cls);
         return ts == null ? null : ts.length == 0 ? null : ts[0];
     }
@@ -31,17 +31,17 @@ public final class GsonUtils {
         return fromJsonArray(FileUtils.readFileToString(jsonFile), cls);
     }
 
-    public static <T> T[] fromJsonArray(String sourceStr, Class<T> cls) throws IOException {
+    public static <T> T[] fromJsonArray(String sourceStr, Class<T> cls){
         if (sourceStr == null)
             return null;
 
         return (T[]) gson.fromJson(sourceStr, Array.newInstance(cls, 0).getClass());
     }
 
-    public static <T> T fromJsonObject(File jsonFile, Class<T> cls) {
+    public static <T> T fromJsonObject(File jsonFile, Class<T> cls) throws IOException {
         if (jsonFile == null || !jsonFile.exists())
             return null;
-        return fromJsonObject(jsonFile, cls);
+        return fromJsonObject(FileUtils.readFileToString(jsonFile), cls);
     }
 
     public static <T> T fromJsonObject(String sourceStr, Class<T> cls) {

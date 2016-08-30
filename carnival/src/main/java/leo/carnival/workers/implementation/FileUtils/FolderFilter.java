@@ -50,11 +50,11 @@ public final class FolderFilter implements Processor<File, List<File>>, WorkerSe
     }
 
 
-    public static FolderFilter build() throws InstantiationException, IllegalAccessException {
-        return FolderFilter.class.newInstance();
+    public static FolderFilter build()  {
+        return new FolderFilter();
     }
 
-    public static FolderFilter build(FolderEvaluator folderEvaluator) throws IllegalAccessException, InstantiationException {
+    public static FolderFilter build(FolderEvaluator folderEvaluator) {
         return FolderFilter.build().setWorker(folderEvaluator);
     }
 

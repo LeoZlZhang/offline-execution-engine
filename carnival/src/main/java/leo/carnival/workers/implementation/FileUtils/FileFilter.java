@@ -48,11 +48,11 @@ public final class FileFilter implements Processor<File, List<File>>, WorkerSett
         return rtnFileList;
     }
 
-    public static FileFilter build() throws InstantiationException, IllegalAccessException {
-        return FileFilter.class.newInstance();
+    public static FileFilter build() {
+        return new FileFilter();
     }
 
-    public static FileFilter build(FileEvaluator fileEvaluator) throws IllegalAccessException, InstantiationException {
+    public static FileFilter build(FileEvaluator fileEvaluator) {
         return FileFilter.build().setWorker(fileEvaluator);
     }
 
