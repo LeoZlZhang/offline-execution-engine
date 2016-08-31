@@ -1,4 +1,4 @@
-package leo.carnival.workers.implementation.JsonUtils;
+package leo.carnival.workers.impl.JsonUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;

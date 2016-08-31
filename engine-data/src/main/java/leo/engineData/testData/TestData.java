@@ -15,6 +15,6 @@ public interface TestData
 
     TestData update(Map<String, Object> profile);
 
-//    String getSourceFileName();
-//    void setSourceFileName(String name);
+    String getSourceFileName();
+    void setSourceFileName(String name);
 }

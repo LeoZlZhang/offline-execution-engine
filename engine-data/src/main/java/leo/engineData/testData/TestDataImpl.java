@@ -1,8 +1,8 @@
 package leo.engineData.testData;
 
 
-import leo.carnival.workers.implementation.JsonUtils.InstanceUpdater;
-import leo.carnival.workers.implementation.JsonUtils.MapValueUpdater;
+import leo.carnival.workers.impl.JsonUtils.InstanceUpdater;
+import leo.carnival.workers.impl.JsonUtils.MapValueUpdater;
 
 import java.util.Map;
 

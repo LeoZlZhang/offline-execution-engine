@@ -7,10 +7,10 @@ import leo.engineCore.engineFoundation.Assert.TestPass;
 import leo.engineCore.engineFoundation.Assert.TestResult;
 import leo.engineCore.engineFoundation.Flow.Flow;
 import leo.carnival.MyArrayUtils;
-import leo.carnival.workers.implementation.GearicUtils.DeepClone;
+import leo.carnival.workers.impl.GearicUtils.DeepClone;
 import leo.carnival.workers.prototype.Executor;
 
-import static leo.carnival.workers.implementation.GearicUtils.ClassUtils.loadClass;
+import static leo.carnival.workers.impl.GearicUtils.ClassUtils.loadClass;
 
 @SuppressWarnings({"ConstantConditions", "unused"})
 public class Gear implements Executor<String, TestResult> {

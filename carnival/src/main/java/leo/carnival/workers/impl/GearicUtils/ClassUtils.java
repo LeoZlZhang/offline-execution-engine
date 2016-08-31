@@ -1,4 +1,4 @@
-package leo.carnival.workers.implementation.GearicUtils;
+package leo.carnival.workers.impl.GearicUtils;
 
 /**
  * Created by leo_zlzhang on 8/29/2016.

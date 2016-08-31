@@ -1,4 +1,4 @@
-package leo.carnival.workers.implementation.JsonUtils;
+package leo.carnival.workers.impl.JsonUtils;
 
 
 import leo.carnival.workers.prototype.Processor;

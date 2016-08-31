@@ -1,10 +1,10 @@
-import leo.carnival.workers.implementation.FileUtils.AdvanceFileFilter;
-import leo.carnival.workers.implementation.FileUtils.Evaluator.FileEvaluator;
-import leo.carnival.workers.implementation.FileUtils.Evaluator.FolderEvaluator;
-import leo.carnival.workers.implementation.FileUtils.Evaluator.RegexEvaluator;
-import leo.carnival.workers.implementation.FileUtils.FileFilter;
-import leo.carnival.workers.implementation.FileUtils.FolderFilter;
-import leo.engineData.DataProvider.TestStrReplacer;
+import leo.carnival.workers.impl.FileUtils.AdvanceFileFilter;
+import leo.carnival.workers.impl.FileUtils.Evaluator.FileEvaluator;
+import leo.carnival.workers.impl.FileUtils.Evaluator.FolderEvaluator;
+import leo.carnival.workers.impl.FileUtils.Evaluator.RegexEvaluator;
+import leo.carnival.workers.impl.FileUtils.FileFilter;
+import leo.carnival.workers.impl.FileUtils.FolderFilter;
+import leo.engineData.DataProvider.ContentReplacer;
 import org.apache.commons.io.FileUtils;
 import org.testng.annotations.Test;
 
@@ -24,9 +24,9 @@ public class TestJsonDataSource {
         File sourceFolder = new File(System.getProperty("user.dir") + "\\src\\main\\resources");
         //transfer test data files into string list, and inject with test data flow data
         FolderFilter dataFlowFolderFilter = FolderFilter.build(FolderEvaluator.build(RegexEvaluator.build("DataFlow")));
-        TestStrReplacer testStrReplacer = TestStrReplacer.build(dataFlowFolderFilter, sourceFolder);
+        ContentReplacer contentReplacer = ContentReplacer.build(dataFlowFolderFilter.process(sourceFolder).get(0));
         List<File> fileList = FileFilter.build(FileEvaluator.build(RegexEvaluator.build("Poc4Flow.json"))).process(sourceFolder);
-        System.out.println(testStrReplacer.process(FileUtils.readFileToString(fileList.get(0))));
+        System.out.println(contentReplacer.process(FileUtils.readFileToString(fileList.get(0))));
     }
 
     @Test
