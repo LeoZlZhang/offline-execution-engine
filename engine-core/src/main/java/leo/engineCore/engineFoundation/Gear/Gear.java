@@ -7,7 +7,7 @@ import leo.engineCore.engineFoundation.Assert.TestPass;
 import leo.engineCore.engineFoundation.Assert.TestResult;
 import leo.engineCore.engineFoundation.Flow.Flow;
 import leo.carnival.MyArrayUtils;
-import leo.carnival.workers.implementation.GearicUtils.DeepCloner;
+import leo.carnival.workers.implementation.GearicUtils.DeepClone;
 import leo.carnival.workers.prototype.Executor;
 
 import static leo.carnival.workers.implementation.GearicUtils.ClassUtils.loadClass;
@@ -47,7 +47,7 @@ public class Gear implements Executor<String, TestResult> {
             if (applicationContext.getMethodRepo() == null || applicationContext.getMethodRepo().isEmpty())
                 applicationContext.setMethodRepo(loadClass(sourceClass));
             Flow flow = MyArrayUtils.searchArray(flows, flowName);
-            flow.execute(DeepCloner.process(applicationContext, ApplicationContext.class));
+            flow.execute(new DeepClone<ApplicationContext>().process(applicationContext));
             return new TestPass();
         } catch (Exception e) {
             return new TestFail(e);

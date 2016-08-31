@@ -40,7 +40,6 @@ public abstract class AbstractMainTest {
 
     @BeforeSuite
     public void initialize() throws Exception {
-        System.out.println("hello");
         this.testInfo = testInfo();
         this.profilePicker = profilePicker();
 

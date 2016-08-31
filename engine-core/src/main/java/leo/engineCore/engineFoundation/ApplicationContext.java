@@ -1,5 +1,6 @@
 package leo.engineCore.engineFoundation;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.AbstractMap;
 import java.util.HashMap;
@@ -9,7 +10,7 @@ import java.util.Map;
  * Created by leozhang on 8/28/16.
  * Container of execution context
  */
-public class ApplicationContext {
+public class ApplicationContext implements Serializable{
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(ApplicationContext.class);
 
     private Map<String, Object> context = new HashMap<>();

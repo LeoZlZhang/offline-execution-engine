@@ -24,7 +24,6 @@ public class ProfilePicker  {
 
     public Map<String, Object> next(){
         int i = cycleNumPicker.process(range);
-        System.out.println(i);
         return profileList.get(i);
     }
 
