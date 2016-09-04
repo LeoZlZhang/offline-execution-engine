@@ -6,7 +6,8 @@ import leo.engineData.testData.TestDataImpl;
  * Created by leozhang on 8/31/16.
  * ...
  */
-public class MyTestData extends TestDataImpl<String, String> {
+@SuppressWarnings("unused")
+public class ApiTestData extends TestDataImpl<String, String> {
     private String name;
     private String[] ideas;
 

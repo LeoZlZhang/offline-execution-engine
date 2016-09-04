@@ -1,0 +1,10 @@
+spring:
+  data:
+    mongodb:
+      host: 127.0.0.1
+      database: tcRepo
+      port: 27017
+  redis:
+    host: 127.0.0.1
+    database: 0
+    port: 6379
