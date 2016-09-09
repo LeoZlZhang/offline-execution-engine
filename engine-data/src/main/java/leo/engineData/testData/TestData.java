@@ -1,9 +1,11 @@
 package leo.engineData.testData;
 
+import leo.carnival.workers.prototype.Processor;
+
 import java.util.Map;
 
 @SuppressWarnings("unused")
-public interface TestData
+public interface TestData<T, G> extends Processor<T, G>
 {
 
 //    boolean validate(String titleName, String cell) throws Exception;
