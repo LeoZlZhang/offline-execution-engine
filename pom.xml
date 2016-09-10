@@ -13,6 +13,7 @@
         <module>carnival</module>
         <module>engine-data</module>
         <module>testng-base</module>
+        <module>api-test</module>
     </modules>
 
     <properties>

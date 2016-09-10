@@ -1,0 +1,7 @@
+<suite name="Suite1" verbose="1" >
+    <test name="APITest" >
+        <classes>
+            <class name="com.vipabc.vliveshow.apitest.APIMainTest" />
+        </classes>
+    </test>
+</suite>

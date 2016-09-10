@@ -1,0 +1,29 @@
+{
+  "name": "IRASVTGear",
+  "flows": [
+    {
+      "name": "BeforeTestFlow", "type": "BeforeTest",
+      "sourceClass": "com.vipabc.vliveshow.APITest.TestFlow.APITest",
+      "steps": [
+        {"method": "prepare"}
+      ]
+    },
+    {
+      "name": "APITest", "type": "Test",
+      "sourceClass": "com.vipabc.vliveshow.apitest.TestFlow.APITest",
+      "steps": [
+        {"method": "loadTestData", "input": ["TestCase"], "output": ["TC"]},
+        {"method": "initializeLoop", "input": ["TestCase"], "output": ["Asset", "ExtractionMap"]},
+        {"loop": 1, "method": "requestWithHttpClient", "input": ["Asset", "ExtractionMap"], "output": ["ExtractionMap"]},
+        {"loop": 1, "method": "loadNextTestAsset", "input": ["TC", "Asset"], "output": ["Asset", "BreakLoop"]}
+      ]
+    },
+    {
+      "name": "AfterTestFlow", "type": "AfterTest",
+      "sourceClass": "com.vipabc.vliveshow.APITest.TestFlow.APITest",
+      "steps": [
+        {"method": "end"}
+      ]
+    }
+  ]
+}

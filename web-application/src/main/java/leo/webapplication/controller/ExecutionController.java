@@ -1,11 +1,6 @@
 package leo.webapplication.controller;
 
 import leo.webapplication.model.ApiTestData;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -17,12 +12,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/try")
 public class ExecutionController {
 
-    @Autowired
-    MongoTemplate mongoTemplate;
 
 
-    @Autowired
-    StringRedisTemplate stringRedisTemplate;
+
+
 
     @RequestMapping(value = "/hello", method = RequestMethod.GET)
     public String hello(@RequestParam(name = "name", required = false, defaultValue = "leo") String name) {
@@ -47,18 +40,4 @@ public class ExecutionController {
 //        return map;
 //    }
 
-
-    @RequestMapping(value = "/ideas", method = RequestMethod.GET)
-    public String[] getJob(@RequestParam("name") String name) {
-        Criteria c = Criteria.where("name").is(name);
-        Query query = new Query(c);
-        return mongoTemplate.findOne(query, ApiTestData.class).getIdeas();
-
-    }
-
-    @RequestMapping(value = "/redis", method = RequestMethod.GET)
-    public String helloRedis(@RequestParam("name") String name) {
-        String value = stringRedisTemplate.opsForValue().get(name);
-        return String.format("debug: %s", value);
-    }
 }

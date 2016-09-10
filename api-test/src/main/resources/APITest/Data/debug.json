@@ -1,0 +1,392 @@
+[
+  {
+    "name": "happyPass",
+    "workflow": "APITest",
+    "assets": [
+      {
+        "Injection": "PwdLoginA.json"
+      },
+      {
+        "Injection": "PwdLoginB.json"
+      },
+      {
+        "info": "Get gift list",
+        "request": {
+          "method": "GET",
+          "url": "{{protocol}}://{{host}}/v1/config/gift/list",
+          "param": {
+            "token": "{{tokenA}}"
+          }
+        },
+        "assertions": {
+          "StatusCode": 200,
+          "ResponseJson": {
+            "success": true,
+            "message": "",
+            "error_code": 0,
+            "results": {
+              "list": [
+                {
+                  "id": "[\\w]+"
+                }
+              ]
+            }
+          }
+        },
+        "extractions": {
+          "results": {
+            "list": [
+              {
+                "id": "giftId",
+                "giftType": "giftType",
+                "diamond": "giftCost"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "request": {
+          "method": "GET",
+          "url": "{{protocol}}://{{host}}/v1/money/user/balance",
+          "param": {
+            "token": "{{tokenA}}"
+          }
+        },
+        "assertions": {
+          "StatusCode": 200,
+          "ResponseJson": {
+            "success": true
+          }
+        },
+        "extractions": {
+          "results": {
+            "diamond": "myDiamond",
+            "usableBalance": {
+              "diamond": "myBalance"
+            }
+          }
+        }
+      },
+      {
+        "request": {
+          "method": "POST",
+          "url": "{{protocol}}://{{host}}/v1/liveshow/create",
+          "param": {
+            "token": "{{tokenB}}",
+            "title": "在一起吧吧吧",
+            "skillTag": "",
+            "location": "上海市1",
+            "OPENRECORDINGKEY": "YES",
+            "geoLocaltion": "31.236271,121.498745,上海市",
+            "topics": "57ad4512765f47c8210cd701,亲子"
+          },
+          "multiPartEntity": {
+            "binaryBodies": [
+              {
+                "name": "cover",
+                "realFileName": "jelly.jpg",
+                "mimeType": "multipart/form-data",
+                "fileName": "jelly.jpg"
+              }
+            ]
+          }
+        },
+        "assertions": {
+          "StatusCode": 200,
+          "ResponseJson": {
+            "success": true,
+            "message": "",
+            "error_code": 0,
+            "results": {
+              "roomId": "[\\w]{24}[js[for(var t = Date.now();Date.now() - t <= 2000;);'']]"
+            }
+          }
+        },
+        "extractions": {
+          "results": {
+            "roomId": "roomId"
+          }
+        }
+      },
+      {
+        "request": {
+          "method": "POST",
+          "url": "{{protocol}}://{{host}}/v1/gift/sendgift",
+          "param": {
+            "giftId": "{{giftId}}",
+            "giftType": "{{giftType}}",
+            "num": 1,
+            "remark": "",
+            "roomId": "{{roomId}}",
+            "timestamp": 1473399999000,
+            "token": "{{tokenA}}"
+          }
+        },
+        "assertions": {
+          "StatusCode": 200,
+          "ResponseJson": {
+            "success": true,
+            "message": "操作成功.",
+            "error_code": "0[js[for(var t = Date.now();Date.now() - t <= 2000;);'']]",
+            "results": {}
+          }
+        }
+      },
+      {
+        "request": {
+          "method": "GET",
+          "url": "{{protocol}}://{{host}}/v1/money/user/balance",
+          "param": {
+            "token": "{{tokenA}}"
+          }
+        },
+        "assertions": {
+          "StatusCode": 200,
+          "ResponseJson": {
+            "success": true,
+            "message": "",
+            "error_code": 0,
+            "results": {
+              "diamond": "[js[ {{myDiamond}}-{{giftCost}} ]]",
+              "usableBalance": {
+                "userId": "{{userIdA}}",
+                "diamond": "{{myBalance}}"
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+
+
+
+
+  //  {
+  //    "name": "happyPass",
+  //    "workflow": "APITest",
+  //    "assets": [
+  //      {
+  //        "info": "Login as userA",
+  //        "request": {
+  //          "method": "POST",
+  //          "url": "http://dev.vliveshow.com/vliveshow-api-app/v1/users/phone/password_login",
+  //          "param": {
+  //            "mobilePhone": "{{phoneNumA}}",
+  //            "nationCode": "{{countryCodeA}}",
+  //            "password": "Vipabc"
+  //          }
+  //        },
+  //        "assertions": {
+  //          "StatusCode": 200
+  //        },
+  //        "extractions": {
+  //          "results": {
+  //            "token": "tokenA"
+  //          }
+  //        }
+  //
+  //
+  //      },
+  //      {
+  //        "request": {
+  //          "method": "GET",
+  //          "url": "http://dev.vliveshow.com/vliveshow-api-app/v1/host/skills",
+  //          "param": {
+  //            "token": "{{tokenA}}"
+  //          }
+  //        },
+  //        "assertions": {
+  //          "StatusCode": 200,
+  //          "ResponseJson": {}
+  //        }
+  //      }
+  //    ]
+  //  }
+
+  //      {
+  //        "name": "TenCentIM",
+  //        "workflow": "APITest",
+  //        "assets": [
+  //          {
+  //            "request": {
+  //              "method": "POST",
+  //              "url": "https://console.tim.qq.com/v4/group_open_http_svc/send_group_msg",
+  //              "param": {
+  //                "identifier": "admin",
+  //                "usersig": "eJxFkF1PgzAUhv8LtxppKYXMZBdsfuB0S9gMZVdNXTs8W8qwdFpi-O9iw*Lt8*Tkfd-zHby*bG5E24LkwnJiZHAboODaY*VaMIqLvVVmwARTkiB0sZ-KdHBqBhEhTHFEEPqXIFVjYQ-*UEgNzSg6qAeyvC-mT9lWClEdXTMX8SItQptnDPSscm86X3ysy5CxA30IH2NXZZBRV3arZ-lu0q-SVZatNnnfX*k7lktAsouxrs-18lCypJhOL2HyyP22IRLHf-UmkyQapQWtPE9RQiKK0pGL3e50biy3fav8M35*AeOyWC4_",
+  //                "sdkappid": "1400009962",
+  //                "contenttype": "json",
+  //                "random": "1470632632608"
+  //              },
+  //              "jsonBody": {
+  //                "From_Account": "6000162",
+  //                "GroupId": "57a8163ad5de626a2fa7e9e9",
+  //                "Random": "7896705",
+  //                "MsgBody": [
+  //                  {
+  //                    "MsgType": "TIMTextElem",
+  //                    "MsgContent": {
+  //                      "Text": "HelloFromAuto122131321321"
+  //                    }
+  //                  }
+  //                ]
+  //              }
+  //            },
+  //            "assertions": {
+  //              "StatusCode": 200
+  //            }
+  //          }
+  //        ]
+  //      }
+
+
+  //站内信
+  //  {
+  //    "name": "TenCentIM",
+  //    "workflow": "APITest",
+  //    "assets": [
+  //      {
+  //        "request": {
+  //          "method": "POST",
+  //          "url": "https://console.tim.qq.com/v4/openim/batchsendmsg",
+  //          "param": {
+  //            "identifier": "admin",
+  //            "usersig": "eJxFkF1PgzAUhv8LtxppKYXMZBdsfuB0S9gMZVdNXTs8W8qwdFpi-O9iw*Lt8*Tkfd-zHby*bG5E24LkwnJiZHAboODaY*VaMIqLvVVmwARTkiB0sZ-KdHBqBhEhTHFEEPqXIFVjYQ-*UEgNzSg6qAeyvC-mT9lWClEdXTMX8SItQptnDPSscm86X3ysy5CxA30IH2NXZZBRV3arZ-lu0q-SVZatNnnfX*k7lktAsouxrs-18lCypJhOL2HyyP22IRLHf-UmkyQapQWtPE9RQiKK0pGL3e50biy3fav8M35*AeOyWC4_",
+  //            "sdkappid": "1400009962",
+  //            "contenttype": "json",
+  //            "random": "1470632632608"
+  //          },
+  //          "jsonBody": {
+  //            "From_Account": "From_Account",
+  //            "MsgRandom": "Integer.valueOf(RandomHelper.randomNumber(7)",
+  //            "To_Account": "new JSONArray(toAccounts)",
+  //            "MsgBody": [
+  //              {
+  //                "MsgContent": {
+  //                  "Ext": "202&{\"imageURL\":\"liveshow.getCoverUrl()\",\"anchorID\":\"user.getId()\",\"roomID\":\"liveshow.getRoomId()\"}",
+  //                  "Desc": "desc",
+  //                  "Data": "202&{\"imageURL\":\"liveshow.getCoverUrl()\",\"title\":\"liveshow.getTitle()\",\"anchorID\":\"user.getId()\",\"anchorName\":\"user.getNickName()\",\"content\":\"title\",\"roomID\":\"liveshow.getRoomId()\"}"
+  //                },
+  //                "MsgType": "TIMCustomElem"
+  //              }
+  //            ]
+  //          }
+  //        },
+  //        "assertions": {
+  //          "StatusCode": 200
+  //        }
+  //      }
+  //    ]
+  //  }
+
+
+
+  //robot
+  //        {
+  //          "name": "TenCentIM",
+  //          "workflow": "APITest",
+  //          "assets": [
+  //            {
+  //              "request": {
+  //                "method": "POST",
+  //                "url": "https://console.tim.qq.com/v4/group_open_http_svc/send_group_msg",
+  //                "param": {
+  //                  "identifier": "admin",
+  //                  "usersig": "eJxFkF1PgzAUhv8LtxppKYXMZBdsfuB0S9gMZVdNXTs8W8qwdFpi-O9iw*Lt8*Tkfd-zHby*bG5E24LkwnJiZHAboODaY*VaMIqLvVVmwARTkiB0sZ-KdHBqBhEhTHFEEPqXIFVjYQ-*UEgNzSg6qAeyvC-mT9lWClEdXTMX8SItQptnDPSscm86X3ysy5CxA30IH2NXZZBRV3arZ-lu0q-SVZatNnnfX*k7lktAsouxrs-18lCypJhOL2HyyP22IRLHf-UmkyQapQWtPE9RQiKK0pGL3e50biy3fav8M35*AeOyWC4_",
+  //                  "sdkappid": "1400009962",
+  //                  "contenttype": "json",
+  //                  "random": "1470632632608"
+  //                },
+  //                "jsonBody": {
+  //                  "From_Account": "7000011",
+  //                  "GroupId": "",
+  //                  "Random": "7896705",
+  //                  "MsgBody": [
+  //                    {
+  //                      "MsgType": "TIMCustomElem",
+  //                      "MsgContent": {
+  //                        "Data": "32&1",
+  //                        "Ext": ""
+  //                      }
+  //                    }
+  //                  ]
+  //                }
+  //              },
+  //              "assertions": {
+  //                "StatusCode": 200
+  //              }
+  //            }
+  //          ]
+  //        }
+
+
+  //  {
+  //    "name": "TenCentIM",
+  //    "workflow": "APITest",
+  //    "assets": [
+  //      {
+  //        "request": {
+  //          "method": "POST",
+  //          "url": "https://webim.tim.qq.com/v4/openim/login",
+  //          "param": {
+  //            "websdkappid": "537046641",
+  //            "v": "1.5",
+  //            "identifier": "admin",
+  //            "usersig" : "eJxFkFFPgzAUhf8LrxhX2oLUxIcNu4wNNYxN3V4asha96iiBTmGL-91KRvb6fbk559yTs0qy67yqQIrcCFJL59ZBzlWPVVtBrUReGFVbTDyfBAgN9lvVDejSCow838MEoYsEqUoDBfSHmDIcYhaSwTbwZvEDX0fxBM3cyUeczddu*LN4nZYj0JTHPPKnScK2y5rt5T0u2lmHxsDHYDbNUhdP-mHz-qyS7bFdZY9zN6VfI53JqFu8cJSmuceovhvC5KfoB9pIj-53ZCzAZ2lgr3p*gwLfjgjPPN-t9KE0wnSV6j-y*weNO1Zx",
+  //            "sdkappid": "1400009962",
+  //            "accounttype": "5276",
+  //            "apn": "1",
+  //            "reqtime": "1470650599"
+  //
+  //          },
+  //          "jsonBody": {
+  //            "State":"Online"
+  //          }
+  //        },
+  //        "assertions": {
+  //          "StatusCode": 200
+  //        }
+  //      }
+  //    ]
+  //  }
+
+  //  {
+  //    "name": "TenCentIM",
+  //    "workflow": "APITest",
+  //    "assets": [
+  //      {
+  //        "request": {
+  //          "method": "POST",
+  //          "url": "https://webim.tim.qq.com/v3/group_open_http_svc/apply_join_group?&apn=1&reqtime=1470650599",
+  //          "param": {
+  //            "websdkappid": "537046641",
+  //            "v": "1.5",
+  //            "contenttype": "json",
+  //            "sdkappid": "1400009962",
+  //            "accounttype": "5276",
+  //            "apn": "1",
+  //            "reqtime": "1470650599"
+  //
+  //            "usersig": "eJxFkF1PgzAUhv8LtxppKYXMZBdsfuB0S9gMZVdNXTs8W8qwdFpi-O9iw*Lt8*Tkfd-zHby*bG5E24LkwnJiZHAboODaY*VaMIqLvVVmwARTkiB0sZ-KdHBqBhEhTHFEEPqXIFVjYQ-*UEgNzSg6qAeyvC-mT9lWClEdXTMX8SItQptnDPSscm86X3ysy5CxA30IH2NXZZBRV3arZ-lu0q-SVZatNnnfX*k7lktAsouxrs-18lCypJhOL2HyyP22IRLHf-UmkyQapQWtPE9RQiKK0pGL3e50biy3fav8M35*AeOyWC4_",
+  //            "sdkappid": "1400009962",
+  //            "contenttype": "json",
+  //            "random": "1470632632608"
+  //          },
+  //          "jsonBody": {
+  //            "GroupId": "57a82262d5de85ec41e85394",
+  //            "MemberList": [
+  //              {
+  //                "Member_Account": "6000805"
+  //              }
+  //            ]
+  //          }
+  //        },
+  //        "assertions": {
+  //          "StatusCode": 200
+  //        }
+  //      }
+  //    ]
+  //  }
+]
