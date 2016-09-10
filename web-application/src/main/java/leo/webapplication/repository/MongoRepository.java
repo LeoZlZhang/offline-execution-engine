@@ -1,32 +1,57 @@
 package leo.webapplication.repository;
 
-import leo.webapplication.model.ApiTestData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.data.mongodb.core.query.Update;
+
+import java.util.List;
 
 /**
  * Created by leozhang on 9/10/16.
  * Mongo
  */
 
-@Repository
-public class MongoRepository {
+@SuppressWarnings({"SpringAutowiredFieldsWarningInspection", "WeakerAccess", "unused"})
+public abstract class MongoRepository<T> {
 
     @Autowired
     MongoTemplate mongoTemplate;
 
 
-    @RequestMapping(value = "/ideas", method = RequestMethod.GET)
-    public String[] getJob(@RequestParam("name") String name) {
-        Criteria c = Criteria.where("name").is(name);
-        Query query = new Query(c);
-        return mongoTemplate.findOne(query, ApiTestData.class).getIdeas();
+    private Class<T> cls;
 
+    public MongoRepository(Class<T> cls) {
+        this.cls = cls;
+    }
+
+
+    public void save(T entity){
+        mongoTemplate.save(entity);
+    }
+
+
+
+
+    public List<T> find(Query query) {
+        return mongoTemplate.find(query, cls);
+    }
+
+    public T findOne(Query query) {
+        return mongoTemplate.findOne(query, cls);
+    }
+
+    public T findById(String id){
+        return mongoTemplate.findById(id, cls);
+    }
+
+
+    public void updateFirst(Query query, Update update){
+        mongoTemplate.updateFirst(query, update, cls);
+    }
+
+
+    public void remove(Query query){
+        mongoTemplate.remove(query, cls);
     }
 }

@@ -1,19 +1,26 @@
 package leo.webapplication.controller;
 
-import leo.webapplication.model.ApiTestData;
+import leo.carnival.workers.impl.JsonUtils.GsonUtils;
+import leo.webapplication.dto.JsonResponse;
+import leo.webapplication.model.ApiData;
+import leo.webapplication.repository.ApiTestMongoRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.web.bind.annotation.*;
 
 /**
  * Created by leozhang on 8/31/16.
  * ...
  */
-@SuppressWarnings({"SpringAutowiredFieldsWarningInspection", "ConstantConditions"})
+@SuppressWarnings({"SpringAutowiredFieldsWarningInspection", "ConstantConditions", "unused"})
 @RestController
 @RequestMapping("/try")
 public class ExecutionController {
 
 
-
+    @Autowired
+    ApiTestMongoRepository apiTestMongoRepository;
 
 
 
@@ -26,11 +33,11 @@ public class ExecutionController {
     }
 
 
-    @RequestMapping(value = "/model", method = RequestMethod.POST)
-    public String tryModel(@RequestBody ApiTestData myTestData) {
-        System.out.println(myTestData == null);
-        return myTestData.process(null);
-    }
+//    @RequestMapping(value = "/model", method = RequestMethod.POST)
+//    public String tryModel(@RequestBody ApiTestData myTestData) {
+//        System.out.println(myTestData == null);
+//        return myTestData.process(null);
+//    }
 
 //    @ExceptionHandler(RuntimeException.class)
 //    public Map exception(Exception exception, Model model) {
@@ -39,5 +46,22 @@ public class ExecutionController {
 //        map.put("a", "exception");
 //        return map;
 //    }
+
+    @RequestMapping(value = "/api/data/get/byname", method = RequestMethod.GET)
+    public @ResponseBody JsonResponse getApiData(@RequestParam("name") String name) {
+        Criteria c = Criteria.where("name").is(name);
+        Query query = new Query(c);
+        ApiData apiData = apiTestMongoRepository.findOne(query);
+
+        return JsonResponse.build(apiData);
+    }
+
+    @RequestMapping(value = "/api/data/save", method = RequestMethod.POST)
+    public String saveApiData(@RequestBody ApiData apiData){
+        System.out.println(GsonUtils.toJson(apiData));
+        apiTestMongoRepository.save(apiData);
+        return apiData.getName();
+
+    }
 
 }

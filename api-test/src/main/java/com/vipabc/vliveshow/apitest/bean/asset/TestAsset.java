@@ -23,12 +23,41 @@ public class TestAsset implements Evaluator<ResponseContainer>, Serializable{
 
     private Map<String, Object> extractions;
 
+    public String getInfo() {
+        return info;
+    }
+
+
+
+    public void setInfo(String info) {
+        this.info = info;
+    }
+
     public Request getRequest() {
         if (info != null)
             logger.info(info);
         return request;
     }
 
+    public void setRequest(Request request) {
+        this.request = request;
+    }
+
+    public Map<AssertType, Object> getAssertions() {
+        return assertions;
+    }
+
+    public void setAssertions(Map<AssertType, Object> assertions) {
+        this.assertions = assertions;
+    }
+
+    public Map<String, Object> getExtractions() {
+        return extractions;
+    }
+
+    public void setExtractions(Map<String, Object> extractions) {
+        this.extractions = extractions;
+    }
 
     public void extract(ResponseContainer response, Map<String, Object> extractionMap) throws Exception {
         if (extractions == null)

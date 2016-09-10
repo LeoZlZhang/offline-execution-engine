@@ -20,6 +20,39 @@ class BinaryBody implements Serializable {
 
     private String fileName;
 
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getRealFileName() {
+        return realFileName;
+    }
+
+    public void setRealFileName(String realFileName) {
+        this.realFileName = realFileName;
+    }
+
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
     MultipartContent.Part process() {
         URL url = this.getClass().getClassLoader().getResource(realFileName);
         File file = url == null ? null : new File(url.getFile());

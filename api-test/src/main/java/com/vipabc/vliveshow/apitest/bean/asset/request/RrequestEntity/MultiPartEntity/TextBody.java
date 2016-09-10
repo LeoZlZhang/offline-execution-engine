@@ -13,6 +13,22 @@ class TextBody implements Serializable{
 
     private String text;
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
     MultipartContent.Part process() {
         MultipartContent.Part part = new MultipartContent.Part();
         part.setEncoding(null);

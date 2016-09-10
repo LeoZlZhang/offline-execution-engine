@@ -30,14 +30,45 @@ public class Request implements Serializable{
     private Map<String, Object> jsonBody;
 
 
+    public String getMethod() {
+        return method;
+    }
+
+    public void setMethod(String method) {
+        this.method = method;
+    }
+
     public String getUrl() {
         return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public Map<String, String> getParam() {
         return param;
     }
 
+    public void setParam(Map<String, String> param) {
+        this.param = param;
+    }
+
+    public MultiPartEntity getMultiPartEntity() {
+        return multiPartEntity;
+    }
+
+    public void setMultiPartEntity(MultiPartEntity multiPartEntity) {
+        this.multiPartEntity = multiPartEntity;
+    }
+
+    public Map<String, Object> getJsonBody() {
+        return jsonBody;
+    }
+
+    public void setJsonBody(Map<String, Object> jsonBody) {
+        this.jsonBody = jsonBody;
+    }
 
     public HttpResponse process() throws IOException {
         String url = generateUrl();

@@ -6,7 +6,7 @@ import leo.engineData.testData.TestDataImpl;
 import java.io.Serializable;
 
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class APITestData extends TestDataImpl implements Serializable{
 
     private String name;
@@ -15,36 +15,49 @@ public class APITestData extends TestDataImpl implements Serializable{
 
     private TestAsset[] assets;
 
-
     private String sourceFileName = "";
+
 
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getWorkflow() {
         return workflow;
     }
 
+    public void setWorkflow(String workflow) {
+        this.workflow = workflow;
+    }
+
     public TestAsset[] getAssets() {
         return assets;
     }
 
-    public APITestData getInstance() {
-        return new APITestData();
+    public void setAssets(TestAsset[] assets) {
+        this.assets = assets;
     }
 
+    @Override
     public String getTestingFlow() {
-        return this.workflow;
+        return getWorkflow();
     }
 
+    @Override
     public String getSourceFileName() {
         return sourceFileName;
     }
 
-    public void setSourceFileName(String name) {
-        this.sourceFileName = name;
+    @Override
+    public void setSourceFileName(String sourceFileName) {
+        this.sourceFileName = sourceFileName;
     }
+
+
 
 
     @Override
