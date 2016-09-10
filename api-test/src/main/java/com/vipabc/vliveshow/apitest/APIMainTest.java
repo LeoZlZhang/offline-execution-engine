@@ -15,8 +15,7 @@ public class APIMainTest extends AbstractMainTest {
     @TestInfo(testDataClass = APITestData.class,
             threadNumber = 1,
             repeatTime = 1,
-//            profileFolderName = "MosaiEnvProfile",
-            profileFolderName = "DevEvnProfile",
+            profileFolderName = "ApiTestProfile",
             dataFlowFolderName = "DataFlow",
             dataFolderName = "Data",
             testDataFilterRegex = ".*\\.json")

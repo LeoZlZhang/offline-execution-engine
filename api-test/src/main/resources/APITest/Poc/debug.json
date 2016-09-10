@@ -1,0 +1,163 @@
+[
+  {
+    "name": "happyPass",
+    "workflow": "APITest",
+    "assets": [
+      {
+        "Injection": "PwdLoginA.json"
+      },
+      {
+        "Injection": "PwdLoginB.json"
+      },
+      {
+        "info": "Get gift list",
+        "request": {
+          "method": "GET",
+          "url": "{{protocol}}://{{host}}/v1/config/gift/list",
+          "param": {
+            "token": "{{tokenA}}"
+          }
+        },
+        "assertions": {
+          "StatusCode": 200,
+          "ResponseJson": {
+            "success": true,
+            "message": "",
+            "error_code": 0,
+            "results": {
+              "list": [
+                {
+                  "id": "[\\w]+"
+                }
+              ]
+            }
+          }
+        },
+        "extractions": {
+          "results": {
+            "list": [
+              {
+                "id": "giftId",
+                "giftType": "giftType",
+                "diamond": "giftCost"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "request": {
+          "method": "GET",
+          "url": "{{protocol}}://{{host}}/v1/money/user/balance",
+          "param": {
+            "token": "{{tokenA}}"
+          }
+        },
+        "assertions": {
+          "StatusCode": 200,
+          "ResponseJson": {
+            "success": true
+          }
+        },
+        "extractions": {
+          "results": {
+            "diamond": "myDiamond",
+            "usableBalance": {
+              "diamond": "myBalance"
+            }
+          }
+        }
+      },
+      {
+        "request": {
+          "method": "POST",
+          "url": "{{protocol}}://{{host}}/v1/liveshow/create",
+          "param": {
+            "token": "{{tokenB}}",
+            "title": "在一起吧吧吧",
+            "skillTag": "",
+            "location": "上海市1",
+            "OPENRECORDINGKEY": "YES",
+            "geoLocaltion": "31.236271,121.498745,上海市",
+            "topics": "57ad4512765f47c8210cd701,亲子"
+          },
+          "multiPartEntity": {
+            "binaryBodies": [
+              {
+                "name": "cover",
+                "realFileName": "jelly.jpg",
+                "mimeType": "multipart/form-data",
+                "fileName": "jelly.jpg"
+              }
+            ]
+          }
+        },
+        "assertions": {
+          "StatusCode": 200,
+          "ResponseJson": {
+            "success": true,
+            "message": "",
+            "error_code": 0,
+            "results": {
+              "roomId": "[\\w]{24}[js[for(var t = Date.now();Date.now() - t <= 2000;);'']]"
+            }
+          }
+        },
+        "extractions": {
+          "results": {
+            "roomId": "roomId"
+          }
+        }
+      },
+      {
+        "request": {
+          "method": "POST",
+          "url": "{{protocol}}://{{host}}/v1/gift/sendgift",
+          "param": {
+            "giftId": "{{giftId}}",
+            "giftType": "{{giftType}}",
+            "num": 1,
+            "remark": "",
+            "roomId": "{{roomId}}",
+            "timestamp": 1473399999000,
+            "token": "{{tokenA}}"
+          }
+        },
+        "assertions": {
+          "StatusCode": 200,
+          "ResponseJson": {
+            "success": true,
+            "message": "操作成功.",
+            "error_code": "0[js[for(var t = Date.now();Date.now() - t <= 2000;);'']]",
+            "results": {}
+          }
+        }
+      },
+      {
+        "request": {
+          "method": "GET",
+          "url": "{{protocol}}://{{host}}/v1/money/user/balance",
+          "param": {
+            "token": "{{tokenA}}"
+          }
+        },
+        "assertions": {
+          "StatusCode": 200,
+          "ResponseJson": {
+            "success": true,
+            "message": "",
+            "error_code": 0,
+            "results": {
+              "diamond": "[js[ {{myDiamond}}-{{giftCost}} ]]",
+              "usableBalance": {
+                "userId": "{{userIdA}}",
+                "diamond": "{{myBalance}}"
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+
+]
