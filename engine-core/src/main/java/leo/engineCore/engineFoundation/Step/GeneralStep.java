@@ -58,8 +58,10 @@ public class GeneralStep extends Step {
     private Object[] invoke(Map.Entry<Method, Object> entry, Object[] parameters) {
         try {
             return (Object[]) entry.getKey().invoke(entry.getValue(), parameters);
-        } catch (IllegalAccessException | InvocationTargetException e) {
+        } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e.getCause());
         }
     }
 }
