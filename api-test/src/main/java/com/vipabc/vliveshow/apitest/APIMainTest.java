@@ -15,7 +15,7 @@ public class APIMainTest extends AbstractMainTest {
     @TestInfo(testDataClass = APITestData.class,
             threadNumber = 1,
             repeatTime = 1,
-            profileFolderName = "ApiTestProfile",
+            profileFolderName = "MyEnvProfile",
             dataFlowFolderName = "DataFlow",
             dataFolderName = "Data",
             testDataFilterRegex = ".*\\.json")
@@ -26,4 +26,6 @@ public class APIMainTest extends AbstractMainTest {
             engine.execute(testCase.update(profile)).Assert();
         }
     }
+
+
 }

@@ -1,13 +1,12 @@
 package com.vipabc.vliveshow.apitest.Util;
 
 import com.vipabc.vliveshow.apitest.Util.Processor.JsonPathCollector;
-import com.vipabc.vliveshow.apitest.Util.Processor.ScriptExecutor;
 import leo.carnival.workers.impl.JsonUtils.GsonUtils;
+import leo.carnival.workers.impl.ScriptExecutor;
 import org.testng.Assert;
 
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class JsonAssert extends AbstractJsonComparator<JsonPathCollector> {
@@ -22,7 +21,7 @@ public class JsonAssert extends AbstractJsonComparator<JsonPathCollector> {
     protected void preCheckForHandleMap(Map<String, Object> leftMap, Map<String, Object> rightMap, JsonPathCollector processor) {
 //        Assert.assertTrue((leftMap.size() == 0 && rightMap.size() == 0) || (leftMap.size() > 0 && rightMap.size() > 0 && rightMap.size() >= leftMap.size()),
         Assert.assertTrue((rightMap.size() > 0 && rightMap.size() >= leftMap.size()) || (rightMap.size() == 0 && leftMap.size() == 0),
-                String.format("[%d] [JsonAssert] Expected json structure is different from actual: [%s->%s]",
+                String.format("[%d] Expected json structure is different from actual: [%s->%s]",
                         Thread.currentThread().getId(),
                         GsonUtils.toJson(rightMap),
                         GsonUtils.toJson(leftMap)));
@@ -31,7 +30,7 @@ public class JsonAssert extends AbstractJsonComparator<JsonPathCollector> {
     @Override
     protected void preCheckForHandleList(List leftList, List rightList, JsonPathCollector processor) {
 //        Assert.assertTrue(leftList.size() == rightList.size(), String.format("[%d] [JsonAssert] Expected list is different than actual: [%s->%s]",
-        Assert.assertTrue(leftList.size() <= rightList.size(), String.format("[%d] [JsonAssert] Expected list is different than actual: [%s->%s]",
+        Assert.assertTrue(leftList.size() <= rightList.size(), String.format("[%d] Expected list is different than actual: [%s->%s]",
                 Thread.currentThread().getId(), GsonUtils.toJson(rightList), GsonUtils.toJson(leftList)));
     }
 
@@ -40,38 +39,28 @@ public class JsonAssert extends AbstractJsonComparator<JsonPathCollector> {
 
     }
 
-    private static final String jsReg = "\\[js\\[([\\s\\S]+)\\]\\]";
-
     @Override
     protected void ending(Object leftObject, Object rightObject, JsonPathCollector processor) {
-
-
-        logger.info(String.format("[%d] [JsonAssert] Assert %s:[%s->%s]",
+        logger.info(String.format("[%d] Assert %s:[%s->%s]",
                 Thread.currentThread().getId(),
                 processor.getJsonPath(),
                 rightObject instanceof Number ? parserNumber(rightObject) : rightObject,
                 leftObject instanceof Number ? parserNumber(leftObject) : leftObject));
 
-        //handle js script first
-        Matcher jsMatcher = Pattern.compile(jsReg).matcher(leftObject.toString());
-        while (jsMatcher.find()) {
-            String oldValue = jsMatcher.group(0);
-            String newValue = ScriptExecutor.build().execute(jsMatcher.group(1)).toString();
-            leftObject = leftObject.toString().replace(oldValue, newValue);
-        }
-
         if (leftObject instanceof String) {
             String expect = String.valueOf(leftObject);
-
-            if (rightObject instanceof String || rightObject instanceof Boolean)
-                Assert.assertTrue(Pattern.matches(expect, String.valueOf(rightObject)), String.format("Evaluate String|Boolean fail, Expected:%s, Actual:%s\n", expect, rightObject.toString()));
-
-            else if (rightObject instanceof Double)
-                Assert.assertTrue(Pattern.matches(expect, parserNumber(rightObject).toString()), String.format("Evaluate Double fail, Expected:%s, Actual:%s\n", expect, parserNumber(rightObject).toString()));
-
-            else
-                Assert.fail(String.format("[%d] [JsonAssert] Actual json structure is different from expected [%s->%s]",
+            String actual = (rightObject instanceof String || rightObject instanceof Boolean) ?
+                    String.valueOf(rightObject) : (rightObject instanceof Number) ?
+                    parserNumber(rightObject).toString() : null;
+            if (actual == null)
+                Assert.fail(String.format("[%d] Actual json structure is different from expected [%s->%s]",
                         Thread.currentThread().getId(), GsonUtils.toJson(rightObject), GsonUtils.toJson(leftObject)));
+
+            if (expect.contains("{{ACTUAL}}"))
+                Assert.assertTrue((boolean) ScriptExecutor.build().execute(expect.replaceAll("\\{\\{ACTUAL\\}\\}", actual)), String.format("Evaluate fail, Expected true:%s\n", expect));
+            else
+                Assert.assertTrue(Pattern.matches(expect, actual), String.format("Evaluate fail, Expected:%s, Actual:%s\n", expect, actual));
+
         } else if (leftObject instanceof Boolean)
             Assert.assertEquals(rightObject, leftObject);
         else if (leftObject instanceof Number)

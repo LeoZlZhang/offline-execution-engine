@@ -3,12 +3,12 @@ package com.vipabc.vliveshow.apitest.bean.asset.assertions;
 
 import com.vipabc.vliveshow.apitest.Util.JsonAssert;
 import com.vipabc.vliveshow.apitest.bean.asset.ResponseContainer;
-import leo.carnival.workers.impl.JsonUtils.GsonUtils;
 import leo.carnival.workers.prototype.Evaluator;
 import org.apache.log4j.Logger;
 import org.testng.Assert;
 
 import java.util.Map;
+import java.util.regex.Pattern;
 
 @SuppressWarnings({"unused", "unchecked"})
 public enum AssertType implements Evaluator<ResponseContainer> {
@@ -31,7 +31,6 @@ public enum AssertType implements Evaluator<ResponseContainer> {
             Assert.assertEquals(response.getStatusCode(), expected);
             return true;
         }
-
     },
 
     /**
@@ -47,12 +46,27 @@ public enum AssertType implements Evaluator<ResponseContainer> {
         @SuppressWarnings("unchecked")
         @Override
         public boolean evaluate(ResponseContainer response) {
+            new JsonAssert().go((Map) response.getResponseObject(), (Map) expectedValue);
+            return true;
+        }
 
-            Assert.assertTrue(expectedValue instanceof Map);
-            Map<String, Object> expected = (Map) expectedValue;
+        @Override
+        public Boolean execute(ResponseContainer responseContainer) {
+            return evaluate(responseContainer);
+        }
+    },
 
-            Map<String, Object> actual = GsonUtils.fromJsonObject(response.getResponseContent(), Map.class);
-            new JsonAssert().go(actual, expected);
+    /**
+     * Format:
+     * "ResponseString": "value to check"
+     */
+    ResponseString {
+        @Override
+        public boolean evaluate(ResponseContainer response) {
+            String expect = expectedValue.toString();
+            String actual = response.getResponseObject().toString();
+            logger.info(String.format("[%d] Assert [%s->%s]", Thread.currentThread().getId(), actual, expect));
+            Assert.assertTrue(Pattern.matches(expect, actual), String.format("Evaluate fail, Expected:%s, Actual:%s\n", expect, actual));
             return true;
         }
 
@@ -73,7 +87,7 @@ public enum AssertType implements Evaluator<ResponseContainer> {
     }
 
     protected void loggingAssert(String path, Object actual, Object expect) {
-        logger.info(String.format("[%d] Assert [%s] [%s->%s]", Thread.currentThread().getId(), path, actual, expect));
+        logger.info(String.format("[%d] Assert %s [%s->%s]", Thread.currentThread().getId(), path, actual, expect));
 
     }
 }

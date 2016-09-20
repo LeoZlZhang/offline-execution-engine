@@ -10,13 +10,19 @@ import org.apache.log4j.Logger;
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 
 @SuppressWarnings({"DefaultAnnotationParam", "unused"})
-public class Request implements Serializable{
+public class Request implements Serializable {
     private static final Logger logger = Logger.getLogger(Request.class);
     private static final HttpTransport httpTransport = new NetHttpTransport();
+    //    private static final Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1", 8899));
+//    private static final HttpTransport httpTransport = new NetHttpTransport.Builder().setProxy(proxy).build();
     private static final HttpRequestFactory requestFactory = httpTransport.createRequestFactory();
 
     private String method;
@@ -30,45 +36,14 @@ public class Request implements Serializable{
     private Map<String, Object> jsonBody;
 
 
-    public String getMethod() {
-        return method;
-    }
-
-    public void setMethod(String method) {
-        this.method = method;
-    }
-
     public String getUrl() {
         return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
     }
 
     public Map<String, String> getParam() {
         return param;
     }
 
-    public void setParam(Map<String, String> param) {
-        this.param = param;
-    }
-
-    public MultiPartEntity getMultiPartEntity() {
-        return multiPartEntity;
-    }
-
-    public void setMultiPartEntity(MultiPartEntity multiPartEntity) {
-        this.multiPartEntity = multiPartEntity;
-    }
-
-    public Map<String, Object> getJsonBody() {
-        return jsonBody;
-    }
-
-    public void setJsonBody(Map<String, Object> jsonBody) {
-        this.jsonBody = jsonBody;
-    }
 
     public HttpResponse process() throws IOException {
         String url = generateUrl();
@@ -79,7 +54,9 @@ public class Request implements Serializable{
             content = multiPartEntity.process();
         if (jsonBody != null)
             content = new JsonHttpContent(new JacksonFactory(), jsonBody);
-        return requestFactory.buildRequest(method, new GenericUrl(url), content).execute();
+
+        HttpRequest httpRequest = requestFactory.buildRequest(method, new GenericUrl(url), content);
+        return httpRequest.execute();
     }
 
 

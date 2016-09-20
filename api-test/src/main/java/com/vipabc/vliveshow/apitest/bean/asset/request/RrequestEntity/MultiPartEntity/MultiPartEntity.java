@@ -16,22 +16,6 @@ public class MultiPartEntity implements Processor<Object[], HttpContent>, Serial
     private BinaryBody[] binaryBodies;
 
 
-    public TextBody[] getTextBodies() {
-        return textBodies;
-    }
-
-    public void setTextBodies(TextBody[] textBodies) {
-        this.textBodies = textBodies;
-    }
-
-    public BinaryBody[] getBinaryBodies() {
-        return binaryBodies;
-    }
-
-    public void setBinaryBodies(BinaryBody[] binaryBodies) {
-        this.binaryBodies = binaryBodies;
-    }
-
     @Override
     public HttpContent process(Object... nullObject) {
         MultipartContent multipartContent = new MultipartContent();
