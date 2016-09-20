@@ -1,6 +1,8 @@
 package leo.carnival.workers.impl.JsonUtils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
@@ -12,7 +14,8 @@ import java.lang.reflect.Array;
 
 @SuppressWarnings({"unused", "WeakerAccess", "unchecked"})
 public final class GsonUtils {
-    private static final Gson gson = new Gson();
+    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    private static final ObjectMapper mapper = new ObjectMapper();
 
     public static <T> T firstOneFromJsonArray(File jsonFile, Class<T> cls) throws IOException {
         T[] ts = fromJsonArray(jsonFile, cls);
@@ -59,6 +62,18 @@ public final class GsonUtils {
 
     public static String toJson(Object obj) {
         return gson.toJson(obj);
+    }
+
+    public static String toPrettyJson(Object obj) {
+        try {
+            if (obj instanceof String) {
+                Object json = mapper.readValue(obj.toString(), Object.class);
+                return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(json);
+            } else
+                return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
