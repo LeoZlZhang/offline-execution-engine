@@ -47,7 +47,8 @@ public class Gear implements Executor<String, TestResult> {
             if (applicationContext.getMethodRepo() == null || applicationContext.getMethodRepo().isEmpty())
                 applicationContext.setMethodRepo(loadClass(sourceClass));
             Flow flow = MyArrayUtils.searchArray(flows, flowName);
-            flow.execute(new DeepClone<ApplicationContext>().process(applicationContext));
+//            flow.execute(new DeepClone<ApplicationContext>().process(applicationContext));
+            flow.execute(applicationContext);
             return new TestPass();
         } catch (Exception e) {
             return new TestFail(e);
