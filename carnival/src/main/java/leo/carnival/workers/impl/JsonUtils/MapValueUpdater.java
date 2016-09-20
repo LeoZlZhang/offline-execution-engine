@@ -1,5 +1,6 @@
 package leo.carnival.workers.impl.JsonUtils;
 
+import leo.carnival.workers.impl.ScriptExecutor;
 import leo.carnival.workers.prototype.Processor;
 
 import java.util.HashMap;
@@ -17,8 +18,10 @@ import java.util.regex.Pattern;
 public class MapValueUpdater implements Processor<Map, Map> {
     private static final String regInjectionField = "(\\{\\{([\\w\\W]+?)}})";
     private static final Pattern patternInjectionField = Pattern.compile(regInjectionField);
+    private static final String jsReg = "\\[js\\[([\\s\\S]+)\\]\\]";
 
     private Map<String, Object> decorator = new HashMap<>();
+    private ScriptExecutor scriptEngine;
 
     @Override
     public Map process(Map map) {
@@ -39,6 +42,11 @@ public class MapValueUpdater implements Processor<Map, Map> {
         return this;
     }
 
+    public MapValueUpdater setScriptEngine(ScriptExecutor scriptEngine){
+        this.scriptEngine = scriptEngine;
+        return this;
+    }
+    
     public static MapValueUpdater build(Map<String, Object> decorator) {
         return new MapValueUpdater().setDecorator(decorator);
     }
@@ -99,6 +107,15 @@ public class MapValueUpdater implements Processor<Map, Map> {
             if (decorator.containsKey(matcher.group(2)))
                 str = str.replace(matcher.group(1), String.valueOf(decorator.get(matcher.group(2))));
 
+
+        if(scriptEngine!= null){
+            Matcher jsMatcher = Pattern.compile(jsReg).matcher(str);
+            while (jsMatcher.find()) {
+                String oldValue = jsMatcher.group(0);
+                String newValue = ScriptExecutor.build().execute(jsMatcher.group(1)).toString();
+                str = str.replace(oldValue, newValue);
+            }
+        }
         return str;
     }
 }
