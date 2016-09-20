@@ -19,7 +19,7 @@ public class ArrayClone<T> implements Processor<T[], T[]> {
         if (ts == null)
             return null;
 
-        T[] rtnArray = (T[]) Array.newInstance(ts[0].getClass(), ts.length * cloneTimes);
+        T[] rtnArray = (T[]) Array.newInstance(ts.getClass().getComponentType(), ts.length * cloneTimes);
         for (int i = 0; i < cloneTimes; i++)
             rtnArray = MyArrayUtils.mergeArray(rtnArray, Arrays.copyOf(ts, ts.length));
         return rtnArray;
