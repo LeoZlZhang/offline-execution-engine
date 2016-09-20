@@ -45,11 +45,12 @@ public abstract class AbstractMainTest {
 
         List<File> gearFile = FileFilter.build(FileEvaluator.build(RegexEvaluator.build("gear\\.json"))).process(new File(resourceFolderPath));
         engine.loadGearFromFile(gearFile.get(0));
+        engine.execute("BeforeTestFlow");
     }
 
     @TestInfo(testDataClass = TestData.class,
             threadNumber = 1,
-            repeatTime = 0,
+            repeatTime = 1,
             profileFolderName = "MosaiEnvProfile",
             dataFolderName = "Data",
             dataFlowFolderName = "DataFlow",
@@ -107,7 +108,7 @@ public abstract class AbstractMainTest {
 
             List<File> debugData = AdvanceFileFilter.build().setWorker(folderFilter).setWorker(debugDataFiler).process(new File(resourceFolderPath));
             List<File> testData = AdvanceFileFilter.build().setWorker(folderFilter).setWorker(testDataFilter).process(new File(resourceFolderPath));
-            Map<File, String> fileContents = LoadFiles2Map.build().process(debugData.isEmpty() ? testData : debugData);
+            Map<File, String> fileContents = LoadFiles2Map.build().process(isEmpty(debugData) ? testData : debugData);
 
 
             //injection
@@ -144,5 +145,14 @@ public abstract class AbstractMainTest {
         }
     }
 
+
+    private boolean isEmpty(List<File> fileList) throws IOException {
+        for (File file : fileList) {
+            Map[] array = GsonUtils.fromJsonArray(file, Map.class);
+            if (array != null && array.length > 0)
+                return false;
+        }
+        return true;
+    }
 
 }
