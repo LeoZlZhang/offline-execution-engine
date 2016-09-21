@@ -1,0 +1,20 @@
+{
+  "protocol": "http",
+  "host": "127.0.0.1:8080/",
+  "phoneNumA": "13764086339",
+  "countryCodeA": "86",
+  "userIdA": "5",
+  "passwordA": "Vipabc",
+
+  "phoneNumB": "13764660018",
+  "countryCodeB": "86",
+  "userIdB": "7000002",
+  "passwordB": "Vipabc",
+
+  "phoneNumC": "13621834011",
+  "countryCodeC": "86",
+  "userIdC": "6000005",
+  "passwordC": "111111",
+
+  "coverPicFile": "jelly.JPG"
+}

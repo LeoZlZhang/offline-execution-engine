@@ -1,0 +1,23 @@
+{
+  "info": "Login as userB",
+  "request": {
+    "method": "POST",
+    "url": "{{protocol}}://{{host}}/v1/users/phone/password_login",
+    "param": {
+      "mobilePhone": "{{phoneNumB}}",
+      "nationCode": "{{countryCodeB}}",
+      "password": "{{passwordB}}"
+    }
+  },
+  "assertions": {
+    "StatusCode": 200,
+    "ResponseJson": {
+      "success": true
+    }
+  },
+  "extractions": {
+    "results": {
+      "token": "tokenB"
+    }
+  }
+}

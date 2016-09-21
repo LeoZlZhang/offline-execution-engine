@@ -1,0 +1,54 @@
+[
+  {
+    "name": "RedisGet",
+    "workflow": "APITest",
+    "assets": [
+      {
+        "info": "---POC for redis get---",
+        "redisOperation": {
+          "get": {
+            "criteria": {
+              "try": "null"
+            }
+          }
+        },
+        "assertions": {
+          "ResponseString": "[\\w]+"
+        }
+      }
+    ]
+  },
+  {
+    "name": "RedisGetAndDel",
+    "workflow": "APITest",
+    "assets": [
+      {
+        "info": "---POC for redis set---",
+        "redisOperation": {
+          "set": {
+            "values": {
+              "try1": "hello1"
+            }
+          }
+        },
+        "assertions": {
+          "ResponseString": "OK"
+        }
+      },
+      {
+        "info": "---POC for redis del---",
+        "redisOperation": {
+          "del": {
+            "criteria": {
+              "try1": "hello1"
+            }
+          }
+        },
+        "assertions": {
+          "ResponseString": "1"
+        }
+      }
+    ]
+  }
+
+]

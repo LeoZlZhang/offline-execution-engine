@@ -1,0 +1,22 @@
+{
+  "info": "Login as userA",
+  "request": {
+    "method": "POST",
+    "url": "{{protocol}}://{{host}}/v1/users/phone/password_login",
+    "param": {
+      "mobilePhone": "{{phoneNumA}}",
+      "nationCode": "{{countryCodeA}}",
+      "password": "{{passwordA}}"
+    }
+  },
+  "assertions": {
+    "StatusCode": 200
+  },
+  "extractions": {
+    "results": {
+      "token": "tokenA"
+    }
+  }
+
+
+}
