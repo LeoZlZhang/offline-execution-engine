@@ -1,0 +1,36 @@
+[
+  {
+    "name": "POC GET",
+    "workflow": "APITest",
+    "assets": [
+      {
+        "request": {
+          "method": "GET",
+          "url": "https://www.googleapis.com/youtube/v3/search",
+          "param": {
+            "part": "snippet",
+            "q": "ExecutionEngine+Cactus",
+            "type": "video",
+            "key": "AIzaSyBXpFaKcdrc3N70wxmO1Qj6tszmbaoR-GU"
+          }
+        },
+        "assertions": {
+          "StatusCode": 200,
+          "ResponseJson": {
+            "kind": "youtube#searchListResponse",
+            "etag": "\"[\\s\\S]+\"",
+            "regionCode": "TW",
+            "pageInfo": {
+              "totalResults": 0,
+              "resultsPerPage": 5
+            },
+            "items": []
+          }
+        },
+        "extractions":{
+          "etag": "etag"
+        }
+      }
+    ]
+  }
+]
