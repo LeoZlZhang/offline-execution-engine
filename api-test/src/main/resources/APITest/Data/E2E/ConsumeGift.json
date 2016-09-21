@@ -1,6 +1,6 @@
 [
   {
-    "name": "happyPass",
+    "name": "happyPath",
     "workflow": "APITest",
     "assets": [
       {
@@ -99,7 +99,7 @@
             "message": "",
             "error_code": 0,
             "results": {
-              "roomId": "[\\w]{24}[js[for(var t = Date.now();Date.now() - t <= 2000;);'']]"
+              "roomId": "[\\w]{24}"
             }
           }
         },
@@ -119,7 +119,7 @@
             "num": 1,
             "remark": "",
             "roomId": "{{roomId}}",
-            "timestamp": 1473399999000,
+            "timestamp": "[js[new Date().getTime().toString();]]",
             "token": "{{tokenA}}"
           }
         },
@@ -128,7 +128,7 @@
           "ResponseJson": {
             "success": true,
             "message": "操作成功.",
-            "error_code": "0[js[for(var t = Date.now();Date.now() - t <= 2000;);'']]",
+            "error_code": "0[js[print('delay for create room');for(var t = Date.now();Date.now() - t <= 20000;);'']]",
             "results": {}
           }
         }
@@ -145,7 +145,7 @@
           "StatusCode": 200,
           "ResponseJson": {
             "success": true,
-            "message": "",
+            "message": "[js[print('delay for send gift');for(var t = Date.now();Date.now() - t <= 5000;);'']]",
             "error_code": 0,
             "results": {
               "diamond": "[js[ {{myDiamond}}-{{giftCost}} ]]",
@@ -156,8 +156,49 @@
             }
           }
         }
+      },
+      {
+        "request": {
+          "method": "POST",
+          "url": "{{protocol}}://{{host}}/v1/liveshow/{{roomId}}/destroy",
+          "param": {
+            "token": "{{tokenB}}"
+          }
+        },
+        "assertions": {
+          "StatusCode": 200,
+          "ResponseJson": {
+            "success": true,
+            "message": "",
+            "error_code": 0,
+            "results": {}
+          }
+        }
+      },
+      {
+        "request": {
+          "method": "GET",
+          "url": "{{protocol}}://{{host}}/v1/money/user/balance",
+          "param": {
+            "token": "{{tokenA}}"
+          }
+        },
+        "assertions": {
+          "StatusCode": 200,
+          "ResponseJson": {
+            "success": true,
+            "message": "[js[print('delay for destroy room');for(var t = Date.now();Date.now() - t <= 20000;);'']]",
+            "error_code": 0,
+            "results": {
+              "diamond": "[js[ {{myDiamond}}-{{giftCost}} ]]",
+              "usableBalance": {
+                "userId": "{{userIdA}}",
+                "diamond": "[js[{{myBalance}}-{{giftCost}}]]"
+              }
+            }
+          }
+        }
       }
     ]
   }
-
 ]

@@ -1,0 +1,85 @@
+[
+  {
+    "name": "happyPath",
+    "workflow": "APITest",
+    "assets": [
+      {
+        "info": "---Remove host application from mongo---",
+        "mongoOperation": {
+          "delete": {
+            "collection": "hostapplication",
+            "criteria": {"userId": 5}
+          }
+        }
+      },
+      {"Injection": "PwdLoginA.json"},
+      {
+        "request": {
+          "method": "POST",
+          "url": "{{protocol}}://{{host}}/v1/host/application",
+          "param": {
+            "token": "{{tokenA}}"
+          },
+          "jsonBody": {
+            "id": "{{userIdA}}",
+            "name": "auto",
+            "gender": "MALE",
+            "phone": "123",
+            "userId": "1",
+            "nickName": "robot",
+            "photo": {
+              "back": "back",
+              "front": "front",
+              "hold": "hold"
+            }
+          }
+        },
+        "assertions": {
+          "StatusCode": 200,
+          "ResponseJson": {
+            "success": true,
+            "message": "",
+            "error_code": 0,
+            "results": {
+              "applicationId": "[\\w]+"
+            }
+          }
+        },
+        "extractions": {
+          "results": {
+            "applicationId": "hostApplicationId"
+          }
+        }
+      },
+      {
+        "info": "Verify host application from mongo",
+        "mongoOperation": {
+          "query": {
+            "collection": "hostapplication",
+            "criteria": {
+              "_id": "{{hostApplicationId}}"
+            }
+          }
+        },
+        "assertions": {
+          "ResponseJson": {
+            "_class": "com.mosai.vliveshow.datachannel.domain.user.HostApplication",
+            "userId": 5.0,
+            "name": "auto",
+            "nickName": "Leoleo ",
+            "confirmed": false,
+            "gender": "MALE",
+            "phone": "123",
+            "photo": {
+              "front": "front",
+              "back": "back",
+              "hold": "hold"
+            },
+            "status": "INITIAL",
+            "current": true
+          }
+        }
+      }
+    ]
+  }
+]
