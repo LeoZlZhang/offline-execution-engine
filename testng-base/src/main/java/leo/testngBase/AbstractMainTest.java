@@ -5,7 +5,7 @@ import leo.carnival.workers.impl.FileUtils.FileFilter;
 import leo.carnival.workers.impl.FileUtils.FileFilterAdvance;
 import leo.carnival.workers.impl.FileUtils.FolderFilter;
 import leo.carnival.workers.impl.GearicUtils.ArrayClone;
-import leo.carnival.workers.impl.GsonUtils;
+import leo.carnival.workers.impl.JacksonUtils;
 import leo.carnival.workers.impl.Processors;
 import leo.carnival.workers.prototype.Evaluator;
 import leo.carnival.workers.prototype.Processor;
@@ -89,7 +89,7 @@ public abstract class AbstractMainTest {
         List<File> fileList = fileFilterAdvance.process(new File(resourceFolderPath));
         List<Map<String, Object>> profileList = new ArrayList<>(fileList.size());
         for (File file : fileList)
-            profileList.add(GsonUtils.fromJsonObject(file, Map.class));
+            profileList.add(JacksonUtils.fromJsonObject(file, Map.class));
         return ProfilePicker.build(profileList, testInfo.threadNumber());
     }
 
@@ -153,7 +153,7 @@ public abstract class AbstractMainTest {
 
     private boolean isEmpty(List<File> fileList) throws IOException {
         for (File file : fileList) {
-            Map[] array = GsonUtils.fromJsonArray(file, Map.class);
+            Map[] array = JacksonUtils.fromJsonArray(file, Map.class);
             if (array != null && array.length > 0)
                 return false;
         }

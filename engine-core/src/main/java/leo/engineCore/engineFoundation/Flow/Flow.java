@@ -2,7 +2,7 @@ package leo.engineCore.engineFoundation.Flow;
 
 
 import leo.carnival.MyArrayUtils;
-import leo.carnival.workers.impl.GsonUtils;
+import leo.carnival.workers.impl.JacksonUtils;
 import leo.carnival.workers.impl.Processors;
 import leo.carnival.workers.prototype.Executor;
 import leo.engineCore.engineFoundation.ApplicationContext;
@@ -16,6 +16,9 @@ public class Flow implements Executor<ApplicationContext, Flow> {
     private String sourceClass;
     private String name;
     private Step[] steps;
+
+
+
 
     @Override
     public String toString() {
@@ -44,7 +47,7 @@ public class Flow implements Executor<ApplicationContext, Flow> {
             for (int i = 0, j = 0, len = steps.length; i < len; j++) {
                 Step step = steps[i];
                 if (step.getLoop() == Step.NoLooping)
-                    rtnSteps[j] = Processors.ClassDecorator(GeneralStep.class).process(GsonUtils.toJson(step));
+                    rtnSteps[j] = Processors.ClassDecorator(GeneralStep.class).process(JacksonUtils.toJson(step));
                 else
                     rtnSteps[j] = compressToLoopStep(steps, i, step.getLoop(), Step.NoLooping);
 
@@ -63,7 +66,7 @@ public class Flow implements Executor<ApplicationContext, Flow> {
             if (MyArrayUtils.containElementByDeepCompare(endLoopIds, steps[startIndex].getLoop()))
                 break;
             else if (steps[startIndex].getLoop() == loopId)
-                rtnSteps[i] = Processors.ClassDecorator(GeneralStep.class).process(GsonUtils.toJson(steps[startIndex]));
+                rtnSteps[i] = Processors.ClassDecorator(GeneralStep.class).process(JacksonUtils.toJson(steps[startIndex]));
             else
                 rtnSteps[i] = compressToLoopStep(steps, startIndex, steps[startIndex].getLoop(), MyArrayUtils.mergeArray(endLoopIds, loopId));
         }
@@ -72,5 +75,36 @@ public class Flow implements Executor<ApplicationContext, Flow> {
         rtnLoopStep.setSteps(MyArrayUtils.trimToSize(rtnSteps));
         rtnLoopStep.setLoopIndex(loopId);
         return rtnLoopStep;
+    }
+
+
+    /**
+     * Getter
+     */
+    public String getSourceClass() {
+        return sourceClass;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Step[] getSteps() {
+        return steps;
+    }
+
+    /**
+     * Setter
+     */
+    public void setSourceClass(String sourceClass) {
+        this.sourceClass = sourceClass;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setSteps(Step[] steps) {
+        this.steps = steps;
     }
 }

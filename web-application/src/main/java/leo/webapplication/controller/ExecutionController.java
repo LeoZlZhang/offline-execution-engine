@@ -1,6 +1,6 @@
 package leo.webapplication.controller;
 
-import leo.carnival.workers.impl.GsonUtils;
+import leo.carnival.workers.impl.JacksonUtils;
 import leo.webapplication.dto.JsonResponse;
 import leo.webapplication.model.ApiData;
 import leo.webapplication.repository.ApiTestMongoRepository;
@@ -58,7 +58,7 @@ public class ExecutionController {
 
     @RequestMapping(value = "/api/data/save", method = RequestMethod.POST)
     public String saveApiData(@RequestBody ApiData apiData){
-        System.out.println(GsonUtils.toJson(apiData));
+        System.out.println(JacksonUtils.toJson(apiData));
         apiTestMongoRepository.save(apiData);
         return apiData.getName();
 

@@ -9,12 +9,15 @@ import java.util.Map;
  */
 @SuppressWarnings({"WeakerAccess", "unused"})
 public class DBObject implements Serializable {
-
     private String table;
     private Map<String, Object> criteria;
     private Map<String, Object> values;
 
 
+
+    /**
+     * Getter
+     */
     public String getTable() {
         return table;
     }
@@ -28,4 +31,19 @@ public class DBObject implements Serializable {
     }
 
 
+
+    /**
+     * Setter
+     */
+    public void setTable(String table) {
+        this.table = table;
+    }
+
+    public void setCriteria(Map<String, Object> criteria) {
+        this.criteria = criteria;
+    }
+
+    public void setValues(Map<String, Object> values) {
+        this.values = values;
+    }
 }

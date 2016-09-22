@@ -11,13 +11,9 @@ import java.net.URL;
 
 @SuppressWarnings({"DefaultAnnotationParam", "unused"})
 class BinaryBody implements Serializable {
-
     private String name;
-
     private String realFileName;
-
     private String mimeType;
-
     private String fileName;
 
     MultipartContent.Part process() {
@@ -31,5 +27,44 @@ class BinaryBody implements Serializable {
         part.setHeaders(new HttpHeaders().set("Content-Disposition", String.format("form-data; name=\"%s\"; filename=\"%s\"", name, fileName)));
         part.setContent(new FileContent(mimeType, file));
         return part;
+    }
+
+
+    /**
+     * Getter
+     */
+    public String getName() {
+        return name;
+    }
+
+    public String getRealFileName() {
+        return realFileName;
+    }
+
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    /**
+     * Setter
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setRealFileName(String realFileName) {
+        this.realFileName = realFileName;
+    }
+
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 }

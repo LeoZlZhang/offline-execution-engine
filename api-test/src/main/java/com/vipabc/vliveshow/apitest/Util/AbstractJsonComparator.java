@@ -2,19 +2,19 @@ package com.vipabc.vliveshow.apitest.Util;
 
 
 import com.vipabc.vliveshow.apitest.Util.Processor.JsonPathCollector;
-import leo.carnival.workers.impl.GsonUtils;
+import leo.carnival.workers.impl.GearicUtils.NumberParser;
+import leo.carnival.workers.impl.JacksonUtils;
+import leo.carnival.workers.impl.Processors;
 import org.apache.log4j.Logger;
 import org.testng.Assert;
 
-import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings({"unchecked", "WeakerAccess"})
 public abstract class AbstractJsonComparator<T extends JsonPathCollector> {
     protected static final Logger logger = Logger.getLogger(AbstractJsonComparator.class);
-    protected static final NumberFormat numberFormat = NumberFormat.getNumberInstance();
+    protected static final NumberParser numberParser = Processors.NumberParser();
 
     protected abstract void preCheckForHandleMap(Map<String, Object> leftMap, Map<String, Object> rightMap, T processor);
 
@@ -22,7 +22,7 @@ public abstract class AbstractJsonComparator<T extends JsonPathCollector> {
         preCheckForHandleMap(leftMap, rightMap, processor);
         for (String key : leftMap.keySet()) {
             Assert.assertTrue(rightMap.containsKey(key), String.format("[%d] [JsonAssert] Not found \"%s\" element in json response: :\"%s\"",
-                    Thread.currentThread().getId(), key, GsonUtils.toJson(rightMap)));
+                    Thread.currentThread().getId(), key, JacksonUtils.toJson(rightMap)));
             processor.process("{\"" + key + "\"");
             String path = processor.getJsonPath();
             processor.setJsonPath(path + "{\"" + key + "\"");
@@ -36,7 +36,7 @@ public abstract class AbstractJsonComparator<T extends JsonPathCollector> {
     protected void handleList(List leftList, List rightList, T processor) {
         preCheckForHandleList(leftList, rightList, processor);
         Assert.assertTrue(leftList.size() <= rightList.size(), String.format("[%d] [JsonAssert] Actual list is shorter than expected: [%s->%s]",
-                Thread.currentThread().getId(), GsonUtils.toJson(rightList), GsonUtils.toJson(leftList)));
+                Thread.currentThread().getId(), JacksonUtils.toJson(rightList), JacksonUtils.toJson(leftList)));
         for (int i = 0, len = leftList.size(); i < len; i++) {
             String path = processor.getJsonPath();
             processor.setJsonPath(path + "[" + String.valueOf(i) + "]");
@@ -67,14 +67,4 @@ public abstract class AbstractJsonComparator<T extends JsonPathCollector> {
     protected abstract void ending(Object leftObject, Object rightObject, T processor);
 
     protected abstract boolean isEnd(Object leftObject, Object rightObject, T processor);
-
-
-
-    protected Number parserNumber(Object obj) {
-        try {
-            return numberFormat.parse(obj.toString());
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }

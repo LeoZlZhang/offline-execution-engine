@@ -1,26 +1,26 @@
 package leo.carnival.workers.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.stream.JsonReader;
-import org.apache.commons.io.FileUtils;
+
+import org.codehaus.jackson.map.DeserializationConfig;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Array;
 
 @SuppressWarnings({"unused", "WeakerAccess", "unchecked"})
-public final class GsonUtils {
-    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    private static final ObjectMapper mapper = new ObjectMapper();
+public final class JacksonUtils {
+    private static final ObjectMapper mapper = new ObjectMapper().disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
 
     public static <T> T firstOneFromJsonArray(File jsonFile, Class<T> cls) throws IOException {
         T[] ts = fromJsonArray(jsonFile, cls);
         return ts == null ? null : ts.length == 0 ? null : ts[0];
     }
+
 
     public static <T> T firstOneFromJsonArray(String str, Class<T> cls) {
         T[] ts = fromJsonArray(str, cls);
@@ -31,46 +31,70 @@ public final class GsonUtils {
     public static <T> T[] fromJsonArray(File jsonFile, Class<T> cls) throws IOException {
         if (jsonFile == null || !jsonFile.exists())
             return null;
-        return fromJsonArray(FileUtils.readFileToString(jsonFile), cls);
+        try {
+            return (T[]) mapper.readValue(jsonFile, Array.newInstance(cls, 0).getClass());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public static <T> T[] fromJsonArray(String sourceStr, Class<T> cls){
+
+    public static <T> T[] fromJsonArray(String sourceStr, Class<T> cls) {
         if (sourceStr == null)
             return null;
 
-        return (T[]) gson.fromJson(sourceStr, Array.newInstance(cls, 0).getClass());
+        try {
+            return (T[]) mapper.readValue(sourceStr, Array.newInstance(cls, 0).getClass());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
+
 
     public static <T> T fromJsonObject(File jsonFile, Class<T> cls) throws IOException {
         if (jsonFile == null || !jsonFile.exists())
             return null;
-        return fromJsonObject(FileUtils.readFileToString(jsonFile), cls);
+        try {
+            return mapper.readValue(jsonFile, cls);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
+
 
     public static <T> T fromJsonObject(String sourceStr, Class<T> cls) {
         if (sourceStr == null)
             return null;
 
-        return gson.fromJson(sourceStr, cls);
+        try {
+            return mapper.readValue(sourceStr, cls);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
     private static <T> T fromJson(InputStream is, Class<T> cls) {
-        JsonReader reader = new JsonReader(new InputStreamReader(is));
-        return gson.fromJson(reader, cls);
+        try {
+            return mapper.readValue(is, cls);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static String toJson(Object obj) {
-        return gson.toJson(obj);
+        try {
+            return mapper.writeValueAsString(obj);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static String toPrettyJson(Object obj) {
         try {
-            if (obj instanceof String) {
-                Object json = mapper.readValue(obj.toString(), Object.class);
-                return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(json);
-            } else
-                return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
+            if (obj instanceof String)
+                obj = mapper.readValue(obj.toString(), Object.class);
+            return "\r\n" + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

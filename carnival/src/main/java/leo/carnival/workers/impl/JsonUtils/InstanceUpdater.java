@@ -1,7 +1,7 @@
 package leo.carnival.workers.impl.JsonUtils;
 
 
-import leo.carnival.workers.impl.GsonUtils;
+import leo.carnival.workers.impl.JacksonUtils;
 import leo.carnival.workers.prototype.Processor;
 import leo.carnival.workers.prototype.Setter.ProcessorSetter;
 
@@ -18,14 +18,14 @@ public class InstanceUpdater<T> implements Processor<T, T>, ProcessorSetter<MapV
         if (targetInstance == null)
             return null;
 
-        String jsonString = GsonUtils.toJson(targetInstance);
-        Map targetMap = GsonUtils.fromJsonObject(jsonString, Map.class);
+        String jsonString = JacksonUtils.toJson(targetInstance);
+        Map targetMap = JacksonUtils.fromJsonObject(jsonString, Map.class);
 
         if (mapValueUpdater != null)
             mapValueUpdater.process(targetMap);
 
-        jsonString = GsonUtils.toJson(targetMap);
-        return GsonUtils.fromJsonObject(jsonString, (Class<T>) targetInstance.getClass());
+        jsonString = JacksonUtils.toJson(targetMap);
+        return JacksonUtils.fromJsonObject(jsonString, (Class<T>) targetInstance.getClass());
     }
 
 

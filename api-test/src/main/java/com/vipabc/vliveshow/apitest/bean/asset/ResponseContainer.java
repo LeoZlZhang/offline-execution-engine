@@ -1,7 +1,7 @@
 package com.vipabc.vliveshow.apitest.bean.asset;
 
 import com.google.api.client.http.HttpResponse;
-import leo.carnival.workers.impl.GsonUtils;
+import leo.carnival.workers.impl.JacksonUtils;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -19,9 +19,9 @@ public class ResponseContainer {
     }
 
     public ResponseContainer(String responseObject) {
-        if (GsonUtils.isJsonObject(responseObject)) {
-            this.responseObject = GsonUtils.fromJsonObject(responseObject, Map.class);
-            logger.info(String.format("[%d] Response: %s", Thread.currentThread().getId(), GsonUtils.toPrettyJson(responseObject)));
+        if (JacksonUtils.isJsonObject(responseObject)) {
+            this.responseObject = JacksonUtils.fromJsonObject(responseObject, Map.class);
+            logger.info(String.format("[%d] Response: %s", Thread.currentThread().getId(), JacksonUtils.toPrettyJson(responseObject)));
         }else{
             this.responseObject =responseObject;
             logger.info(String.format("[%d] Response: %s", Thread.currentThread().getId(), responseObject));
@@ -39,8 +39,8 @@ public class ResponseContainer {
 
     private Map<String, Object> getResponseMap(HttpResponse response) throws IOException {
         String responseString = response.parseAsString();
-        Map<String, Object> responseContent = GsonUtils.fromJsonObject(responseString, Map.class);
-        logger.info(String.format("[%d] Response: %s", Thread.currentThread().getId(), GsonUtils.toPrettyJson(responseString)));
+        Map<String, Object> responseContent = JacksonUtils.fromJsonObject(responseString, Map.class);
+        logger.info(String.format("[%d] Response: %s", Thread.currentThread().getId(), JacksonUtils.toPrettyJson(responseString)));
         return responseContent;
     }
 

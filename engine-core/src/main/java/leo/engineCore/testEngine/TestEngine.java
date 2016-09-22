@@ -1,13 +1,15 @@
 package leo.engineCore.testEngine;
 
 
-import leo.carnival.workers.impl.GsonUtils;
+import leo.carnival.workers.impl.JacksonUtils;
 import leo.carnival.workers.prototype.Executor;
 import leo.engineCore.engineFoundation.Assert.TestFail;
 import leo.engineCore.engineFoundation.Assert.TestResult;
 import leo.engineCore.engineFoundation.Gear.Gear;
 import leo.engineData.testData.TestData;
 import org.apache.commons.io.FileUtils;
+import org.codehaus.jackson.map.DeserializationConfig;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,7 +33,7 @@ public class TestEngine implements Executor<String, TestResult> {
 
     public TestResult execute(TestData testData) {
         try {
-            gear.getApplicationContext().getContext().put("TestCase", testData);
+            gear.getAppCtx().getContext().put("TestCase", testData);
             return gear.executeQuietly(testData.getTestingFlow());
         } catch (Exception e) {
             return new TestFail(e);
@@ -40,10 +42,11 @@ public class TestEngine implements Executor<String, TestResult> {
 
     public TestEngine loadGearFromFile(File gearFile) throws IOException, JSONException {
         String jsonString = FileUtils.readFileToString(gearFile);
-        if (GsonUtils.isJsonObject(jsonString))
-            gear = GsonUtils.fromJsonObject(jsonString, Gear.class);
-        else if (GsonUtils.isJsonArray(jsonString))
-            gear = GsonUtils.firstOneFromJsonArray(jsonString, Gear.class);
+        ObjectMapper mapper = new ObjectMapper().disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
+        if (JacksonUtils.isJsonObject(jsonString))
+            gear = JacksonUtils.fromJsonObject(jsonString, Gear.class);
+        else if (JacksonUtils.isJsonArray(jsonString))
+            gear = JacksonUtils.firstOneFromJsonArray(jsonString, Gear.class);
         else {
             new JSONObject(jsonString);
             new JSONArray(jsonString);

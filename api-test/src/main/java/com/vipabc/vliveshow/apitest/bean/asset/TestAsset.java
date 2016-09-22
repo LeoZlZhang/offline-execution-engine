@@ -19,8 +19,6 @@ import redis.clients.jedis.JedisCluster;
 
 import java.io.Serializable;
 import java.sql.Connection;
-import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.Map;
 
 @SuppressWarnings({"unused", "DefaultAnnotationParam", "unchecked", "WeakerAccess", "MismatchedQueryAndUpdateOfCollection", "FieldCanBeLocal"})
@@ -45,21 +43,6 @@ public class TestAsset implements Serializable, Executor<Map<String, Object>, Ma
 
     private Map<String, Object> settings;
 
-    public Request getRequest() {
-        return request;
-    }
-
-    public Map<MongoOperation, DBObject> getMongoOperation() {
-        return mongoOperation;
-    }
-
-    public Map<RedisOperation, DBObject> getRedisOperation() {
-        return redisOperation;
-    }
-
-    public Map<SqlOperation, DBObject> getSqlOperation() {
-        return sqlOperation;
-    }
 
     public String dbOperation(Map<String, Object> extractionMap) {
         String rtnString = null;
@@ -99,20 +82,8 @@ public class TestAsset implements Serializable, Executor<Map<String, Object>, Ma
         if (settings == null || settings.isEmpty())
             return;
 
-        for (Map.Entry<String, Object> map : settings.entrySet()) {
-            if (map.getValue() instanceof Number)
-                extractionMap.put(map.getKey(), parserNumber(map.getValue()));
-            else
-                extractionMap.put(map.getKey(), map.getValue());
-        }
-    }
-
-    protected Number parserNumber(Object obj) {
-        try {
-            return NumberFormat.getNumberInstance().parse(obj.toString());
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
+        for (Map.Entry<String, Object> map : settings.entrySet())
+            extractionMap.put(map.getKey(), map.getValue());
     }
 
     @Override
@@ -124,11 +95,11 @@ public class TestAsset implements Serializable, Executor<Map<String, Object>, Ma
             if (asset.info != null)
                 logger.info(asset.info);
             try {
-                ResponseContainer responseContainer= null;
+                ResponseContainer responseContainer = null;
                 if (asset.getRequest() != null) {
                     HttpResponse response = asset.getRequest().process();
                     responseContainer = new ResponseContainer(response);
-                }else if (asset.getMongoOperation() != null || asset.getRedisOperation() != null || asset.getSqlOperation() != null) {
+                } else if (asset.getMongoOperation() != null || asset.getRedisOperation() != null || asset.getSqlOperation() != null) {
                     String json = asset.dbOperation(extractionKVMap);
                     responseContainer = new ResponseContainer(json);
                 }
@@ -147,5 +118,84 @@ public class TestAsset implements Serializable, Executor<Map<String, Object>, Ma
     @Override
     public String toString() {
         return request == null ? "" : request.toString();
+    }
+
+
+    /**
+     * Getter
+     */
+    public String getInfo() {
+        return info;
+    }
+
+    public Integer getRepeat() {
+        return repeat;
+    }
+
+    public Request getRequest() {
+        return request;
+    }
+
+    public Map<MongoOperation, DBObject> getMongoOperation() {
+        return mongoOperation;
+    }
+
+    public Map<RedisOperation, DBObject> getRedisOperation() {
+        return redisOperation;
+    }
+
+    public Map<SqlOperation, DBObject> getSqlOperation() {
+        return sqlOperation;
+    }
+
+    public Map<AssertType, Object> getAssertions() {
+        return assertions;
+    }
+
+    public Map<String, Object> getExtractions() {
+        return extractions;
+    }
+
+    public Map<String, Object> getSettings() {
+        return settings;
+    }
+
+    /**
+     * Setter
+     */
+    public void setInfo(String info) {
+        this.info = info;
+    }
+
+    public void setRepeat(Integer repeat) {
+        this.repeat = repeat;
+    }
+
+    public void setRequest(Request request) {
+        this.request = request;
+    }
+
+    public void setMongoOperation(Map<MongoOperation, DBObject> mongoOperation) {
+        this.mongoOperation = mongoOperation;
+    }
+
+    public void setRedisOperation(Map<RedisOperation, DBObject> redisOperation) {
+        this.redisOperation = redisOperation;
+    }
+
+    public void setSqlOperation(Map<SqlOperation, DBObject> sqlOperation) {
+        this.sqlOperation = sqlOperation;
+    }
+
+    public void setAssertions(Map<AssertType, Object> assertions) {
+        this.assertions = assertions;
+    }
+
+    public void setExtractions(Map<String, Object> extractions) {
+        this.extractions = extractions;
+    }
+
+    public void setSettings(Map<String, Object> settings) {
+        this.settings = settings;
     }
 }

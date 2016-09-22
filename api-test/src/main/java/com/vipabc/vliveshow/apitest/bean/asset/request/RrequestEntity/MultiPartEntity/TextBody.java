@@ -20,4 +20,26 @@ class TextBody implements Serializable{
         part.setContent(ByteArrayContent.fromString(null, text));
         return part;
     }
+
+    /**
+     * Getter
+     */
+    public String getName() {
+        return name;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    /**
+     * Setter
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
 }

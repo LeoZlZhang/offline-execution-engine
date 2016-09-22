@@ -3,6 +3,7 @@ package com.vipabc.vliveshow.apitest.bean.asset.assertions;
 
 import com.vipabc.vliveshow.apitest.Util.JsonAssert;
 import com.vipabc.vliveshow.apitest.bean.asset.ResponseContainer;
+import leo.carnival.workers.impl.Processors;
 import leo.carnival.workers.prototype.Evaluator;
 import org.apache.log4j.Logger;
 import org.testng.Assert;
@@ -25,8 +26,8 @@ public enum AssertType implements Evaluator<ResponseContainer> {
 
         @Override
         public boolean evaluate(ResponseContainer response) {
-            Assert.assertTrue(expectedValue instanceof Double);
-            int expected = ((Double) expectedValue).intValue();
+            Assert.assertTrue(expectedValue instanceof Number);
+            int expected = Processors.NumberParser().execute(expectedValue).intValue();
             loggingAssert("StatusCode", response.getStatusCode(), expected);
             Assert.assertEquals(response.getStatusCode(), expected);
             return true;

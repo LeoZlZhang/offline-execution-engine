@@ -10,6 +10,7 @@ import leo.carnival.workers.impl.FileUtils.FolderFilter;
 import leo.carnival.workers.impl.GearicUtils.ArrayClone;
 import leo.carnival.workers.impl.GearicUtils.ClassLoader;
 import leo.carnival.workers.impl.GearicUtils.DeepClone;
+import leo.carnival.workers.impl.GearicUtils.NumberParser;
 import leo.carnival.workers.impl.JsonUtils.ClassDecorator;
 import leo.carnival.workers.impl.ReflectUtils.ReflectMethodFilter;
 import leo.carnival.workers.prototype.Evaluator;
@@ -58,6 +59,11 @@ public class Processors {
     public static FileCollection2FileMap FileCollection2FileMap(){
         return new FileCollection2FileMap();
     }
+
+    public static NumberParser NumberParser(){
+        return new NumberParser();
+    }
+
 
 
     private static final Processors processors = new Processors();

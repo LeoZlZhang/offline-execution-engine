@@ -12,7 +12,6 @@ import java.io.Serializable;
 @SuppressWarnings({"unused", "DefaultAnnotationParam", "MismatchedReadAndWriteOfArray"})
 public class MultiPartEntity implements Processor<Object[], HttpContent>, Serializable{
     private TextBody[] textBodies;
-
     private BinaryBody[] binaryBodies;
 
 
@@ -35,5 +34,28 @@ public class MultiPartEntity implements Processor<Object[], HttpContent>, Serial
     @Override
     public HttpContent execute(Object[] objects) {
         return process(objects);
+    }
+
+
+    /**
+     * Getter
+     */
+    public TextBody[] getTextBodies() {
+        return textBodies;
+    }
+
+    public BinaryBody[] getBinaryBodies() {
+        return binaryBodies;
+    }
+
+    /**
+     * Setter
+     */
+    public void setTextBodies(TextBody[] textBodies) {
+        this.textBodies = textBodies;
+    }
+
+    public void setBinaryBodies(BinaryBody[] binaryBodies) {
+        this.binaryBodies = binaryBodies;
     }
 }

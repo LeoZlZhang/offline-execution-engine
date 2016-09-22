@@ -17,7 +17,9 @@ public class Gear implements Executor<String, TestResult> {
     private String name;
     private Flow[] flows;
 
+
     private ApplicationContext applicationContext = new ApplicationContext();
+
 
     @Override
     public String toString() {
@@ -55,7 +57,37 @@ public class Gear implements Executor<String, TestResult> {
     }
 
 
-    public ApplicationContext getApplicationContext() {
+    public ApplicationContext getAppCtx() {
         return applicationContext;
+    }
+
+    /**
+     * Getter
+     */
+    public String getSourceClass() {
+        return sourceClass;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Flow[] getFlows() {
+        return flows;
+    }
+
+    /**
+     * setter
+     */
+    public void setSourceClass(String sourceClass) {
+        this.sourceClass = sourceClass;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setFlows(Flow[] flows) {
+        this.flows = flows;
     }
 }

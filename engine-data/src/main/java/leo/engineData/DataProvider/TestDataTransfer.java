@@ -2,7 +2,7 @@ package leo.engineData.DataProvider;
 
 import leo.carnival.MyArrayUtils;
 import leo.carnival.workers.impl.GearicUtils.ArrayClone;
-import leo.carnival.workers.impl.GsonUtils;
+import leo.carnival.workers.impl.JacksonUtils;
 import leo.carnival.workers.prototype.Processor;
 import leo.engineData.testData.TestData;
 
@@ -28,7 +28,7 @@ public class TestDataTransfer<T extends TestData> implements Processor<Map<File,
         T[] rtnTCArray = (T[]) Array.newInstance(tcClass, datas.size() * estimatedCaseNumPerFile);
 
         for (Map.Entry<File, String> data : datas.entrySet()) {
-            T[] tds = GsonUtils.fromJsonArray(data.getValue(), tcClass);
+            T[] tds = JacksonUtils.fromJsonArray(data.getValue(), tcClass);
             for(TestData td : tds)
                 td.setSourceFileName(data.getKey().getName());
             rtnTCArray = MyArrayUtils.mergeArray(rtnTCArray, tds);

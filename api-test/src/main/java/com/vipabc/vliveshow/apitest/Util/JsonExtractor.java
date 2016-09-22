@@ -1,15 +1,13 @@
 package com.vipabc.vliveshow.apitest.Util;
 
 import com.vipabc.vliveshow.apitest.Util.Processor.ExtractionProcessor;
-import leo.carnival.workers.impl.GsonUtils;
+import leo.carnival.workers.impl.JacksonUtils;
 import org.testng.Assert;
 
-import java.text.NumberFormat;
 import java.util.List;
 import java.util.Map;
 
 public class JsonExtractor extends AbstractJsonComparator<ExtractionProcessor> {
-    private static final NumberFormat numberFormat = NumberFormat.getNumberInstance();
 
     public void go(Map<String, Object> instructionMap, Map<String, Object> responseMap, Map<String, Object> extractionMap) {
         ExtractionProcessor processor = new ExtractionProcessor();
@@ -22,8 +20,8 @@ public class JsonExtractor extends AbstractJsonComparator<ExtractionProcessor> {
         Assert.assertTrue(rightMap.size() >= leftMap.size(),
                 String.format("[%d] Expected json structure is different from actual: [%s->%s]",
                         Thread.currentThread().getId(),
-                        GsonUtils.toJson(rightMap),
-                        GsonUtils.toJson(leftMap)));
+                        JacksonUtils.toJson(rightMap),
+                        JacksonUtils.toJson(leftMap)));
     }
 
     @Override
@@ -38,7 +36,7 @@ public class JsonExtractor extends AbstractJsonComparator<ExtractionProcessor> {
 
     @Override
     protected void ending(Object leftObject, Object rightObject, ExtractionProcessor processor) {
-        Object extractedRB = rightObject instanceof Number ? parserNumber(rightObject) : rightObject;
+        Object extractedRB = rightObject instanceof Number ? numberParser.execute(rightObject) : rightObject;
         logger.info(String.format("[%d] Extract %s:[%s as %s]", Thread.currentThread().getId(), processor.getJsonPath(), extractedRB, leftObject));
         processor.getExtractionMap().put(String.valueOf(leftObject), extractedRB); //response object could be String, list, map
     }

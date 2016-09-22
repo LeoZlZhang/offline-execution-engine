@@ -10,28 +10,24 @@ import org.apache.log4j.Logger;
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
 import java.net.URLEncoder;
 import java.util.Map;
 
 @SuppressWarnings({"DefaultAnnotationParam", "unused", "MismatchedQueryAndUpdateOfCollection"})
 public class Request implements Serializable {
     private static final Logger logger = Logger.getLogger(Request.class);
-//    private static final HttpTransport httpTransport = new NetHttpTransport();
-        private static final Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("192.168.23.199", 8080));
-        private static final HttpTransport httpTransport = new NetHttpTransport.Builder().setProxy(proxy).build();
+    private static final HttpTransport httpTransport = new NetHttpTransport();
+//  private static final Proxy proxy = new Proxy(java.net.Proxy.Type.HTTP, new InetSocketAddress("192.168.23.199", 8080));
+//  private static final HttpTransport httpTransport = new NetHttpTransport.Builder().setProxy(proxy).build();
     private static final HttpRequestFactory requestFactory = httpTransport.createRequestFactory();
 
     private String method;
-
     private String url;
-
     private Map<String, String> param;
-
     private MultiPartEntity multiPartEntity;
-
     private Map<String, Object> jsonBody;
+
+
 
     public HttpResponse process() throws IOException {
 
@@ -68,4 +64,49 @@ public class Request implements Serializable {
     }
 
 
+    /**
+     * Getter
+     */
+    public String getMethod() {
+        return method;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public Map<String, String> getParam() {
+        return param;
+    }
+
+    public MultiPartEntity getMultiPartEntity() {
+        return multiPartEntity;
+    }
+
+    public Map<String, Object> getJsonBody() {
+        return jsonBody;
+    }
+
+    /**
+     * Setter
+     */
+    public void setMethod(String method) {
+        this.method = method;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public void setParam(Map<String, String> param) {
+        this.param = param;
+    }
+
+    public void setMultiPartEntity(MultiPartEntity multiPartEntity) {
+        this.multiPartEntity = multiPartEntity;
+    }
+
+    public void setJsonBody(Map<String, Object> jsonBody) {
+        this.jsonBody = jsonBody;
+    }
 }

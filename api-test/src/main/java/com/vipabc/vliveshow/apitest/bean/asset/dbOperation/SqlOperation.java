@@ -5,8 +5,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.*;
-import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.Map;
 
 /**
@@ -166,18 +164,16 @@ public enum SqlOperation implements Executor<DBObject, String> {
             return "";
 
         StringBuilder where = new StringBuilder("where");
-        try {
-            for (Map.Entry<String, Object> entry : criteria.entrySet())
-                if (entry.getValue() instanceof String)
-                    where.append(String.format(" %s=\'%s\' and", entry.getKey(), entry.getValue()));
-                else if (entry.getValue() instanceof Number)
-                    where.append(String.format(" %s=%s and", entry.getKey(), NumberFormat.getNumberInstance().parse(entry.getValue().toString())));
-                else
-                    throw new RuntimeException("Invalid criteria " + entry.getValue().toString());
-            where.delete(where.length() - 4, where.length());
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
+
+        for (Map.Entry<String, Object> entry : criteria.entrySet())
+            if (entry.getValue() instanceof String)
+                where.append(String.format(" %s=\'%s\' and", entry.getKey(), entry.getValue()));
+            else if (entry.getValue() instanceof Number)
+                where.append(String.format(" %s=%s and", entry.getKey(), entry.getValue().toString()));
+            else
+                throw new RuntimeException("Invalid criteria " + entry.getValue().toString());
+        where.delete(where.length() - 4, where.length());
+
         return where.toString();
     }
 
@@ -187,21 +183,18 @@ public enum SqlOperation implements Executor<DBObject, String> {
         StringBuilder columns = new StringBuilder("(");
         StringBuilder values = new StringBuilder(" values (");
 
-        try {
-            for (Map.Entry<String, Object> entry : valueMap.entrySet()) {
-                columns.append(String.format(" \'%s\',", entry.getKey()));
-                if (entry.getValue() instanceof String)
-                    values.append(String.format(" \'%s\',", entry.getValue()));
-                else if (entry.getValue() instanceof Number)
-                    values.append(String.format(" %s,", NumberFormat.getNumberInstance().parse(entry.getValue().toString())));
-                else
-                    throw new RuntimeException("Invalid criteria " + entry.getValue().toString());
-            }
-            columns.deleteCharAt(columns.length() - 1).append(")");
-            values.deleteCharAt(values.length() - 1).append(")");
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
+
+        for (Map.Entry<String, Object> entry : valueMap.entrySet()) {
+            columns.append(String.format(" \'%s\',", entry.getKey()));
+            if (entry.getValue() instanceof String)
+                values.append(String.format(" \'%s\',", entry.getValue()));
+            else if (entry.getValue() instanceof Number)
+                values.append(String.format(" %s,", entry.getValue().toString()));
+            else
+                throw new RuntimeException("Invalid criteria " + entry.getValue().toString());
         }
+        columns.deleteCharAt(columns.length() - 1).append(")");
+        values.deleteCharAt(values.length() - 1).append(")");
 
         return columns.append(values).toString();
     }
@@ -210,18 +203,16 @@ public enum SqlOperation implements Executor<DBObject, String> {
         if (valueMap == null || valueMap.isEmpty())
             throw new RuntimeException("Empty column value map to update");
         StringBuilder setCommand = new StringBuilder("set");
-        try {
-            for (Map.Entry<String, Object> entry : valueMap.entrySet())
-                if (entry.getValue() instanceof String)
-                    setCommand.append(String.format(" %s=\'%s\',", entry.getKey(), entry.getValue()));
-                else if (entry.getValue() instanceof Number)
-                    setCommand.append(String.format(" %s=%s,", entry.getKey(), NumberFormat.getNumberInstance().parse(entry.getValue().toString())));
-                else
-                    throw new RuntimeException("Invalid criteria " + entry.getValue().toString());
-            setCommand.deleteCharAt(setCommand.length() - 1);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
+        
+        for (Map.Entry<String, Object> entry : valueMap.entrySet())
+            if (entry.getValue() instanceof String)
+                setCommand.append(String.format(" %s=\'%s\',", entry.getKey(), entry.getValue()));
+            else if (entry.getValue() instanceof Number)
+                setCommand.append(String.format(" %s=%s,", entry.getKey(), entry.getValue().toString()));
+            else
+                throw new RuntimeException("Invalid criteria " + entry.getValue().toString());
+        setCommand.deleteCharAt(setCommand.length() - 1);
+
         return setCommand.toString();
 
     }

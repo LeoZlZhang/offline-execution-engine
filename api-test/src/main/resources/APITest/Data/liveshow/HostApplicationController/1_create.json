@@ -7,7 +7,7 @@
         "info": "---Remove host application from mongo---",
         "mongoOperation": {
           "delete": {
-            "collection": "hostapplication",
+            "table": "hostapplication",
             "criteria": {"userId": 5}
           }
         }
@@ -55,7 +55,7 @@
         "info": "Verify host application from mongo",
         "mongoOperation": {
           "query": {
-            "collection": "hostapplication",
+            "table": "hostapplication",
             "criteria": {
               "_id": "{{hostApplicationId}}"
             }

@@ -2,7 +2,7 @@ import leo.carnival.workers.impl.Evaluators;
 import leo.carnival.workers.impl.FileUtils.FileFilter;
 import leo.carnival.workers.impl.FileUtils.FileFilterAdvance;
 import leo.carnival.workers.impl.FileUtils.FolderFilter;
-import leo.carnival.workers.impl.GsonUtils;
+import leo.carnival.workers.impl.JacksonUtils;
 import leo.carnival.workers.impl.Processors;
 import leo.engineCore.worker.ProfilePicker;
 import org.testng.annotations.Test;
@@ -33,7 +33,7 @@ public class TestProfilePicker {
 
         List<Map<String, Object>> profileList = new ArrayList<>(fileList.size());
         for (File file : fileList)
-            profileList.add(GsonUtils.fromJsonObject(file, Map.class));
+            profileList.add(JacksonUtils.fromJsonObject(file, Map.class));
 
         ProfilePicker profilePicker = ProfilePicker.build(profileList, 5);
         System.out.println(profilePicker.next());
