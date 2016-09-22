@@ -1,6 +1,7 @@
 package leo.carnival.workers.impl.JsonUtils;
 
-import leo.carnival.workers.impl.ScriptExecutor;
+import leo.carnival.workers.impl.Executors;
+import leo.carnival.workers.impl.GearicUtils.ScriptExecutor;
 import leo.carnival.workers.prototype.Processor;
 
 import java.util.HashMap;
@@ -112,7 +113,7 @@ public class MapValueUpdater implements Processor<Map, Map> {
             Matcher jsMatcher = Pattern.compile(jsReg).matcher(str);
             while (jsMatcher.find()) {
                 String oldValue = jsMatcher.group(0);
-                String newValue = ScriptExecutor.build().execute(jsMatcher.group(1)).toString();
+                String newValue = Executors.scriptExecutor().execute(jsMatcher.group(1)).toString();
                 str = str.replace(oldValue, newValue);
             }
         }

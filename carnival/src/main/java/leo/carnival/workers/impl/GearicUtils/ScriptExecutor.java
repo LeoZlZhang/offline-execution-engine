@@ -1,4 +1,4 @@
-package leo.carnival.workers.impl;
+package leo.carnival.workers.impl.GearicUtils;
 
 import leo.carnival.workers.prototype.Processor;
 
@@ -14,9 +14,6 @@ import javax.script.ScriptException;
 public class ScriptExecutor implements Processor<String, Object> {
     private static final ScriptEngine engine = new ScriptEngineManager().getEngineByName("javascript");
 
-    private ScriptExecutor() {
-    }
-
     @Override
     public Object process(String script) {
         try {
@@ -29,11 +26,6 @@ public class ScriptExecutor implements Processor<String, Object> {
     @Override
     public Object execute(String script) {
         return process(script);
-    }
-
-
-    public static ScriptExecutor build() {
-        return new ScriptExecutor();
     }
 
 

@@ -1,6 +1,7 @@
 package leo.carnival.workers.impl.JsonUtils;
 
 
+import leo.carnival.workers.impl.GsonUtils;
 import leo.carnival.workers.prototype.Processor;
 import leo.carnival.workers.prototype.Setter.ProcessorSetter;
 

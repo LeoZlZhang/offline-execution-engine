@@ -2,7 +2,6 @@ package leo.carnival.workers.impl.ReflectUtils;
 
 import leo.carnival.workers.prototype.Evaluator;
 import leo.carnival.workers.prototype.Processor;
-import leo.carnival.workers.prototype.Setter.EvaluatorSetter;
 
 import java.lang.reflect.Method;
 
@@ -11,9 +10,9 @@ import java.lang.reflect.Method;
  * return method in target class which is hit Evaluator
  */
 @SuppressWarnings("unused")
-public final class ReflectMethodFilter implements Processor<Object, Method>, EvaluatorSetter<Evaluator<Method>> {
+public final class ReflectMethodFilter implements Processor<Object, Method> {
 
-    private Evaluator<Method> methodEvaluator;
+    private Evaluator<Method> evaluator;
 
 
     @Override
@@ -22,7 +21,7 @@ public final class ReflectMethodFilter implements Processor<Object, Method>, Eva
             return null;
 
         for (Method method : targetObj.getClass().getMethods()) {
-            if(methodEvaluator == null || methodEvaluator.evaluate(method))
+            if(evaluator == null || evaluator.evaluate(method))
                 return method;
         }
         return null;
@@ -33,31 +32,8 @@ public final class ReflectMethodFilter implements Processor<Object, Method>, Eva
         return process(o);
     }
 
-    @Override
-    public ReflectMethodFilter setWorker(Evaluator<Method> worker) {
-        this.methodEvaluator = worker;
+    public ReflectMethodFilter setEvaluator(Evaluator<Method> evaluator) {
+        this.evaluator = evaluator;
         return this;
-    }
-
-    public static ReflectMethodFilter build() throws IllegalAccessException, InstantiationException {
-        return new ReflectMethodFilter();
-    }
-
-    public static ReflectMethodFilter build(Evaluator<Method> methodEvaluator) throws InstantiationException, IllegalAccessException {
-        return ReflectMethodFilter.build().setWorker(methodEvaluator);
-    }
-
-    public static ReflectMethodFilter build(String methodName, int paramLength) throws InstantiationException, IllegalAccessException {
-        return ReflectMethodFilter.build().setWorker(new Evaluator<Method>() {
-            @Override
-            public boolean evaluate(Method method) {
-                return method != null && (method.getName().equalsIgnoreCase(methodName) && method.getParameterCount() == paramLength);
-            }
-
-            @Override
-            public Boolean execute(Method method) {
-                return evaluate(method);
-            }
-        });
     }
 }

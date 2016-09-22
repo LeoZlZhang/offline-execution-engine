@@ -14,7 +14,7 @@ import java.util.Map;
  * Created by leo_zlzhang on 8/31/2016.
  * Load collection of files to Map<File, file content in string>
  */
-public class LoadFiles2Map implements Processor<Collection<File>, Map<File, String>> {
+public class FileCollection2FileMap implements Processor<Collection<File>, Map<File, String>> {
     @Override
     public Map<File, String> process(Collection<File> files) {
         Map<File, String> rtnMap = new HashMap<>();
@@ -32,9 +32,4 @@ public class LoadFiles2Map implements Processor<Collection<File>, Map<File, Stri
     public Map<File, String> execute(Collection<File> files) {
         return null;
     }
-
-    public static LoadFiles2Map build(){
-        return new LoadFiles2Map();
-    }
-
 }

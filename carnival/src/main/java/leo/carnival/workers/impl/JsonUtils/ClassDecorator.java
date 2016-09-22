@@ -1,5 +1,6 @@
 package leo.carnival.workers.impl.JsonUtils;
 
+import leo.carnival.workers.impl.GsonUtils;
 import leo.carnival.workers.prototype.Processor;
 
 /**
@@ -17,13 +18,13 @@ public class ClassDecorator<T> implements Processor<String, T> {
         return GsonUtils.fromJsonObject(jsonString, targetClass);
     }
 
-    public static <G> G process(String jsonString, Class<G> cls) {
-        return ClassDecorator.build(cls).process(jsonString);
-    }
-
-    public static <G extends X, X> G process(X x, Class<G> cls) {
-        return ClassDecorator.build(cls).process(GsonUtils.toJson(x));
-    }
+//    public static <G> G process(String jsonString, Class<G> cls) {
+//        return ClassDecorator.build(cls).process(jsonString);
+//    }
+//
+//    public static <G extends X, X> G process(X x, Class<G> cls) {
+//        return ClassDecorator.build(cls).process(GsonUtils.toJson(x));
+//    }
 
     @Override
     public T execute(String jsonString) {
@@ -33,9 +34,5 @@ public class ClassDecorator<T> implements Processor<String, T> {
     public ClassDecorator<T> setTargetClass(Class<T> cls) {
         this.targetClass = cls;
         return this;
-    }
-
-    public static <T> ClassDecorator<T> build(Class<T> cls) {
-        return new ClassDecorator<T>().setTargetClass(cls);
     }
 }

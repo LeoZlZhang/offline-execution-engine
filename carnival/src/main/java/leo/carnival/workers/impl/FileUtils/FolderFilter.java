@@ -1,15 +1,14 @@
 package leo.carnival.workers.impl.FileUtils;
 
 
-import leo.carnival.workers.impl.FileUtils.Evaluator.FolderEvaluator;
+import leo.carnival.workers.impl.Evaluator.FolderEvaluator;
 import leo.carnival.workers.prototype.Processor;
-import leo.carnival.workers.prototype.Setter.WorkerSetter;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class FolderFilter implements Processor<File, List<File>>, WorkerSetter<FolderEvaluator, Processor> {
+public final class FolderFilter implements Processor<File, List<File>> {
 
     private FolderEvaluator folderEvaluator;
 
@@ -27,8 +26,7 @@ public final class FolderFilter implements Processor<File, List<File>>, WorkerSe
         return process(file);
     }
 
-    @Override
-    public FolderFilter setWorker(FolderEvaluator evaluator) {
+    public FolderFilter setFolderEvaluator(FolderEvaluator evaluator) {
         folderEvaluator = evaluator;
         return this;
     }
@@ -48,14 +46,4 @@ public final class FolderFilter implements Processor<File, List<File>>, WorkerSe
 
         return rtnFileList;
     }
-
-
-    public static FolderFilter build()  {
-        return new FolderFilter();
-    }
-
-    public static FolderFilter build(FolderEvaluator folderEvaluator) {
-        return FolderFilter.build().setWorker(folderEvaluator);
-    }
-
 }

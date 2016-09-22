@@ -1,9 +1,10 @@
 package leo.engineData.DataProvider;
 
 
-import leo.carnival.workers.impl.FileUtils.Evaluator.FileEvaluator;
-import leo.carnival.workers.impl.FileUtils.Evaluator.RegexEvaluator;
+import leo.carnival.workers.impl.Evaluators;
+import leo.carnival.workers.impl.Evaluator.RegexEvaluator;
 import leo.carnival.workers.impl.FileUtils.FileFilter;
+import leo.carnival.workers.impl.Processors;
 import leo.carnival.workers.prototype.Processor;
 import org.apache.commons.io.FileUtils;
 
@@ -19,8 +20,8 @@ public class ContentReplacer implements Processor<String, String> {
 
     private Pattern injectionPattern = Pattern.compile("(\\{[\\s]*\"Injection\":[\\s]*\"([\\w._]+)\"[\\s]*})");
     private File dataSourceFolder;
-    private RegexEvaluator regexEvaluator = RegexEvaluator.build();
-    private FileFilter filter = FileFilter.build(FileEvaluator.build(regexEvaluator));
+    private RegexEvaluator regexEvaluator = Evaluators.RegexEvaluator(null);
+    private FileFilter filter = Processors.FileFilter(Evaluators.FileEvaluator(regexEvaluator));
 
     @Override
     public String process(String sourceString) {

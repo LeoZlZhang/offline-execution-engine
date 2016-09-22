@@ -1,7 +1,6 @@
-package leo.carnival.workers.impl.FileUtils.Evaluator;
+package leo.carnival.workers.impl.Evaluator;
 
 import leo.carnival.workers.prototype.Evaluator;
-import leo.carnival.workers.prototype.Setter.EvaluatorSetter;
 
 import java.io.File;
 
@@ -10,7 +9,7 @@ import java.io.File;
  * Evaluate folder refer to folder name
  */
 
-public final class FolderEvaluator implements Evaluator<File>, EvaluatorSetter<RegexEvaluator> {
+public final class FolderEvaluator implements Evaluator<File> {
 
     private RegexEvaluator evaluator;
 
@@ -28,20 +27,11 @@ public final class FolderEvaluator implements Evaluator<File>, EvaluatorSetter<R
         return evaluate(file);
     }
 
-    @Override
-    public FolderEvaluator setWorker(RegexEvaluator worker) {
-        if (worker == null)
+    public FolderEvaluator setRegexEvaluator(RegexEvaluator regexEvaluator) {
+        if (regexEvaluator == null)
             return this;
 
-        this.evaluator = worker;
+        this.evaluator = regexEvaluator;
         return this;
-    }
-
-    public static FolderEvaluator build() {
-        return new FolderEvaluator();
-    }
-
-    public static FolderEvaluator build(RegexEvaluator regexEvaluator) {
-        return FolderEvaluator.build().setWorker(regexEvaluator);
     }
 }

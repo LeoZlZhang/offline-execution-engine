@@ -1,7 +1,6 @@
-package leo.carnival.workers.impl.FileUtils.Evaluator;
+package leo.carnival.workers.impl.Evaluator;
 
 import leo.carnival.workers.prototype.Evaluator;
-import leo.carnival.workers.prototype.Setter.EvaluatorSetter;
 
 import java.io.File;
 
@@ -9,7 +8,7 @@ import java.io.File;
  * Created by leo_zlzhang on 8/26/2016.
  * Evaluate file refer to file name
  */
-public class FileEvaluator implements Evaluator<File>, EvaluatorSetter<RegexEvaluator> {
+public class FileEvaluator implements Evaluator<File> {
 
     private RegexEvaluator regexEvaluator;
 
@@ -27,20 +26,11 @@ public class FileEvaluator implements Evaluator<File>, EvaluatorSetter<RegexEval
         return evaluate(file);
     }
 
-    @Override
-    public FileEvaluator setWorker(RegexEvaluator regexEvaluator) {
+    public FileEvaluator setRegexEvaluator(RegexEvaluator regexEvaluator) {
         if (regexEvaluator == null)
             return this;
 
         this.regexEvaluator = regexEvaluator;
         return this;
-    }
-
-    public static FileEvaluator build() {
-        return new FileEvaluator();
-    }
-
-    public static FileEvaluator build(RegexEvaluator regexEvaluator)  {
-        return FileEvaluator.build().setWorker(regexEvaluator);
     }
 }

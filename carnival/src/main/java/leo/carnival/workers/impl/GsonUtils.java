@@ -1,4 +1,4 @@
-package leo.carnival.workers.impl.JsonUtils;
+package leo.carnival.workers.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;

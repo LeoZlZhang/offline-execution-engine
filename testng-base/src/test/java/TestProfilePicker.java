@@ -1,10 +1,9 @@
-import leo.carnival.workers.impl.FileUtils.AdvanceFileFilter;
-import leo.carnival.workers.impl.FileUtils.Evaluator.FileEvaluator;
-import leo.carnival.workers.impl.FileUtils.Evaluator.FolderEvaluator;
-import leo.carnival.workers.impl.FileUtils.Evaluator.RegexEvaluator;
+import leo.carnival.workers.impl.Evaluators;
 import leo.carnival.workers.impl.FileUtils.FileFilter;
+import leo.carnival.workers.impl.FileUtils.FileFilterAdvance;
 import leo.carnival.workers.impl.FileUtils.FolderFilter;
-import leo.carnival.workers.impl.JsonUtils.GsonUtils;
+import leo.carnival.workers.impl.GsonUtils;
+import leo.carnival.workers.impl.Processors;
 import leo.engineCore.worker.ProfilePicker;
 import org.testng.annotations.Test;
 
@@ -26,11 +25,11 @@ public class TestProfilePicker {
     @Test
     public void testPicker() throws IOException {
 
-        FolderFilter folderFilter = FolderFilter.build(FolderEvaluator.build(RegexEvaluator.build("Profile")));
-        FileFilter fileFilter = FileFilter.build(FileEvaluator.build(RegexEvaluator.build(".*\\.json")));
-        AdvanceFileFilter advanceFileFilter = AdvanceFileFilter.build().setWorker(folderFilter).setWorker(fileFilter);
+        FolderFilter folderFilter = Processors.FolderFilter(Evaluators.FolderEvaluator(Evaluators.RegexEvaluator("Profile")));
+        FileFilter fileFilter = Processors.FileFilter(Evaluators.FileEvaluator(Evaluators.RegexEvaluator(".*\\.json")));
+        FileFilterAdvance fileFilterAdvance = Processors.FileFilterAdvance(folderFilter, fileFilter);
 
-        List<File> fileList = advanceFileFilter.process(new File(System.getProperty("user.dir") + "\\src\\main\\resources"));
+        List<File> fileList = fileFilterAdvance.process(new File(System.getProperty("user.dir") + "\\src\\main\\resources"));
 
         List<Map<String, Object>> profileList = new ArrayList<>(fileList.size());
         for (File file : fileList)

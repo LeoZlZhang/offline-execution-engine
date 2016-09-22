@@ -1,9 +1,8 @@
 package leo.engineCore.engineFoundation.Step;
 
+import leo.carnival.workers.impl.Processors;
 import leo.engineCore.engineFoundation.ApplicationContext;
 import leo.carnival.workers.prototype.Executor;
-
-import static leo.carnival.workers.impl.GearicUtils.ClassUtils.loadClass;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class Step implements Executor<ApplicationContext, Step>{
@@ -61,7 +60,7 @@ public class Step implements Executor<ApplicationContext, Step>{
     public Step execute(ApplicationContext applicationContext) {
         applicationContext.setStepName(method);
         applicationContext.printExecutionInfo();
-        applicationContext.setMethodRepo(loadClass(sourceClass));
+        applicationContext.setMethodRepo(Processors.ClassLoader().process(sourceClass));
         return this;
     }
 }

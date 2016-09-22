@@ -37,8 +37,4 @@ public class ArrayClone<T> implements Processor<T[], T[]> {
         this.cloneTimes = cloneNum;
         return this;
     }
-
-    public static <T> ArrayClone<T> build(int cloneTimes) {
-        return new ArrayClone<T>().setCloneNum(cloneTimes);
-    }
 }

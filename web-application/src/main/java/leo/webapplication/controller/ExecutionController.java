@@ -1,6 +1,6 @@
 package leo.webapplication.controller;
 
-import leo.carnival.workers.impl.JsonUtils.GsonUtils;
+import leo.carnival.workers.impl.GsonUtils;
 import leo.webapplication.dto.JsonResponse;
 import leo.webapplication.model.ApiData;
 import leo.webapplication.repository.ApiTestMongoRepository;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
  * Created by leozhang on 8/31/16.
  * ...
  */
-@SuppressWarnings({"SpringAutowiredFieldsWarningInspection", "ConstantConditions", "unused"})
+@SuppressWarnings({"SpringAutowiredFieldsWarningInspection", "ConstantConditions", "unused", "WeakerAccess"})
 @RestController
 @RequestMapping("/try")
 public class ExecutionController {

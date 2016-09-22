@@ -1,12 +1,15 @@
 package leo.carnival.workers.impl.GearicUtils;
 
+import leo.carnival.workers.prototype.Processor;
+
 /**
  * Created by leo_zlzhang on 8/29/2016.
  * ...
  */
-public class ClassUtils {
+public class ClassLoader  implements Processor<String, Class>{
 
-    public static Class loadClass(String className) {
+    @Override
+    public Class process(String className) {
         if (className == null)
             return null;
         try {
@@ -17,4 +20,8 @@ public class ClassUtils {
         }
     }
 
+    @Override
+    public Class execute(String className) {
+        return process(className);
+    }
 }

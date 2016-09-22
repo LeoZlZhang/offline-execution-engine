@@ -1,15 +1,15 @@
 package leo.engineCore.engineFoundation.Flow;
 
 
+import leo.carnival.MyArrayUtils;
+import leo.carnival.workers.impl.GsonUtils;
+import leo.carnival.workers.impl.Processors;
+import leo.carnival.workers.prototype.Executor;
 import leo.engineCore.engineFoundation.ApplicationContext;
 import leo.engineCore.engineFoundation.Step.GeneralStep;
 import leo.engineCore.engineFoundation.Step.LoopStep;
 import leo.engineCore.engineFoundation.Step.Step;
-import leo.carnival.MyArrayUtils;
-import leo.carnival.workers.impl.JsonUtils.ClassDecorator;
-import leo.carnival.workers.prototype.Executor;
 
-import static leo.carnival.workers.impl.GearicUtils.ClassUtils.loadClass;
 
 @SuppressWarnings("unused")
 public class Flow implements Executor<ApplicationContext, Flow> {
@@ -26,7 +26,7 @@ public class Flow implements Executor<ApplicationContext, Flow> {
     public Flow execute(ApplicationContext applicationContext) {
         loadStepsOnce();
         applicationContext.setFlowName(name);
-        applicationContext.setMethodRepo(loadClass(sourceClass));
+        applicationContext.setMethodRepo(Processors.ClassLoader().process(sourceClass));
         for (Step step : steps)
             step.execute(applicationContext);
         return this;
@@ -44,7 +44,7 @@ public class Flow implements Executor<ApplicationContext, Flow> {
             for (int i = 0, j = 0, len = steps.length; i < len; j++) {
                 Step step = steps[i];
                 if (step.getLoop() == Step.NoLooping)
-                    rtnSteps[j] = ClassDecorator.process(step, GeneralStep.class);
+                    rtnSteps[j] = Processors.ClassDecorator(GeneralStep.class).process(GsonUtils.toJson(step));
                 else
                     rtnSteps[j] = compressToLoopStep(steps, i, step.getLoop(), Step.NoLooping);
 
@@ -63,7 +63,7 @@ public class Flow implements Executor<ApplicationContext, Flow> {
             if (MyArrayUtils.containElementByDeepCompare(endLoopIds, steps[startIndex].getLoop()))
                 break;
             else if (steps[startIndex].getLoop() == loopId)
-                rtnSteps[i] = ClassDecorator.process(steps[startIndex], GeneralStep.class);
+                rtnSteps[i] = Processors.ClassDecorator(GeneralStep.class).process(GsonUtils.toJson(steps[startIndex]));
             else
                 rtnSteps[i] = compressToLoopStep(steps, startIndex, steps[startIndex].getLoop(), MyArrayUtils.mergeArray(endLoopIds, loopId));
         }

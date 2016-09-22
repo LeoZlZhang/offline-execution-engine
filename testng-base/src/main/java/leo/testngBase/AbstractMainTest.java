@@ -1,22 +1,19 @@
 package leo.testngBase;
 
-import leo.carnival.workers.impl.FileUtils.LoadFiles2Map;
-import leo.carnival.workers.impl.GearicUtils.ArrayClone;
-import leo.carnival.workers.impl.FileUtils.AdvanceFileFilter;
-import leo.carnival.workers.impl.FileUtils.Evaluator.FileEvaluator;
-import leo.carnival.workers.impl.FileUtils.Evaluator.FolderEvaluator;
-import leo.carnival.workers.impl.FileUtils.Evaluator.RegexEvaluator;
+import leo.carnival.workers.impl.Evaluators;
 import leo.carnival.workers.impl.FileUtils.FileFilter;
+import leo.carnival.workers.impl.FileUtils.FileFilterAdvance;
 import leo.carnival.workers.impl.FileUtils.FolderFilter;
-import leo.carnival.workers.impl.JsonUtils.GsonUtils;
-import leo.carnival.workers.impl.ReflectUtils.ReflectMethodFilter;
+import leo.carnival.workers.impl.GearicUtils.ArrayClone;
+import leo.carnival.workers.impl.GsonUtils;
+import leo.carnival.workers.impl.Processors;
 import leo.carnival.workers.prototype.Evaluator;
 import leo.carnival.workers.prototype.Processor;
 import leo.engineCore.engineFoundation.Assert.TestResult;
 import leo.engineCore.testEngine.TestEngine;
 import leo.engineCore.worker.ProfilePicker;
-import leo.engineData.DataProvider.TestDataTransfer;
 import leo.engineData.DataProvider.ContentReplacer;
+import leo.engineData.DataProvider.TestDataTransfer;
 import leo.engineData.testData.TestData;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
@@ -43,7 +40,7 @@ public abstract class AbstractMainTest {
         this.testInfo = testInfo();
         this.profilePicker = profilePicker();
 
-        List<File> gearFile = FileFilter.build(FileEvaluator.build(RegexEvaluator.build("gear\\.json"))).process(new File(resourceFolderPath));
+        List<File> gearFile = Processors.FileFilter(Evaluators.FileEvaluator(Evaluators.RegexEvaluator("gear\\.json"))).process(new File(resourceFolderPath));
         engine.loadGearFromFile(gearFile.get(0));
         engine.execute("BeforeTestFlow");
     }
@@ -70,7 +67,7 @@ public abstract class AbstractMainTest {
     }
 
     private TestInfo testInfo() throws IllegalAccessException, InstantiationException {
-        Method method = ReflectMethodFilter.build(new Evaluator<Method>() {
+        Method method = Processors.ReflectMethodFilter(new Evaluator<Method>() {
             @Override
             public boolean evaluate(Method method) {
                 return method != null && method.getAnnotation(Test.class) != null && method.getAnnotation(TestInfo.class) != null;
@@ -86,10 +83,10 @@ public abstract class AbstractMainTest {
 
     @SuppressWarnings("unchecked")
     private ProfilePicker profilePicker() throws IOException {
-        FolderFilter folderFilter = FolderFilter.build(FolderEvaluator.build(RegexEvaluator.build(testInfo.profileFolderName())));
-        FileFilter fileFilter = FileFilter.build(FileEvaluator.build(RegexEvaluator.build(".*\\.json")));
-        AdvanceFileFilter advanceFileFilter = AdvanceFileFilter.build().setWorker(folderFilter).setWorker(fileFilter);
-        List<File> fileList = advanceFileFilter.process(new File(resourceFolderPath));
+        FolderFilter folderFilter = Processors.FolderFilter(Evaluators.FolderEvaluator(Evaluators.RegexEvaluator(testInfo.profileFolderName())));
+        FileFilter fileFilter = Processors.FileFilter(Evaluators.FileEvaluator(Evaluators.RegexEvaluator(".*\\.json")));
+        FileFilterAdvance fileFilterAdvance = Processors.FileFilterAdvance(folderFilter, fileFilter);
+        List<File> fileList = fileFilterAdvance.process(new File(resourceFolderPath));
         List<Map<String, Object>> profileList = new ArrayList<>(fileList.size());
         for (File file : fileList)
             profileList.add(GsonUtils.fromJsonObject(file, Map.class));
@@ -102,21 +99,29 @@ public abstract class AbstractMainTest {
 
         try {
             //get folder contains test data
-            FolderFilter folderFilter = FolderFilter.build(FolderEvaluator.build(RegexEvaluator.build(testInfo.dataFolderName())));
-            FileFilter debugDataFiler = FileFilter.build(FileEvaluator.build(RegexEvaluator.build("^(?=.*?(?:debug)).+\\.(json|csv)")));
-            FileFilter testDataFilter = FileFilter.build(FileEvaluator.build(RegexEvaluator.build("^(?!.*?(?:debug|gear)).+\\.(json|csv)").setWorker(RegexEvaluator.build(testInfo.testDataFilterRegex()))));
+            FolderFilter folderFilter = Processors.FolderFilter(Evaluators.FolderEvaluator(Evaluators.RegexEvaluator(testInfo.dataFolderName())));
 
-            List<File> debugData = AdvanceFileFilter.build().setWorker(folderFilter).setWorker(debugDataFiler).process(new File(resourceFolderPath));
-            List<File> testData = AdvanceFileFilter.build().setWorker(folderFilter).setWorker(testDataFilter).process(new File(resourceFolderPath));
-            Map<File, String> fileContents = LoadFiles2Map.build().process(isEmpty(debugData) ? testData : debugData);
+            FileFilter debugDataFiler = Processors.FileFilter(Evaluators.FileEvaluator(Evaluators.RegexEvaluator("^(?=.*?(?:debug)).+\\.(json|csv)")));
+
+            FileFilter testDataFilter = Processors.FileFilter(Evaluators.FileEvaluator(Evaluators.RegexEvaluator("^(?!.*?(?:debug|gear)).+\\.(json|csv)").setRegexEvaluator(Evaluators.RegexEvaluator(testInfo.testDataFilterRegex()))));
+
+
+
+            List<File> debugData = Processors.FileFilterAdvance(folderFilter, debugDataFiler).process(new File(resourceFolderPath));
+
+            List<File> testData = Processors.FileFilterAdvance(folderFilter, testDataFilter).process(new File(resourceFolderPath));
+
+            Map<File, String> fileContents = Processors.FileCollection2FileMap().process(isEmpty(debugData) ? testData : debugData);
 
 
             //injection
-            List<File> flowFolders = FolderFilter.build(FolderEvaluator.build(RegexEvaluator.build(testInfo.dataFlowFolderName()))).process(new File(resourceFolderPath));
+            List<File> flowFolders = Processors.FolderFilter(Evaluators.FolderEvaluator(Evaluators.RegexEvaluator(testInfo.dataFlowFolderName()))).process(new File(resourceFolderPath));
+
             ContentReplacer.build(flowFolders == null || flowFolders.isEmpty() ? null : flowFolders.get(0)).process(fileContents);
 
             //Map<File, String> to TestData[]
             ArrayClone clone = new ArrayClone().setCloneNum(testInfo.repeatTime());
+
             TestData[] bean = TestDataTransfer.build(testInfo.testDataClass()).setCloneWorker(clone).process(fileContents);
 
             return new ObjectBoxing().process(bean);
