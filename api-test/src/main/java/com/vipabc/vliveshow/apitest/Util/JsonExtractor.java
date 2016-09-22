@@ -1,7 +1,7 @@
 package com.vipabc.vliveshow.apitest.Util;
 
 import com.vipabc.vliveshow.apitest.Util.Processor.ExtractionProcessor;
-import leo.carnival.workers.impl.JsonUtils.GsonUtils;
+import leo.carnival.workers.impl.GsonUtils;
 import org.testng.Assert;
 
 import java.text.NumberFormat;

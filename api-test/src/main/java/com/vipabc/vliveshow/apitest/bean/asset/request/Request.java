@@ -13,16 +13,14 @@ import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Map;
 
-@SuppressWarnings({"DefaultAnnotationParam", "unused"})
+@SuppressWarnings({"DefaultAnnotationParam", "unused", "MismatchedQueryAndUpdateOfCollection"})
 public class Request implements Serializable {
     private static final Logger logger = Logger.getLogger(Request.class);
-    private static final HttpTransport httpTransport = new NetHttpTransport();
-    //    private static final Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1", 8899));
-//    private static final HttpTransport httpTransport = new NetHttpTransport.Builder().setProxy(proxy).build();
+//    private static final HttpTransport httpTransport = new NetHttpTransport();
+        private static final Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("192.168.23.199", 8080));
+        private static final HttpTransport httpTransport = new NetHttpTransport.Builder().setProxy(proxy).build();
     private static final HttpRequestFactory requestFactory = httpTransport.createRequestFactory();
 
     private String method;
@@ -35,17 +33,8 @@ public class Request implements Serializable {
 
     private Map<String, Object> jsonBody;
 
-
-    public String getUrl() {
-        return url;
-    }
-
-    public Map<String, String> getParam() {
-        return param;
-    }
-
-
     public HttpResponse process() throws IOException {
+
         String url = generateUrl();
         logger.info(String.format("[%d] %s", Thread.currentThread().getId(), url));
 

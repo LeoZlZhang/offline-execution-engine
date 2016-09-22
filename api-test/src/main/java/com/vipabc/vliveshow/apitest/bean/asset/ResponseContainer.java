@@ -1,7 +1,7 @@
 package com.vipabc.vliveshow.apitest.bean.asset;
 
 import com.google.api.client.http.HttpResponse;
-import leo.carnival.workers.impl.JsonUtils.GsonUtils;
+import leo.carnival.workers.impl.GsonUtils;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;

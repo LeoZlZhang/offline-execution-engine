@@ -2,7 +2,7 @@ package com.vipabc.vliveshow.apitest.Util;
 
 
 import com.vipabc.vliveshow.apitest.Util.Processor.JsonPathCollector;
-import leo.carnival.workers.impl.JsonUtils.GsonUtils;
+import leo.carnival.workers.impl.GsonUtils;
 import org.apache.log4j.Logger;
 import org.testng.Assert;
 

@@ -1,8 +1,8 @@
 package com.vipabc.vliveshow.apitest.Util;
 
 import com.vipabc.vliveshow.apitest.Util.Processor.JsonPathCollector;
-import leo.carnival.workers.impl.JsonUtils.GsonUtils;
-import leo.carnival.workers.impl.ScriptExecutor;
+import leo.carnival.workers.impl.Executors;
+import leo.carnival.workers.impl.GsonUtils;
 import org.testng.Assert;
 
 import java.util.List;
@@ -52,12 +52,13 @@ public class JsonAssert extends AbstractJsonComparator<JsonPathCollector> {
             String actual = (rightObject instanceof String || rightObject instanceof Boolean) ?
                     String.valueOf(rightObject) : (rightObject instanceof Number) ?
                     parserNumber(rightObject).toString() : null;
+
             if (actual == null)
                 Assert.fail(String.format("[%d] Actual json structure is different from expected [%s->%s]",
                         Thread.currentThread().getId(), GsonUtils.toJson(rightObject), GsonUtils.toJson(leftObject)));
 
             if (expect.contains("{{ACTUAL}}"))
-                Assert.assertTrue((boolean) ScriptExecutor.build().execute(expect.replaceAll("\\{\\{ACTUAL\\}\\}", actual)), String.format("Evaluate fail, Expected true:%s\n", expect));
+                Assert.assertTrue((boolean) Executors.scriptExecutor().execute(expect.replaceAll("\\{\\{ACTUAL\\}\\}", actual)), String.format("Evaluate fail, Expected true:%s\n", expect));
             else
                 Assert.assertTrue(Pattern.matches(expect, actual), String.format("Evaluate fail, Expected:%s, Actual:%s\n", expect, actual));
 

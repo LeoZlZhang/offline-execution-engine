@@ -7,12 +7,12 @@ import com.vipabc.vliveshow.apitest.Util.JsonExtractor;
 import com.vipabc.vliveshow.apitest.bean.asset.assertions.AssertType;
 import com.vipabc.vliveshow.apitest.bean.asset.dbOperation.DBObject;
 import com.vipabc.vliveshow.apitest.bean.asset.dbOperation.MongoOperation;
-import com.vipabc.vliveshow.apitest.bean.asset.dbOperation.SqlOperation;
 import com.vipabc.vliveshow.apitest.bean.asset.dbOperation.RedisOperation;
+import com.vipabc.vliveshow.apitest.bean.asset.dbOperation.SqlOperation;
 import com.vipabc.vliveshow.apitest.bean.asset.request.Request;
+import leo.carnival.workers.impl.Executors;
 import leo.carnival.workers.impl.JsonUtils.InstanceUpdater;
 import leo.carnival.workers.impl.JsonUtils.MapValueUpdater;
-import leo.carnival.workers.impl.ScriptExecutor;
 import leo.carnival.workers.prototype.Executor;
 import org.apache.log4j.Logger;
 import redis.clients.jedis.JedisCluster;
@@ -49,6 +49,18 @@ public class TestAsset implements Serializable, Executor<Map<String, Object>, Ma
         return request;
     }
 
+    public Map<MongoOperation, DBObject> getMongoOperation() {
+        return mongoOperation;
+    }
+
+    public Map<RedisOperation, DBObject> getRedisOperation() {
+        return redisOperation;
+    }
+
+    public Map<SqlOperation, DBObject> getSqlOperation() {
+        return sqlOperation;
+    }
+
     public String dbOperation(Map<String, Object> extractionMap) {
         String rtnString = null;
         if (mongoOperation != null && !mongoOperation.isEmpty() && extractionMap.containsKey("mongoConnection")) {
@@ -56,15 +68,13 @@ public class TestAsset implements Serializable, Executor<Map<String, Object>, Ma
             for (Map.Entry<MongoOperation, DBObject> entry : mongoOperation.entrySet())
                 //last transaction effective
                 rtnString = entry.getKey().setDBConnection(dbConnection).execute(entry.getValue());
-        }
-        else if(redisOperation != null && !redisOperation.isEmpty() && extractionMap.containsKey("redisConnection")){
+        } else if (redisOperation != null && !redisOperation.isEmpty() && extractionMap.containsKey("redisConnection")) {
             JedisCluster jedisCluster = (JedisCluster) extractionMap.get("redisConnection");
-            for(Map.Entry<RedisOperation, DBObject> entry : redisOperation.entrySet())
+            for (Map.Entry<RedisOperation, DBObject> entry : redisOperation.entrySet())
                 rtnString = entry.getKey().setDBConnection(jedisCluster).execute(entry.getValue());
-        }
-        else if(sqlOperation != null && !sqlOperation.isEmpty() && extractionMap.containsKey("sqlConnection")){
+        } else if (sqlOperation != null && !sqlOperation.isEmpty() && extractionMap.containsKey("sqlConnection")) {
             Connection connection = (Connection) extractionMap.get("sqlConnection");
-            for(Map.Entry<SqlOperation, DBObject> entry : sqlOperation.entrySet())
+            for (Map.Entry<SqlOperation, DBObject> entry : sqlOperation.entrySet())
                 rtnString = entry.getKey().setDBConnection(connection).execute(entry.getValue());
         }
         return rtnString;
@@ -82,7 +92,7 @@ public class TestAsset implements Serializable, Executor<Map<String, Object>, Ma
     public void extract(ResponseContainer response, Map<String, Object> extractionMap) throws Exception {
         if (extractions == null)
             return;
-        new JsonExtractor().go(extractions, (Map)response.getResponseObject(), extractionMap);
+        new JsonExtractor().go(extractions, (Map) response.getResponseObject(), extractionMap);
     }
 
     public void setting(Map<String, Object> extractionMap) {
@@ -109,16 +119,16 @@ public class TestAsset implements Serializable, Executor<Map<String, Object>, Ma
     public Map<String, Object> execute(Map<String, Object> extractionKVMap) {
         for (int i = 0; i < repeat; i++) {
 
-            TestAsset asset = (TestAsset) InstanceUpdater.build(MapValueUpdater.build(extractionKVMap).setScriptEngine(ScriptExecutor.build())).process(this);
+            TestAsset asset = (TestAsset) InstanceUpdater.build(MapValueUpdater.build(extractionKVMap).setScriptEngine(Executors.scriptExecutor())).process(this);
 
             if (asset.info != null)
                 logger.info(asset.info);
             try {
-                ResponseContainer responseContainer;
+                ResponseContainer responseContainer= null;
                 if (asset.getRequest() != null) {
                     HttpResponse response = asset.getRequest().process();
                     responseContainer = new ResponseContainer(response);
-                } else {
+                }else if (asset.getMongoOperation() != null || asset.getRedisOperation() != null || asset.getSqlOperation() != null) {
                     String json = asset.dbOperation(extractionKVMap);
                     responseContainer = new ResponseContainer(json);
                 }
