@@ -75,7 +75,7 @@ public class TestAsset implements Serializable, Executor<Map<String, Object>, Ma
     public void extract(ResponseContainer response, Map<String, Object> extractionMap) throws Exception {
         if (extractions == null)
             return;
-        new JsonExtractor().go(extractions, (Map) response.getResponseObject(), extractionMap);
+        new JsonExtractor().setExtraction(extractionMap).setInstruction(extractions).execute((Map) response.getResponseObject());
     }
 
     public void setting(Map<String, Object> extractionMap) {

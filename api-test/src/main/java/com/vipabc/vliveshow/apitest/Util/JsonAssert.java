@@ -1,24 +1,39 @@
 package com.vipabc.vliveshow.apitest.Util;
 
-import com.vipabc.vliveshow.apitest.Util.Processor.JsonPathCollector;
 import leo.carnival.workers.impl.Executors;
 import leo.carnival.workers.impl.JacksonUtils;
+import leo.carnival.workers.prototype.Executor;
 import org.testng.Assert;
 
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-public class JsonAssert extends AbstractJsonComparator<JsonPathCollector> {
+public class JsonAssert extends AbstractJsonComparator implements Executor<Map<String, Object>, Object> {
+
+    private Map<String, Object> expected;
+
+    @Override
+    public Object execute(Map<String, Object> actual) {
+        if(expected == null || actual == null)
+            throw new RuntimeException("expected or actual map is null");
+
+        handleMap(expected, actual, new JsonPathAppender());
+        return null;
+    }
 
 
-    public void go(Map<String, Object> actual, Map<String, Object> expected) {
-        handleMap(expected, actual, new JsonPathCollector());
+    public JsonAssert setExpected(Map<String, Object> expected){
+        if(expected == null)
+            return this;
+
+        this.expected = expected;
+        return this;
     }
 
 
     @Override
-    protected void preCheckForHandleMap(Map<String, Object> leftMap, Map<String, Object> rightMap, JsonPathCollector processor) {
+    protected void preCheckForHandleMap(Map<String, Object> leftMap, Map<String, Object> rightMap, JsonPathAppender processor) {
 //        Assert.assertTrue((leftMap.size() == 0 && rightMap.size() == 0) || (leftMap.size() > 0 && rightMap.size() > 0 && rightMap.size() >= leftMap.size()),
         Assert.assertTrue((rightMap.size() > 0 && rightMap.size() >= leftMap.size()) || (rightMap.size() == 0 && leftMap.size() == 0),
                 String.format("[%d] Expected json structure is different from actual: [%s->%s]",
@@ -28,22 +43,22 @@ public class JsonAssert extends AbstractJsonComparator<JsonPathCollector> {
     }
 
     @Override
-    protected void preCheckForHandleList(List leftList, List rightList, JsonPathCollector processor) {
+    protected void preCheckForHandleList(List leftList, List rightList, JsonPathAppender processor) {
 //        Assert.assertTrue(leftList.size() == rightList.size(), String.format("[%d] [JsonAssert] Expected list is different than actual: [%s->%s]",
         Assert.assertTrue(leftList.size() <= rightList.size(), String.format("[%d] Expected list is different than actual: [%s->%s]",
                 Thread.currentThread().getId(), JacksonUtils.toJson(rightList), JacksonUtils.toJson(leftList)));
     }
 
     @Override
-    protected void preCheckForRedirect(Object leftObject, Object rightObject, JsonPathCollector processor) {
+    protected void preCheckForRedirect(Object leftObject, Object rightObject, JsonPathAppender processor) {
 
     }
 
     @Override
-    protected void ending(Object leftObject, Object rightObject, JsonPathCollector processor) {
+    protected void ending(Object leftObject, Object rightObject, JsonPathAppender processor) {
         logger.info(String.format("[%d] Assert %s:[%s->%s]",
                 Thread.currentThread().getId(),
-                processor.getJsonPath(),
+                processor.get(),
                 rightObject instanceof Number ? numberParser.execute(rightObject) : rightObject,
                 leftObject instanceof Number ? numberParser.execute(leftObject) : leftObject));
 
@@ -70,9 +85,12 @@ public class JsonAssert extends AbstractJsonComparator<JsonPathCollector> {
     }
 
     @Override
-    protected boolean isEnd(Object leftObject, Object rightObject, JsonPathCollector processor) {
+    protected boolean isEnd(Object leftObject, Object rightObject, JsonPathAppender processor) {
         return leftObject instanceof String || leftObject == null || leftObject instanceof Boolean || leftObject instanceof Number;
     }
+
+
+
 
 
 }

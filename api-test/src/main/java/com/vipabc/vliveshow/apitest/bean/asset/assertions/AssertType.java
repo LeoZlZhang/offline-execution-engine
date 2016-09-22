@@ -47,7 +47,7 @@ public enum AssertType implements Evaluator<ResponseContainer> {
         @SuppressWarnings("unchecked")
         @Override
         public boolean evaluate(ResponseContainer response) {
-            new JsonAssert().go((Map) response.getResponseObject(), (Map) expectedValue);
+            new JsonAssert().setExpected((Map) expectedValue).execute((Map) response.getResponseObject());
             return true;
         }
 
