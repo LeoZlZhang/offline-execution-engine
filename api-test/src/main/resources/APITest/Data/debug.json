@@ -1,37 +1,83 @@
 [
-    {
-      "name": "POC GET",
-      "workflow": "APITest",
-      "assets": [
-        {
-          "info": "---this is a demo for requesting YouTube restful api---",
-          "request": {
-            "method": "GET",
-            "url": "https://www.googleapis.com/youtube/v3/search",
-            "param": {
-              "part": "snippet",
-              "q": "ExecutionEngine+Cactus",
-              "type": "video",
-              "key": "AIzaSyBXpFaKcdrc3N70wxmO1Qj6tszmbaoR-GU"
-            }
-          },
-          "assertions": {
-            "StatusCode": 200,
-            "ResponseJson": {
-              "kind": "youtube#searchListResponse",
-              "etag": "\"[\\s\\S]+\"",
-              "regionCode": "TW",
-              "pageInfo": {
-                "totalResults": 0,
-                "resultsPerPage": "{{ACTUAL}} < 10"
-              },
-              "items": []
-            }
-          },
-          "extractions": {
-            "etag": "etag"
+  {
+    "name": "happyPath",
+    "workflow": "APITest",
+    "assets": [
+      {
+        "info":"{{phoneNum}} {{tail}}",
+        "request": {
+          "method": "POST",
+          "url": "{{protocol}}://{{host}}/v1/users/phone/register",
+          "param": {
+            "mobilePhone": "{{phoneNum}}",
+            "nationCode": "86",
+            "verificationCode": "111111"
+          }
+        },
+        "assertions": {
+          "StatusCode": 200,
+          "ResponseJson": {
+            "success" : true
+          }
+        },
+        "extractions":{
+          "results" : {
+            "token" : "token"
           }
         }
-      ]
-    }
+      },
+      {
+        "request": {
+          "method": "POST",
+          "url": "{{protocol}}://{{host}}/v1/users/phone/init_pwd",
+          "param": {
+            "token": "{{token}}",
+            "password": "111111"
+          }
+        },
+        "assertions": {
+          "StatusCode": 200,
+          "ResponseJson": {
+            "success": true,
+            "message": "设置密码成功",
+            "error_code": 0,
+            "results": {}
+          }
+        }
+      },
+      {
+        "request": {
+          "method": "POST",
+          "url": "{{protocol}}://{{host}}/v1/users/profile/base",
+          "param": {
+            "nickName": "OK{{tail}}",
+            "token": "{{token}}"
+          },
+          "multiPartEntity": {
+            "textBodies": [
+              {
+                "name": "gender",
+                "text": "FEMALE"
+              }
+            ]
+          }
+        },
+        "assertions": {
+          "StatusCode": 200,
+          "ResponseJson": {
+            "success": true,
+            "message": "",
+            "error_code": 0,
+            "results": {}
+          }
+        }
+      },
+      {
+        "settings":{
+          "phoneNum" : "[js[{{phoneNum}}+1 ]]",
+          "tail":"[js[{{tail}} + 1 ]]"
+        }
+      }
+    ]
+  }
 ]

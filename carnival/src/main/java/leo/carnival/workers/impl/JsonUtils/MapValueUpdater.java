@@ -108,7 +108,6 @@ public class MapValueUpdater implements Processor<Map, Map> {
             if (decorator.containsKey(matcher.group(2)))
                 str = str.replace(matcher.group(1), String.valueOf(decorator.get(matcher.group(2))));
 
-
         if(scriptEngine!= null){
             Matcher jsMatcher = Pattern.compile(jsReg).matcher(str);
             while (jsMatcher.find()) {
