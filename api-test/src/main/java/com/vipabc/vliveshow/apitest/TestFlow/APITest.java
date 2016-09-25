@@ -3,11 +3,8 @@ package com.vipabc.vliveshow.apitest.TestFlow;
 import com.mongodb.DB;
 import com.mongodb.MongoClient;
 import com.vipabc.vliveshow.apitest.bean.APITestData;
-import com.vipabc.vliveshow.apitest.bean.asset.TestAsset;
-import leo.carnival.MyArrayUtils;
 import org.apache.log4j.Logger;
 import org.postgresql.jdbc42.Jdbc42Connection;
-import org.testng.Assert;
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.JedisCluster;
 
@@ -20,17 +17,18 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.*;
 
-@SuppressWarnings({"unused", "ConstantConditions"})
+@SuppressWarnings({"unused", "ConstantConditions", "MismatchedQueryAndUpdateOfCollection"})
 public class APITest {
     private static final Logger logger = Logger.getLogger(APITest.class);
 
 
     public Object[] prepare() throws IOException, ClassNotFoundException, SQLException {
-        URL url = this.getClass().getClassLoader().getResource("db.properties");
         Properties properties = new Properties();
+        URL url = this.getClass().getClassLoader().getResource("db.properties");
         properties.load(new FileInputStream(new File(url.getFile())));
 
         Object[] rtnObjects = new Object[3];
+
 
         //mongo
         String mongoHost = properties.getProperty("mongo.host");
@@ -72,37 +70,28 @@ public class APITest {
         return rtnObjects;
     }
 
-    public void end() {
-        logger.info("End");
-    }
 
-    public Object[] loadTestData(APITestData tc) {
-        logger.info(tc.toString());
-        return new Object[]{tc};
-    }
 
-    public Object[] initializeLoop(APITestData tc, DB mongoConnection, JedisCluster redisConnection, Jdbc42Connection sqlConnection) {
-        Assert.assertTrue(tc.getAssets().length > 0);
+    public Object[] initializeLoop(DB mongoConnection, JedisCluster redisConnection, Jdbc42Connection sqlConnection) {
         Map<String, Object> map = new HashMap<>();
         map.put("mongoConnection", mongoConnection);
         map.put("redisConnection", redisConnection);
         map.put("sqlConnection", sqlConnection);
-        return new Object[]{tc.getAssets()[0], map};
-    }
-
-    public Object[] loadNextTestAsset(APITestData tc, TestAsset asset) {
-        int index = MyArrayUtils.getElementIndexInArray(tc.getAssets(), asset);
-        Assert.assertTrue(index >= 0);
-
-        if ((index + 1) == tc.getAssets().length)
-            return new Object[]{asset, true};
-        else
-            return new Object[]{tc.getAssets()[index + 1], false};
+        return new Object[]{map};
     }
 
 
-    public Object[] requestWithHttpClient(TestAsset asset, Map<String, Object> extractionKVMap) throws Exception {
-        asset.execute(extractionKVMap);
-        return new Object[]{extractionKVMap};
+    /**
+     * Requesting assertion extraction, including db operation
+     * @param apiTestData this is test data which contains all information of testing
+     * @param extractionMao contain necessary db connection, extraction map is also a container inside the apiTestData to store extracted value from response
+     */
+    public void requestWithHttpClient(APITestData apiTestData, Map<String, Object> extractionMao) {
+        apiTestData.execute(extractionMao);
+    }
+
+
+    public void end() {
+        logger.info("End");
     }
 }

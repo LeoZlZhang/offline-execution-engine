@@ -10,9 +10,7 @@ import leo.engineData.testData.TestData;
 import org.apache.commons.io.FileUtils;
 import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,11 +45,9 @@ public class TestEngine implements Executor<String, TestResult> {
             gear = JacksonUtils.fromJsonObject(jsonString, Gear.class);
         else if (JacksonUtils.isJsonArray(jsonString))
             gear = JacksonUtils.firstOneFromJsonArray(jsonString, Gear.class);
-        else {
-            new JSONObject(jsonString);
-            new JSONArray(jsonString);
+        else
             throw new RuntimeException("Bad formatted json string:" + gearFile.getPath());
-        }
+
         return this;
     }
 

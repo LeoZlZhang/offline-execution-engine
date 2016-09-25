@@ -22,11 +22,6 @@ public class Gear implements Executor<String, TestResult> {
 
 
     @Override
-    public String toString() {
-        return name;
-    }
-
-    @Override
     public TestResult execute(String flowName) {
         applicationContext.setGearName(name);
         try {
@@ -54,6 +49,11 @@ public class Gear implements Executor<String, TestResult> {
         } catch (Exception e) {
             return new TestFail(e);
         }
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 
 

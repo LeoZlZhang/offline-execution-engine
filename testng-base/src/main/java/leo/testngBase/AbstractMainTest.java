@@ -81,7 +81,7 @@ public abstract class AbstractMainTest {
         return method != null ? method.getAnnotation(TestInfo.class) : null;
     }
 
-    @SuppressWarnings("unchecked")
+
     private ProfilePicker profilePicker() throws IOException {
         FolderFilter folderFilter = Processors.FolderFilter(Evaluators.FolderEvaluator(Evaluators.RegexEvaluator(testInfo.profileFolderName())));
         FileFilter fileFilter = Processors.FileFilter(Evaluators.FileEvaluator(Evaluators.RegexEvaluator(".*\\.json")));
@@ -132,7 +132,6 @@ public abstract class AbstractMainTest {
     }
 
     public class ObjectBoxing implements Processor<TestData[], Object[][]> {
-
         @Override
         public Object[][] process(TestData[] bean) {
             if (bean == null || bean.length == 0)

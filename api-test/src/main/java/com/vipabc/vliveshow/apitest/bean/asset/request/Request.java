@@ -2,59 +2,46 @@ package com.vipabc.vliveshow.apitest.bean.asset.request;
 
 import com.google.api.client.http.*;
 import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.http.json.JsonHttpContent;
-import com.google.api.client.json.jackson.JacksonFactory;
+import com.vipabc.vliveshow.apitest.bean.asset.request.RrequestEntity.JsonBody;
 import com.vipabc.vliveshow.apitest.bean.asset.request.RrequestEntity.MultiPartEntity.MultiPartEntity;
+import com.vipabc.vliveshow.apitest.bean.asset.request.RrequestEntity.RequestParam;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.Map;
 
 @SuppressWarnings({"DefaultAnnotationParam", "unused", "MismatchedQueryAndUpdateOfCollection"})
 public class Request implements Serializable {
     private static final Logger logger = Logger.getLogger(Request.class);
     private static final HttpTransport httpTransport = new NetHttpTransport();
-//  private static final Proxy proxy = new Proxy(java.net.Proxy.Type.HTTP, new InetSocketAddress("192.168.23.199", 8080));
+    //  private static final Proxy proxy = new Proxy(java.net.Proxy.Type.HTTP, new InetSocketAddress("192.168.23.199", 8080));
 //  private static final HttpTransport httpTransport = new NetHttpTransport.Builder().setProxy(proxy).build();
     private static final HttpRequestFactory requestFactory = httpTransport.createRequestFactory();
 
     private String method;
     private String url;
-    private Map<String, String> param;
+    private RequestParam param;
     private MultiPartEntity multiPartEntity;
-    private Map<String, Object> jsonBody;
-
+    private JsonBody jsonBody;
 
 
     public HttpResponse process() throws IOException {
 
-        String url = generateUrl();
+        String url = param == null ? this.url : param.process(this.url);
+
         logger.info(String.format("[%d] %s", Thread.currentThread().getId(), url));
 
         HttpContent content = null;
+
         if (multiPartEntity != null)
             content = multiPartEntity.process();
+
         if (jsonBody != null)
-            content = new JsonHttpContent(new JacksonFactory(), jsonBody);
+            content = jsonBody.process(null);
 
         HttpRequest httpRequest = requestFactory.buildRequest(method, new GenericUrl(url), content);
+
         return httpRequest.execute();
-    }
-
-
-    private String generateUrl() throws UnsupportedEncodingException {
-        StringBuilder sb = new StringBuilder(url);
-
-        if (param != null && param.size() > 0) {
-            sb.append("?");
-            for (Map.Entry<String, String> entry : param.entrySet())
-                sb.append(String.format("%s=%s&", entry.getKey().trim(), URLEncoder.encode(entry.getValue(), "UTF-8")));
-            sb.deleteCharAt(sb.length() - 1);
-        }
-        return sb.toString();
     }
 
 
@@ -75,7 +62,7 @@ public class Request implements Serializable {
         return url;
     }
 
-    public Map<String, String> getParam() {
+    public RequestParam getParam() {
         return param;
     }
 
@@ -83,7 +70,7 @@ public class Request implements Serializable {
         return multiPartEntity;
     }
 
-    public Map<String, Object> getJsonBody() {
+    public JsonBody getJsonBody() {
         return jsonBody;
     }
 
@@ -98,7 +85,7 @@ public class Request implements Serializable {
         this.url = url;
     }
 
-    public void setParam(Map<String, String> param) {
+    public void setParam(RequestParam param) {
         this.param = param;
     }
 
@@ -106,7 +93,7 @@ public class Request implements Serializable {
         this.multiPartEntity = multiPartEntity;
     }
 
-    public void setJsonBody(Map<String, Object> jsonBody) {
+    public void setJsonBody(JsonBody jsonBody) {
         this.jsonBody = jsonBody;
     }
 }

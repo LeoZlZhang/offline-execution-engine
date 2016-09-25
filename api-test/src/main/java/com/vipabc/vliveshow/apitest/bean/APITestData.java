@@ -4,10 +4,11 @@ import com.vipabc.vliveshow.apitest.bean.asset.TestAsset;
 import leo.engineData.testData.TestDataImpl;
 
 import java.io.Serializable;
+import java.util.Map;
 
 
 @SuppressWarnings({"unused", "FieldCanBeLocal"})
-public class APITestData extends TestDataImpl implements Serializable {
+public class APITestData extends TestDataImpl<Map<String, Object>, Map<String, Object>> implements Serializable {
     private String name;
     private String workflow;
     private TestAsset[] assets;
@@ -15,25 +16,23 @@ public class APITestData extends TestDataImpl implements Serializable {
 
     private String sourceFileName = "";
 
-
     @Override
-    public String toString() {
-        return String.format("'%s'--->'%s'", sourceFileName, name);
-    }
+    public Map<String, Object> execute(Map<String, Object> extractionMap) {
 
-    @Override
-    public Object process(Object o) {
-        return null;
-    }
+        for(TestAsset testAsset : assets)
+            testAsset.execute(extractionMap);
 
-    @Override
-    public Object execute(Object o) {
-        return null;
+        return extractionMap;
     }
 
     @Override
     public String getTestingFlow() {
         return this.workflow;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("'%s'--->'%s'", sourceFileName, name);
     }
 
     /**

@@ -4,38 +4,83 @@ import leo.carnival.workers.impl.Processors;
 import leo.engineCore.engineFoundation.ApplicationContext;
 import leo.carnival.workers.prototype.Executor;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Map;
+
 @SuppressWarnings({"unused", "WeakerAccess", "FieldCanBeLocal"})
-public class Step implements Executor<ApplicationContext, Step>{
-    public static final int NoLooping = -999;
+public class Step implements Executor<ApplicationContext, Step> {
 
     private String sourceClass;
-    private int loop = NoLooping;
     private String method;
     private String[] input;
     private String[] output;
 
 
+    @Override
+    public Step execute(ApplicationContext applicationContext) {
+        if(method == null || method.isEmpty())
+            throw new RuntimeException("Invalid method declared!");
 
-    public static int getNoLooping() {
-        return NoLooping;
+        applicationContext.setStepName(method);
+        applicationContext.printExecutionInfo();
+        applicationContext.setMethodRepo(Processors.ClassLoader().process(sourceClass));
+
+
+        //Step inputs
+        Object[] parameters = getParameter(applicationContext.getContext());
+
+        //Stepping
+        Object[] returnObjs = invoke(applicationContext.getMethod(method), parameters);
+
+        //Insert step result into context
+        updateContext(applicationContext.getContext(), returnObjs);
+
+        return this;
     }
+
+
+    private Object[] getParameter(Map<String, Object> context) {
+        if (input == null)
+            return null;
+
+        Object[] rtnArray = new Object[input.length];
+
+        for (int i = 0, len = rtnArray.length; i < len; i++)
+            rtnArray[i] = context.get(input[i]);
+
+        return rtnArray;
+    }
+
+
+
+
+    private Object[] invoke(Map.Entry<Method, Object> entry, Object[] parameters) {
+        try {
+            return (Object[]) entry.getKey().invoke(entry.getValue(), parameters);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e.getCause());
+        }
+    }
+
+
+    private void updateContext(Map<String, Object> context, Object[] returnObjs) {
+        if (output == null || output.length == 0)
+            return;
+
+        for (int i = 0, len = output.length; i < len; i++)
+            context.put(output[i], returnObjs[i]);
+    }
+
 
     @Override
     public String toString() {
         return method;
     }
 
-    public int countInnerStepNum() {
-        return 1;
-    }
 
-    @Override
-    public Step execute(ApplicationContext applicationContext) {
-        applicationContext.setStepName(method);
-        applicationContext.printExecutionInfo();
-        applicationContext.setMethodRepo(Processors.ClassLoader().process(sourceClass));
-        return this;
-    }
 
     /**
      * Getter
@@ -43,42 +88,30 @@ public class Step implements Executor<ApplicationContext, Step>{
     public String getSourceClass() {
         return sourceClass;
     }
-
-    public int getLoop() {
-        return loop;
-    }
-
     public String getMethod() {
         return method;
     }
-
     public String[] getInput() {
         return input;
     }
-
     public String[] getOutput() {
         return output;
     }
 
+
     /**
      * Setter
      */
+
     public void setSourceClass(String sourceClass) {
         this.sourceClass = sourceClass;
     }
-
-    public void setLoop(int loop) {
-        this.loop = loop;
-    }
-
     public void setMethod(String method) {
         this.method = method;
     }
-
     public void setInput(String[] input) {
         this.input = input;
     }
-
     public void setOutput(String[] output) {
         this.output = output;
     }

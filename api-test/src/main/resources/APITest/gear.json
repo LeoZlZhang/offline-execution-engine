@@ -1,26 +1,22 @@
 {
+  "sourceClass": "com.vipabc.vliveshow.apitest.TestFlow.APITest",
   "name": "IRASVTGear",
   "flows": [
     {
       "name": "BeforeTestFlow", "type": "BeforeTest",
-      "sourceClass": "com.vipabc.vliveshow.apitest.TestFlow.APITest",
       "steps": [
         {"method": "prepare", "output": ["MongoConnection", "RedisConnection", "SqlConnection"]}
       ]
     },
     {
       "name": "APITest", "type": "Test",
-      "sourceClass": "com.vipabc.vliveshow.apitest.TestFlow.APITest",
       "steps": [
-        {"method": "loadTestData", "input": ["TestCase"], "output": ["TC"]},
-        {"method": "initializeLoop", "input": ["TestCase", "MongoConnection","RedisConnection", "SqlConnection"], "output": ["Asset", "ExtractionMap"]},
-        {"loop": 1, "method": "requestWithHttpClient", "input": ["Asset", "ExtractionMap"], "output": ["ExtractionMap"]},
-        {"loop": 1, "method": "loadNextTestAsset", "input": ["TC", "Asset"], "output": ["Asset", "BreakLoop"]}
+        {"method": "initializeLoop", "input": ["MongoConnection","RedisConnection", "SqlConnection"], "output": ["ExtractionMap"]},
+        {"method": "requestWithHttpClient", "input": ["TestCase", "ExtractionMap"]}
       ]
     },
     {
       "name": "AfterTestFlow", "type": "AfterTest",
-      "sourceClass": "com.vipabc.vliveshow.APITest.TestFlow.APITest",
       "steps": [
         {"method": "end"}
       ]
