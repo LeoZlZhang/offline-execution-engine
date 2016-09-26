@@ -4,6 +4,7 @@ import com.vipabc.vliveshow.apitest.Util.JsonExtractor;
 import com.vipabc.vliveshow.apitest.bean.asset.ResponseContainer;
 import leo.carnival.workers.prototype.Processor;
 
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -12,7 +13,7 @@ import java.util.Map;
  * Bean of extraction
  */
 @SuppressWarnings("unchecked")
-public class Extraction extends LinkedHashMap<String, Object> implements Processor<ResponseContainer, Map<String, Object>> {
+public class Extraction extends LinkedHashMap<String, Object> implements Processor<ResponseContainer, Map<String, Object>> , Serializable {
 
     private Map<String, Object> extractionMap;
 

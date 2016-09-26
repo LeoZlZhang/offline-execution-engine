@@ -10,7 +10,7 @@ import java.util.Map;
  * Created by leo_zlzhang on 9/19/2016.
  * Redis operation
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "WeakerAccess"})
 public enum RedisOperation implements Serializable, Executor<DBObject, String> {
 
     get {
@@ -20,8 +20,11 @@ public enum RedisOperation implements Serializable, Executor<DBObject, String> {
                 throw new RuntimeException("dbObject should not be empty");
             if(dbObject.getCriteria() == null || dbObject.getCriteria().isEmpty())
                 throw new RuntimeException("Invalid get operation to redis, criteria should contain one entry with valid key");
+            if(!dbObject.getCriteria().containsKey("key"))
+                throw new RuntimeException("Not define the key to query");
 
-            return getDBConnection().get(dbObject.getCriteria().keySet().iterator().next());
+
+            return getDBConnection().get(dbObject.getCriteria().get("key").toString());
         }
     },
     set{
@@ -31,9 +34,13 @@ public enum RedisOperation implements Serializable, Executor<DBObject, String> {
                 throw new RuntimeException("dbObject should not be empty");
             if(dbObject.getValues() == null || dbObject.getValues().isEmpty())
                 throw new RuntimeException("Invalid set operation to redis, criteria should contain one key value pair");
+            if(!dbObject.getValues().containsKey("key"))
+                throw new RuntimeException("Not define the key to set");
+            if(!dbObject.getValues().containsKey("value"))
+                throw new RuntimeException("Not define the value to set");
 
-            Map.Entry<String, Object> entry2Set = dbObject.getValues().entrySet().iterator().next();
-            return getDBConnection().set(entry2Set.getKey(), entry2Set.getValue().toString());
+
+            return getDBConnection().set(dbObject.getValues().get("key").toString(), dbObject.getValues().get("value").toString());
         }
     },
     del{
@@ -43,9 +50,10 @@ public enum RedisOperation implements Serializable, Executor<DBObject, String> {
                 throw new RuntimeException("dbObject should not be empty");
             if(dbObject.getCriteria() == null || dbObject.getCriteria().isEmpty())
                 throw new RuntimeException("Invalid del operation to redis, criteria should contain one key value pair");
+            if(!dbObject.getCriteria().containsKey("key"))
+                throw new RuntimeException("Not define the key to delete");
 
-            Map.Entry<String, Object> entry2Set = dbObject.getCriteria().entrySet().iterator().next();
-            return getDBConnection().del(entry2Set.getKey()).toString();
+            return getDBConnection().del(dbObject.getCriteria().get("key").toString()).toString();
         }
     };
     private JedisCluster jedisCluster;

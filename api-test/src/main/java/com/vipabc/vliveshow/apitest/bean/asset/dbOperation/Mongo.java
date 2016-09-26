@@ -3,6 +3,7 @@ package com.vipabc.vliveshow.apitest.bean.asset.dbOperation;
 import com.mongodb.DB;
 import leo.carnival.workers.prototype.Processor;
 
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -11,7 +12,7 @@ import java.util.Map;
  * Bean of mongo operation
  */
 @SuppressWarnings("WeakerAccess")
-public class Mongo extends LinkedHashMap<MongoOperation, DBObject> implements Processor<Map<String, Object> , String> {
+public class Mongo extends LinkedHashMap<MongoOperation, DBObject> implements Processor<Map<String, Object> , String>, Serializable{
     @Override
     public String process(Map<String, Object> extractionMap) {
 

@@ -11,7 +11,7 @@ import java.util.Map;
  * Created by leo_zlzhang on 9/20/2016.
  * postgres
  */
-@SuppressWarnings({"unused", "WeakerAccess"})
+@SuppressWarnings({"unused", "WeakerAccess", "Duplicates"})
 public enum SqlOperation implements Executor<DBObject, String> {
     insert {
         @Override
@@ -25,13 +25,20 @@ public enum SqlOperation implements Executor<DBObject, String> {
                     dbObject.getTable(),
                     valueMapToSql(dbObject.getCriteria())));
 
+            Statement statement = null;
             try {
-                Statement statement = getDBConnection().createStatement();
+                statement = getDBConnection().createStatement();
                 int resultSet = statement.executeUpdate(command.toString());
-                statement.close();
                 return String.valueOf(resultSet);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
+            } finally {
+                try {
+                    if (statement != null)
+                        statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         }
     },
@@ -47,14 +54,20 @@ public enum SqlOperation implements Executor<DBObject, String> {
                     dbObject.getTable(),
                     criteriaMapToSql(dbObject.getCriteria())));
 
+            Statement statement = null;
             try {
-                Statement statement = getDBConnection().createStatement();
+                statement = getDBConnection().createStatement();
                 ResultSet resultSet = statement.executeQuery(command.toString());
-                String json = rsToJsonString(resultSet);
-                statement.close();
-                return json;
+                return rsToJsonString(resultSet);
             } catch (SQLException | JSONException e) {
                 throw new RuntimeException(e);
+            } finally {
+                try {
+                    if (statement != null)
+                        statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         }
     },
@@ -71,13 +84,20 @@ public enum SqlOperation implements Executor<DBObject, String> {
                     valueMapToSet(dbObject.getValues()),
                     criteriaMapToSql(dbObject.getCriteria())));
 
+            Statement statement = null;
             try {
-                Statement statement = getDBConnection().createStatement();
+                statement = getDBConnection().createStatement();
                 int resultSet = statement.executeUpdate(command.toString());
-                statement.close();
                 return String.valueOf(resultSet);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
+            } finally {
+                try {
+                    if (statement != null)
+                        statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         }
     },
@@ -95,14 +115,21 @@ public enum SqlOperation implements Executor<DBObject, String> {
                     dbObject.getTable(),
                     criteriaMapToSql(dbObject.getCriteria())));
 
+
+            Statement statement = null;
             try {
-                Statement statement = getDBConnection().createStatement();
-                ResultSet resultSet = statement.executeQuery(command.toString());
-                String json = rsToJsonString(resultSet);
-                statement.close();
-                return json;
-            } catch (SQLException | JSONException e) {
+                statement = getDBConnection().createStatement();
+                int resultSet = statement.executeUpdate(command.toString());
+                return String.valueOf(resultSet);
+            } catch (SQLException e) {
                 throw new RuntimeException(e);
+            } finally {
+                try {
+                    if (statement != null)
+                        statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         }
     };
@@ -203,7 +230,7 @@ public enum SqlOperation implements Executor<DBObject, String> {
         if (valueMap == null || valueMap.isEmpty())
             throw new RuntimeException("Empty column value map to update");
         StringBuilder setCommand = new StringBuilder("set");
-        
+
         for (Map.Entry<String, Object> entry : valueMap.entrySet())
             if (entry.getValue() instanceof String)
                 setCommand.append(String.format(" %s=\'%s\',", entry.getKey(), entry.getValue()));

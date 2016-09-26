@@ -3,6 +3,7 @@ package com.vipabc.vliveshow.apitest.bean.asset.dbOperation;
 import leo.carnival.workers.prototype.Processor;
 import redis.clients.jedis.JedisCluster;
 
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -11,7 +12,7 @@ import java.util.Map;
  * Bean of redis operation
  */
 @SuppressWarnings("WeakerAccess")
-public class Redis extends LinkedHashMap<RedisOperation, DBObject> implements Processor<Map<String, Object>, String> {
+public class Redis extends LinkedHashMap<RedisOperation, DBObject> implements Processor<Map<String, Object>, String>, Serializable {
     @Override
     public String process(Map<String, Object> extractionMap) {
         String rtnString = null;

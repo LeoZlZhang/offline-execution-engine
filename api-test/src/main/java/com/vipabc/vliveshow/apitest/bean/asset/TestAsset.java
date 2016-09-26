@@ -75,6 +75,9 @@ public class TestAsset implements Serializable, Executor<Map<String, Object>, Ma
 
 
     public void executeAssets(Map<String, Object> extractionKVMap) {
+        if (info != null)
+            logger.info(info);
+
         for (int i = 0; i < repeat; i++)
             for (TestAsset testAsset : assets)
                 testAsset.execute(extractionKVMap);

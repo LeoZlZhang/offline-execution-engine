@@ -2,6 +2,7 @@ package com.vipabc.vliveshow.apitest.bean.asset.dbOperation;
 
 import leo.carnival.workers.prototype.Processor;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -11,7 +12,7 @@ import java.util.Map;
  * Bean of sql operation
  */
 @SuppressWarnings("WeakerAccess")
-public class Sql extends LinkedHashMap<SqlOperation, DBObject> implements Processor<Map<String, Object>, String> {
+public class Sql extends LinkedHashMap<SqlOperation, DBObject> implements Processor<Map<String, Object>, String> , Serializable {
     @Override
     public String process(Map<String, Object> extractionMap) {
 

@@ -2,6 +2,7 @@ package com.vipabc.vliveshow.apitest.bean.asset.request.RrequestEntity;
 
 import leo.carnival.workers.prototype.Processor;
 
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.LinkedHashMap;
@@ -11,7 +12,7 @@ import java.util.Map;
  * Created by leozhang on 9/24/16.
  * Bean of request param
  */
-public class RequestParam extends LinkedHashMap<String, String> implements Processor<String, String> {
+public class RequestParam extends LinkedHashMap<String, String> implements Processor<String, String>, Serializable {
 
     @Override
     public String process(String url) {

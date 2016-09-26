@@ -10,7 +10,7 @@ import java.util.Map;
  * Bean of DBOperation
  */
 @SuppressWarnings({"unused", "MismatchedQueryAndUpdateOfCollection"})
-public class DBOperation implements Processor<Map<String, Object>, String>, Serializable {
+public class DBOperation implements Serializable, Processor<Map<String, Object>, String> {
 
     private Mongo mongo;
     private Redis redis;
@@ -27,5 +27,36 @@ public class DBOperation implements Processor<Map<String, Object>, String>, Seri
     @Override
     public String execute(Map<String, Object> extractionMap) {
         return process(extractionMap);
+    }
+
+
+    /**
+     * Getter
+     */
+    public Mongo getMongo() {
+        return mongo;
+    }
+
+    public Redis getRedis() {
+        return redis;
+    }
+
+    public Sql getSql() {
+        return sql;
+    }
+
+    /**
+     * Setter
+     */
+    public void setMongo(Mongo mongo) {
+        this.mongo = mongo;
+    }
+
+    public void setRedis(Redis redis) {
+        this.redis = redis;
+    }
+
+    public void setSql(Sql sql) {
+        this.sql = sql;
     }
 }
