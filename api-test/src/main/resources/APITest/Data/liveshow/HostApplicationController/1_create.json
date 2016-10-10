@@ -5,15 +5,22 @@
     "assets": [
       {
         "info": "---Remove host application from mongo---",
-        "mongoOperation": {
-          "delete": {
-            "table": "hostapplication",
-            "criteria": {"userId": 5}
+        "dbOperation": {
+          "mongo": {
+            "delete": {
+              "table": "hostapplication",
+              "criteria": {
+                "userId": 5
+              }
+            }
           }
         }
       },
-      {"Injection": "PwdLoginA.json"},
       {
+        "Injection": "PwdLoginA.json"
+      },
+      {
+        "info": "---apply host application---",
         "request": {
           "method": "POST",
           "url": "{{protocol}}://{{host}}/v1/host/application",
@@ -52,21 +59,22 @@
         }
       },
       {
-        "info": "Verify host application from mongo",
-        "mongoOperation": {
-          "query": {
-            "table": "hostapplication",
-            "criteria": {
-              "_id": "{{hostApplicationId}}"
+        "info": "---verify host application from mongo---",
+        "dbOperation": {
+          "mongo": {
+            "query": {
+              "table": "hostapplication",
+              "criteria": {
+                "_id": "{{hostApplicationId}}"
+              }
             }
           }
         },
         "assertions": {
           "ResponseJson": {
             "_class": "com.mosai.vliveshow.datachannel.domain.user.HostApplication",
-            "userId": 5.0,
+            "userId": 5,
             "name": "auto",
-            "nickName": "Leoleo ",
             "confirmed": false,
             "gender": "MALE",
             "phone": "123",

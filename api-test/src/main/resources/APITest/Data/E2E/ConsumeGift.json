@@ -4,13 +4,122 @@
     "workflow": "APITest",
     "assets": [
       {
+        "info": "---Step1   set user A balance = 10000   ---",
+        "settings": {
+          "defaultDiamond": 10000
+        }
+      },
+      {
+        "info": "---Step2   USER_DIAMOND_ACTIVE_{{userIdA}} == 0   ---",
+        "dbOperation": {
+          "redis": {
+            "set": {
+              "values": {
+                "key": "USER_DIAMOND_ACTIVE_{{userIdA}}",
+                "value": 0
+              }
+            }
+          }
+        },
+        "assertions": {
+          "ResponseJson": {"result":"OK"}
+        }
+      },
+      {
+        "info": "---Step3   USER_ACTIVE_V_TICKET_{{userIdA}} == 0   ---",
+        "dbOperation": {
+          "redis": {
+            "set": {
+              "values": {
+                "key": "USER_ACTIVE_V_TICKET_{{userIdB}}",
+                "value": 0
+              }
+            }
+          }
+        },
+        "assertions": {
+          "ResponseJson": {"result":"OK"}
+        }
+      },
+      {
+        "info": "---Step4 set user balance as 10000 diamond in postgres---",
+        "dbOperation": {
+          "sql": {
+            "update": {
+              "table": "t_user_balance",
+              "criteria": {
+                "user_id": "[js[{{userIdA}}]]"
+              },
+              "values": {
+                "diamond": "{{defaultDiamond}}"
+              }
+            }
+          }
+        },
+        "assertions": {
+          "ResponseJson": {
+            "result": "1"
+          }
+        }
+      },
+      {
         "Injection": "PwdLoginA.json"
       },
       {
         "Injection": "PwdLoginB.json"
       },
       {
-        "info": "Get gift list",
+        "info": "---Step5   check user balance from API   ---",
+        "request": {
+          "method": "GET",
+          "url": "{{protocol}}://{{host}}/v1/money/user/balance",
+          "param": {
+            "token": "{{tokenA}}"
+          }
+        },
+        "assertions": {
+          "StatusCode": 200,
+          "ResponseJson": {
+            "success": true,
+            "results": {
+              "diamond": "{{defaultDiamond}}",
+              "usableBalance": {
+                "diamond": "{{defaultDiamond}}"
+              }
+            }
+          }
+        }
+      },
+      {
+        "info": "---Step6   extract userB V ticket   ---",
+        "request": {
+          "method": "GET",
+          "url": "{{protocol}}://{{host}}/v1/money/user/balance",
+          "param": {
+            "token": "{{tokenB}}"
+          }
+        },
+        "assertions": {
+          "StatusCode": 200,
+          "ResponseJson": {
+            "results": {
+              "usableBalance": {
+                "userId": "{{userIdB}}",
+                "totalEarning": "[\\d]+"
+              }
+            }
+          }
+        },
+        "extractions": {
+          "results": {
+            "usableBalance": {
+              "totalEarning": "hostTicket"
+            }
+          }
+        }
+      },
+      {
+        "info": "---Step7   extract gift info   ---",
         "request": {
           "method": "GET",
           "url": "{{protocol}}://{{host}}/v1/config/gift/list",
@@ -22,15 +131,7 @@
           "StatusCode": 200,
           "ResponseJson": {
             "success": true,
-            "message": "",
-            "error_code": 0,
-            "results": {
-              "list": [
-                {
-                  "id": "[\\w]+"
-                }
-              ]
-            }
+            "error_code": 0
           }
         },
         "extractions": {
@@ -46,29 +147,7 @@
         }
       },
       {
-        "request": {
-          "method": "GET",
-          "url": "{{protocol}}://{{host}}/v1/money/user/balance",
-          "param": {
-            "token": "{{tokenA}}"
-          }
-        },
-        "assertions": {
-          "StatusCode": 200,
-          "ResponseJson": {
-            "success": true
-          }
-        },
-        "extractions": {
-          "results": {
-            "diamond": "myDiamond",
-            "usableBalance": {
-              "diamond": "myBalance"
-            }
-          }
-        }
-      },
-      {
+        "info": "---Step8   create living room   ---",
         "request": {
           "method": "POST",
           "url": "{{protocol}}://{{host}}/v1/liveshow/create",
@@ -110,6 +189,7 @@
         }
       },
       {
+        "info": "---Step9   send gift   ---",
         "request": {
           "method": "POST",
           "url": "{{protocol}}://{{host}}/v1/gift/sendgift",
@@ -134,6 +214,7 @@
         }
       },
       {
+        "info": "---Step10   check user balance from API  ---",
         "request": {
           "method": "GET",
           "url": "{{protocol}}://{{host}}/v1/money/user/balance",
@@ -148,16 +229,69 @@
             "message": "[js[print('delay for send gift');for(var t = Date.now();Date.now() - t <= 5000;);'']]",
             "error_code": 0,
             "results": {
-              "diamond": "[js[ {{myDiamond}}-{{giftCost}} ]]",
+              "diamond": "[js[ {{defaultDiamond}}-{{giftCost}} ]]",
               "usableBalance": {
                 "userId": "{{userIdA}}",
-                "diamond": "{{myBalance}}"
+                "diamond": "{{defaultDiamond}}"
               }
             }
           }
         }
       },
       {
+        "info": "---Step11   check user balance from redis   ---",
+        "dbOperation": {
+          "redis": {
+            "get": {
+              "criteria": {
+                "key": "USER_DIAMOND_ACTIVE_{{userIdA}}"
+              }
+            }
+          }
+        },
+        "assertions": {
+          "ResponseJson": {
+            "result": "[js[ \"{{giftCost}}\" ]]"
+          }
+        }
+      },
+      {
+        "info": "---Step12   check user ticket from redis   ---",
+        "dbOperation": {
+          "redis": {
+            "get": {
+              "criteria": {
+                "key": "USER_ACTIVE_V_TICKET_{{userIdB}}"
+              }
+            }
+          }
+        },
+        "assertions": {
+          "ResponseJson": {
+            "result": "[js[ var res = {{giftCost}} * 7; res.toString() ]]"
+          }
+        }
+      },
+      {
+        "info": "---Step13   check user ticket from postgres   ---",
+        "dbOperation": {
+          "sql": {
+            "select": {
+              "table": "t_user_balance",
+              "criteria": {
+                "user_id": "[js[{{userIdB}}]]"
+              }
+            }
+          }
+        },
+        "assertions": {
+          "ResponseJson": {
+            "total_earning": "{{hostTicket}}"
+          }
+        }
+      },
+      {
+        "info": "---Step14   destory living room   ---",
         "request": {
           "method": "POST",
           "url": "{{protocol}}://{{host}}/v1/liveshow/{{roomId}}/destroy",
@@ -169,13 +303,12 @@
           "StatusCode": 200,
           "ResponseJson": {
             "success": true,
-            "message": "",
-            "error_code": 0,
-            "results": {}
+            "error_code": 0
           }
         }
       },
       {
+        "info": "---Step15   check user balance from API  ---",
         "request": {
           "method": "GET",
           "url": "{{protocol}}://{{host}}/v1/money/user/balance",
@@ -190,12 +323,64 @@
             "message": "[js[print('delay for destroy room');for(var t = Date.now();Date.now() - t <= 20000;);'']]",
             "error_code": 0,
             "results": {
-              "diamond": "[js[ {{myDiamond}}-{{giftCost}} ]]",
+              "diamond": "[js[ {{defaultDiamond}}-{{giftCost}} ]]",
               "usableBalance": {
                 "userId": "{{userIdA}}",
-                "diamond": "[js[{{myBalance}}-{{giftCost}}]]"
+                "diamond": "[js[{{defaultDiamond}}-{{giftCost}}]]"
               }
             }
+          }
+        }
+      },
+      {
+        "info": "---Step16   USER_DIAMOND_ACTIVE_{{userIdA}} == 0   ---",
+        "dbOperation": {
+          "redis": {
+            "get": {
+              "criteria": {
+                "key": "USER_DIAMOND_ACTIVE_{{userIdA}}"
+              }
+            }
+          }
+        },
+        "assertions": {
+          "ResponseJson": {
+            "result": "0"
+          }
+        }
+      },
+      {
+        "info": "---Step17   USER_ACTIVE_V_TICKET_{{userIdB}} == 0   ---",
+        "dbOperation": {
+          "redis": {
+            "get": {
+              "criteria": {
+                "key": "USER_ACTIVE_V_TICKET_{{userIdB}}"
+              }
+            }
+          }
+        },
+        "assertions": {
+          "ResponseJson": {
+            "result": "0"
+          }
+        }
+      },
+      {
+        "info": "---Step18   check user ticket from postgres   ---",
+        "dbOperation": {
+          "sql": {
+            "select": {
+              "table": "t_user_balance",
+              "criteria": {
+                "user_id": "[js[{{userIdB}}]]"
+              }
+            }
+          }
+        },
+        "assertions": {
+          "ResponseJson": {
+            "total_earning": "[js[{{hostTicket}} + {{giftCost}}*7]]"
           }
         }
       }

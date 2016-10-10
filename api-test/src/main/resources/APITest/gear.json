@@ -11,6 +11,7 @@
     {
       "name": "APITest", "type": "Test",
       "steps": [
+        {"method": "printTCName", "input": ["TestCase"]},
         {"method": "initializeLoop", "input": ["MongoConnection","RedisConnection", "SqlConnection"], "output": ["ExtractionMap"]},
         {"method": "requestWithHttpClient", "input": ["TestCase", "ExtractionMap"]}
       ]
