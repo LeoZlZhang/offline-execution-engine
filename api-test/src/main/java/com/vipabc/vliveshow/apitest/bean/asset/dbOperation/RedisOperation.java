@@ -1,10 +1,10 @@
 package com.vipabc.vliveshow.apitest.bean.asset.dbOperation;
 
 import leo.carnival.workers.prototype.Executor;
+import org.apache.log4j.Logger;
 import redis.clients.jedis.JedisCluster;
 
 import java.io.Serializable;
-import java.util.Map;
 
 /**
  * Created by leo_zlzhang on 9/19/2016.
@@ -23,7 +23,7 @@ public enum RedisOperation implements Serializable, Executor<DBObject, String> {
             if(!dbObject.getCriteria().containsKey("key"))
                 throw new RuntimeException("Not define the key to query");
 
-
+            logger.info(String.format("[%d] %s %s with %s", Thread.currentThread().getId(), "RedisOperation", this.name(), dbObject.toString()));
             return getDBConnection().get(dbObject.getCriteria().get("key").toString());
         }
     },
@@ -39,7 +39,7 @@ public enum RedisOperation implements Serializable, Executor<DBObject, String> {
             if(!dbObject.getValues().containsKey("value"))
                 throw new RuntimeException("Not define the value to set");
 
-
+            logger.info(String.format("[%d] %s %s with %s", Thread.currentThread().getId(), "RedisOperation", this.name(), dbObject.toString()));
             return getDBConnection().set(dbObject.getValues().get("key").toString(), dbObject.getValues().get("value").toString());
         }
     },
@@ -53,9 +53,12 @@ public enum RedisOperation implements Serializable, Executor<DBObject, String> {
             if(!dbObject.getCriteria().containsKey("key"))
                 throw new RuntimeException("Not define the key to delete");
 
+            logger.info(String.format("[%d] %s %s with %s", Thread.currentThread().getId(), "RedisOperation", this.name(), dbObject.toString()));
             return getDBConnection().del(dbObject.getCriteria().get("key").toString()).toString();
         }
     };
+
+    private static final Logger logger = Logger.getLogger(RedisOperation.class);
     private JedisCluster jedisCluster;
 
     public RedisOperation setDBConnection(JedisCluster dbConnection) {

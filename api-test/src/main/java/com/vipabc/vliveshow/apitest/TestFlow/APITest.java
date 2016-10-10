@@ -70,7 +70,9 @@ public class APITest {
         return rtnObjects;
     }
 
-
+    public void printTCName(APITestData apiTestData){
+        logger.info(String.format("Execute test case: \"%s\" ---> \"%s\"", apiTestData.getSourceFileName(), apiTestData.getName()));
+    }
 
     public Object[] initializeLoop(DB mongoConnection, JedisCluster redisConnection, Jdbc42Connection sqlConnection) {
         Map<String, Object> map = new HashMap<>();

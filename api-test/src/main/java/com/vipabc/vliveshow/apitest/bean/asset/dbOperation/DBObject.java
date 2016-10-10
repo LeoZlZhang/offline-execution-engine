@@ -13,7 +13,12 @@ public class DBObject implements Serializable {
     private Map<String, Object> criteria;
     private Map<String, Object> values;
 
-
+    @Override
+    public String toString() {
+        return (table == null ? "" : "table='" + table + '\'') +
+                (criteria == null ? "" : " criteria=" + criteria) +
+                (values == null ? "" : " values=" + values);
+    }
 
     /**
      * Getter

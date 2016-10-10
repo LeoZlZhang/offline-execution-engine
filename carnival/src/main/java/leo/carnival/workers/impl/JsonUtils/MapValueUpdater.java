@@ -20,6 +20,7 @@ public class MapValueUpdater implements Processor<Map, Map> {
     private static final String regInjectionField = "(\\{\\{([\\w\\W]+?)}})";
     private static final Pattern patternInjectionField = Pattern.compile(regInjectionField);
     private static final String jsReg = "\\[js\\[([\\s\\S]+)\\]\\]";
+    private static final Pattern patternJSReg = Pattern.compile(jsReg);
 
     private Map<String, Object> decorator = new HashMap<>();
     private ScriptExecutor scriptEngine;
@@ -108,11 +109,16 @@ public class MapValueUpdater implements Processor<Map, Map> {
             if (decorator.containsKey(matcher.group(2)))
                 str = str.replace(matcher.group(1), String.valueOf(decorator.get(matcher.group(2))));
 
+
         if(scriptEngine!= null){
-            Matcher jsMatcher = Pattern.compile(jsReg).matcher(str);
-            while (jsMatcher.find()) {
-                String oldValue = jsMatcher.group(0);
-                String newValue = Executors.scriptExecutor().execute(jsMatcher.group(1)).toString();
+            matcher = patternJSReg.matcher(str);
+            if(matcher.matches())
+                return Executors.scriptExecutor().execute(matcher.group(1));
+
+            matcher = patternJSReg.matcher(str);
+            while (matcher.find()) {
+                String oldValue = matcher.group(0);
+                String newValue = Executors.scriptExecutor().execute(matcher.group(1)).toString();
                 str = str.replace(oldValue, newValue);
             }
         }

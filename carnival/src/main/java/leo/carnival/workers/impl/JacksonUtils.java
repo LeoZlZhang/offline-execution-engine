@@ -105,7 +105,7 @@ public final class JacksonUtils {
         try {
             new JSONObject(str);
             return true;
-        } catch (JSONException e) {
+        } catch (Exception e) {
             return false;
         }
     }

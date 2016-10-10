@@ -1,6 +1,7 @@
 package com.vipabc.vliveshow.apitest.bean.asset.dbOperation;
 
 import leo.carnival.workers.prototype.Executor;
+import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -19,11 +20,16 @@ public enum SqlOperation implements Executor<DBObject, String> {
             if (dbObject == null)
                 throw new RuntimeException("dbObject should not be empty");
             if (dbObject.getTable() == null || dbObject.getTable().isEmpty())
-                throw new RuntimeException("Invalid select operation to postgres, missing table");
+                throw new RuntimeException("Invalid insert operation to postgres, missing table");
+            if (dbObject.getValues() == null || dbObject.getValues().isEmpty())
+                throw new RuntimeException("Invalid insert operation to postgres, missing values");
+
 
             StringBuilder command = new StringBuilder(String.format("insert into %s %s",
                     dbObject.getTable(),
-                    valueMapToSql(dbObject.getCriteria())));
+                    valueMapToSql(dbObject.getValues())));
+
+            logger.info(String.format("[%d] %s %s", Thread.currentThread().getId(), "SqlOperation", command));
 
             Statement statement = null;
             try {
@@ -54,6 +60,8 @@ public enum SqlOperation implements Executor<DBObject, String> {
                     dbObject.getTable(),
                     criteriaMapToSql(dbObject.getCriteria())));
 
+            logger.info(String.format("[%d] %s %s", Thread.currentThread().getId(), "SqlOperation", command));
+
             Statement statement = null;
             try {
                 statement = getDBConnection().createStatement();
@@ -77,12 +85,16 @@ public enum SqlOperation implements Executor<DBObject, String> {
             if (dbObject == null)
                 throw new RuntimeException("dbObject should not be empty");
             if (dbObject.getTable() == null || dbObject.getTable().isEmpty())
-                throw new RuntimeException("Invalid select operation to postgres, missing table");
+                throw new RuntimeException("Invalid update operation to postgres, missing table");
+            if (dbObject.getCriteria() == null || dbObject.getCriteria().isEmpty())
+                throw new RuntimeException("Invalid update operation to postgres, missing criteria");
 
             StringBuilder command = new StringBuilder(String.format("update %s %s %s",
                     dbObject.getTable(),
                     valueMapToSet(dbObject.getValues()),
                     criteriaMapToSql(dbObject.getCriteria())));
+
+            logger.info(String.format("[%d] %s %s", Thread.currentThread().getId(), "SqlOperation", command));
 
             Statement statement = null;
             try {
@@ -115,6 +127,7 @@ public enum SqlOperation implements Executor<DBObject, String> {
                     dbObject.getTable(),
                     criteriaMapToSql(dbObject.getCriteria())));
 
+            logger.info(String.format("[%d] %s %s", Thread.currentThread().getId(), "SqlOperation", command));
 
             Statement statement = null;
             try {
@@ -133,7 +146,7 @@ public enum SqlOperation implements Executor<DBObject, String> {
             }
         }
     };
-
+    private static final Logger logger = Logger.getLogger(SqlOperation.class);
     private Connection connection;
 
     public SqlOperation setDBConnection(Connection dbConnection) {
@@ -212,7 +225,7 @@ public enum SqlOperation implements Executor<DBObject, String> {
 
 
         for (Map.Entry<String, Object> entry : valueMap.entrySet()) {
-            columns.append(String.format(" \'%s\',", entry.getKey()));
+            columns.append(String.format("%s,", entry.getKey()));
             if (entry.getValue() instanceof String)
                 values.append(String.format(" \'%s\',", entry.getValue()));
             else if (entry.getValue() instanceof Number)

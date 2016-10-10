@@ -15,7 +15,7 @@ public class JsonAssert extends AbstractJsonComparator implements Executor<Map<S
 
     @Override
     public Object execute(Map<String, Object> actual) {
-        if(expected == null || actual == null)
+        if (expected == null || actual == null)
             throw new RuntimeException("expected or actual map is null");
 
         handleMap(expected, actual, new JsonPathAppender());
@@ -23,8 +23,8 @@ public class JsonAssert extends AbstractJsonComparator implements Executor<Map<S
     }
 
 
-    public JsonAssert setExpected(Map<String, Object> expected){
-        if(expected == null)
+    public JsonAssert setExpected(Map<String, Object> expected) {
+        if (expected == null)
             return this;
 
         this.expected = expected;
@@ -77,10 +77,8 @@ public class JsonAssert extends AbstractJsonComparator implements Executor<Map<S
             else
                 Assert.assertTrue(Pattern.matches(expect, actual), String.format("Evaluate fail, Expected:%s, Actual:%s\n", expect, actual));
 
-        } else if (leftObject instanceof Boolean)
+        } else
             Assert.assertEquals(rightObject, leftObject);
-        else if (leftObject instanceof Number)
-            Assert.assertEquals(leftObject, rightObject);
 
     }
 

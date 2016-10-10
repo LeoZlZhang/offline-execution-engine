@@ -1,6 +1,5 @@
 package com.vipabc.vliveshow.apitest.bean.asset.setting;
 
-
 import leo.carnival.workers.impl.Executors;
 import leo.carnival.workers.impl.GearicUtils.ScriptExecutor;
 import leo.carnival.workers.prototype.Processor;
@@ -26,15 +25,18 @@ public class Setting extends LinkedHashMap<String, Object> implements Processor<
             return extractionMap;
 
         for (Map.Entry<String, Object> map : entrySet()) {
-            String str = map.getValue().toString();
+            if (map.getValue() instanceof String) {
+                String str = map.getValue().toString();
 
-            Matcher jsMatcher = jsPattern.matcher(str);
-            while (jsMatcher.find()) {
-                String oldValue = jsMatcher.group(0);
-                String newValue = scriptExecutor.execute(jsMatcher.group(1)).toString();
-                str = str.replace(oldValue, newValue);
-            }
-            extractionMap.put(map.getKey(), str);
+                Matcher jsMatcher = jsPattern.matcher(str);
+                while (jsMatcher.find()) {
+                    String oldValue = jsMatcher.group(0);
+                    String newValue = scriptExecutor.execute(jsMatcher.group(1)).toString();
+                    str = str.replace(oldValue, newValue);
+                }
+                extractionMap.put(map.getKey(), str);
+            }else
+                extractionMap.put(map.getKey(), map.getValue());
         }
 
         return extractionMap;
