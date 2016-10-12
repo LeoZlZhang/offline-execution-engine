@@ -17,7 +17,7 @@ var options = {
 };
 
 
-function loadJsonFromServer(testCaseName) {
+function loadTestDataFromServer(testCaseName) {
     var json = {};
     $.ajax({
         'url': '/try/api/data/get/byname',
@@ -42,83 +42,100 @@ function loadJsonFromServer(testCaseName) {
 var editor = new JSONEditor(container, options, '');
 
 
-function loadTreeData() {
-    var tree =
-        {
-            text: "ApiTestData",
-            children: [
-                {
-                    text: "advertisement",
-                    children: [
-                        {
-                            text: "AdvertisementController",
-                            children: [
-                                {
-                                    text: "1_clickAdviertisement",
-                                    icon: 'jstree-file'
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    text: "blackword",
-                    children: [
-                        {
-                            text: "BlackWordController",
-                            children: [
-                                {
-                                    text: "1_checkNameBlockedWord"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    text: "E2E",
-                    children: [
-                        {
-                            text: "ConsumeGift"
-                        },
-                        {
-                            text: "DiamondVerify"
-                        }
-                    ]
-                },
-                {
-                    text: "gift",
-                    children: [
-                        {
-                            text: "GiftController",
-                            children: [
-                                {
-                                    text: "1_sendgift"
-                                },
-                                {
-                                    text: "2_stopPlay"
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+function loadTreeDataFromServer() {
+    var catalog = {};
+    $.ajax({
+        'url': '/try/api/catalog/load',
+        'type': 'get',
+        'contentType': "application/json",
+        'dataType': 'json',
+        'async': false,
+        success: function (data) {
+            catalog = data.result;
+        },
+        error: function (e) {
+            console.log("fail to get catalog from backend" + e);
         }
-        ;
-
-    return [tree];
+    });
+    return catalog;
 }
 
+var treeData =
+    {
+        text: "ApiTestData",
+        children: [
+            {
+                text: "advertisement",
+                children: [
+                    {
+                        text: "AdvertisementController",
+                        children: [
+                            {
+                                text: "1_clickAdviertisement",
+                                icon: 'jstree-file'
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                text: "blackword",
+                children: [
+                    {
+                        text: "BlackWordController",
+                        children: [
+                            {
+                                text: "1_checkNameBlockedWord"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                text: "E2E",
+                children: [
+                    {
+                        text: "ConsumeGift"
+                    },
+                    {
+                        text: "DiamondVerify"
+                    }
+                ]
+            },
+            {
+                text: "gift",
+                children: [
+                    {
+                        text: "GiftController",
+                        children: [
+                            {
+                                text: "1_sendgift"
+                            },
+                            {
+                                text: "2_stopPlay"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+    ;
 
 $('#tree')
     .on('select_node.jstree', function (e, data) {
         if (data.node.icon === 'jstree-file'){
             console.log('select test case:' + data.node.text);
-            editor.set(loadJsonFromServer(data.node.text));
+            editor.set(loadTestDataFromServer(data.node.text));
+
         }
+        var mytree = $.jstree.reference(data.node);
+        console.log(mytree.get_json(-1, ['data-title', 'data-link-type', 'id', 'class']));
     })
     .jstree({
         'core': {
-            'data': loadTreeData(),
+            // 'data': loadTreeDataFromServer(),
+            'data': treeData,
             "check_callback": true
         },
         "plugins": ["contextmenu"]

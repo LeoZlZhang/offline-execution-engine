@@ -3,7 +3,10 @@ package leo.webapplication.controller;
 import leo.carnival.workers.impl.JacksonUtils;
 import leo.webapplication.dto.JsonResponse;
 import leo.webapplication.model.ApiData;
+import leo.webapplication.model.TestCaseCatalog;
 import leo.webapplication.repository.ApiTestMongoRepository;
+import leo.webapplication.repository.TestCaseCatalogRepository;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -25,6 +28,9 @@ public class ExecutionController {
     @Autowired
     ApiTestMongoRepository apiTestMongoRepository;
 
+
+    @Autowired
+    TestCaseCatalogRepository testCaseCatalogRepository;
 
 
     @RequestMapping(value = "/hello", method = RequestMethod.GET)
@@ -51,30 +57,52 @@ public class ExecutionController {
 //    }
 
     @RequestMapping(value = "/api/data/get/byname", method = RequestMethod.GET)
-    public @ResponseBody JsonResponse getApiData(@RequestParam("name") String name) {
+    public
+    @ResponseBody
+    JsonResponse getApiData(@RequestParam("name") String name) {
         Criteria c = Criteria.where("name").is(name);
         Query query = new Query(c);
         ApiData apiData = apiTestMongoRepository.findOne(query);
 
         System.out.println(JacksonUtils.toJson(apiData));
-        return JsonResponse.build(JacksonUtils.fromJsonObject(JacksonUtils.toJson(apiData), Map.class));
+        return JsonResponse.success(JacksonUtils.fromJsonObject(JacksonUtils.toJson(apiData), Map.class));
     }
 
 
     @RequestMapping(value = "/api/data/get/all", method = RequestMethod.GET)
-    public @ResponseBody JsonResponse getAllApiData() {
+    public
+    @ResponseBody
+    JsonResponse getAllApiData() {
 
         List<ApiData> apiData = apiTestMongoRepository.findAll();
 
-        return JsonResponse.build(JacksonUtils.fromJsonObject(JacksonUtils.toJson(apiData), Map.class));
+        return JsonResponse.success(JacksonUtils.fromJsonObject(JacksonUtils.toJson(apiData), Map.class));
     }
 
     @RequestMapping(value = "/api/data/save", method = RequestMethod.POST)
-    public String saveApiData(@RequestBody ApiData apiData){
+    public String saveApiData(@RequestBody ApiData apiData) {
         System.out.println(JacksonUtils.toJson(apiData));
         apiTestMongoRepository.save(apiData);
         return apiData.getName();
 
     }
 
+    @RequestMapping(value = "/api/catalog/load", method = RequestMethod.GET)
+    public JsonResponse loadTestCaseCatalog() {
+        List<TestCaseCatalog> testCaseCatalogs = testCaseCatalogRepository.findAll();
+        TestCaseCatalog testCaseCatalog = testCaseCatalogs == null || testCaseCatalogs.size() == 0 ? new TestCaseCatalog() : testCaseCatalogs.get(0);
+        return JsonResponse.success(JacksonUtils.fromJsonObject(JacksonUtils.toJson(testCaseCatalog), Map.class));
+    }
+
+    @RequestMapping(value = "/api/catalog/save", method = RequestMethod.POST)
+    public JsonResponse saveTestCaseCatalog(@RequestBody TestCaseCatalog catalog) {
+        if (catalog == null)
+            return JsonResponse.fail("Catalog is null", null);
+
+        if (catalog.getId() != null)
+            testCaseCatalogRepository.remove(new Query(Criteria.where("_id").is(new ObjectId(catalog.getId()))));
+        testCaseCatalogRepository.save(catalog);
+
+        return JsonResponse.success(null);
+    }
 }

@@ -1,5 +1,7 @@
 package leo.webapplication.dto;
 
+import com.google.api.client.json.Json;
+
 /**
  * Created by leozhang on 9/11/16.
  *
@@ -40,10 +42,20 @@ public class JsonResponse {
         this.result = result;
     }
 
-    public static JsonResponse build(Object result){
+    public static JsonResponse success(Object result){
         JsonResponse jsonResponse = new JsonResponse();
         jsonResponse.setResult(result);
         return jsonResponse;
     }
+
+    public static JsonResponse fail(String message, Object result){
+        JsonResponse jsonResponse = new JsonResponse();
+        jsonResponse.setStatus(false);
+        jsonResponse.setMessage(message);
+        jsonResponse.setResult(result);
+        return jsonResponse;
+    }
+
+
 
 }
