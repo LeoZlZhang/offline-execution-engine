@@ -3,6 +3,7 @@ package leo.carnival.workers.impl;
 
 import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,7 +15,7 @@ import java.lang.reflect.Array;
 
 @SuppressWarnings({"unused", "WeakerAccess", "unchecked"})
 public final class JacksonUtils {
-    private static final ObjectMapper mapper = new ObjectMapper().disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
+    private static final ObjectMapper mapper = new ObjectMapper().disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES).setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
 
     public static <T> T firstOneFromJsonArray(File jsonFile, Class<T> cls) throws IOException {
         T[] ts = fromJsonArray(jsonFile, cls);

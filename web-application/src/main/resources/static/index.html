@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100%;">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <title>ExecutionEngine</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <link href="dist/jsoneditor.css" rel="stylesheet" type="text/css">
+    <script src="dist/jsoneditor.js"></script>
+
+    <link href="dist/themes/default/style.css" rel="stylesheet" type="text/css">
+    <script src="dist/jstree.js"></script>
+
+    <link href="asset/css/style.css" rel="stylesheet" type="text/css">
+
+</head>
+<body>
+
+<div class="container" id="main">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <a class="navbar-brand" href="#">Execution Engine</a>
+    </nav>
+
+    <div class="row">
+        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+            <div id="catalog">
+                <div id="catalog-bar"></div>
+                <div id="catalog-tree">
+                    <div id="tree"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+            <div id="jsoneditor"></div>
+        </div>
+
+        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+            <button type="button" class="btn btn-primary btn-block" id="button1">Execute</button>
+            <button type="button" class="btn btn-primary btn-block">Save</button>
+        </div>
+    </div>
+</div>
+
+<script src="asset/javascript/loadData.js"></script>
+</body>
+</html>

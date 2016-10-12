@@ -9,6 +9,9 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * Created by leozhang on 8/31/16.
  * ...
@@ -53,7 +56,17 @@ public class ExecutionController {
         Query query = new Query(c);
         ApiData apiData = apiTestMongoRepository.findOne(query);
 
-        return JsonResponse.build(apiData);
+        System.out.println(JacksonUtils.toJson(apiData));
+        return JsonResponse.build(JacksonUtils.fromJsonObject(JacksonUtils.toJson(apiData), Map.class));
+    }
+
+
+    @RequestMapping(value = "/api/data/get/all", method = RequestMethod.GET)
+    public @ResponseBody JsonResponse getAllApiData() {
+
+        List<ApiData> apiData = apiTestMongoRepository.findAll();
+
+        return JsonResponse.build(JacksonUtils.fromJsonObject(JacksonUtils.toJson(apiData), Map.class));
     }
 
     @RequestMapping(value = "/api/data/save", method = RequestMethod.POST)

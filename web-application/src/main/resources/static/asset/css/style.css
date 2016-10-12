@@ -1,0 +1,54 @@
+body {
+    height: 100%;
+}
+
+div#main {
+    height: inherit;
+    padding-top: 40px;
+    padding-bottom: 5px;
+}
+
+div nav.navbar {
+    min-height: 0;
+}
+
+div nav .navbar-brand {
+    height: 30px;
+    padding: 5px 30px;
+}
+
+div.row, div.col-lg-2, div.col-lg-4, div.col-lg-6 {
+    height: inherit;
+}
+
+/*Catalog*/
+div#catalog {
+    border: 1px solid #3883fa;
+    margin: 0 -15px;
+    height: 80%
+}
+
+div#catalog div#catalog-bar {
+    width: auto;
+    height: 35px;
+    background: #3883fa;
+    position: absolute;
+    left: 0;
+    right: 0;
+}
+
+div#catalog div#catalog-tree {
+    overflow-x: auto;
+    overflow-y: auto;
+    padding-top: 35px;
+    height: 100%
+}
+
+div#catalog div#catalog-tree div#tree {
+    font-size: 12px;
+}
+
+/*Json editor*/
+div#jsoneditor {
+    height: 80%
+}

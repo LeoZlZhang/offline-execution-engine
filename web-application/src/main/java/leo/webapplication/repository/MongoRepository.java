@@ -31,7 +31,9 @@ public abstract class MongoRepository<T> {
     }
 
 
-
+    public List<T> findAll() {
+        return mongoTemplate.findAll(cls);
+    }
 
     public List<T> find(Query query) {
         return mongoTemplate.find(query, cls);
