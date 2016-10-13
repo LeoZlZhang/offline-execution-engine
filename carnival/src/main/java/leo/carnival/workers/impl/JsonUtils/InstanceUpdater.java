@@ -19,13 +19,13 @@ public class InstanceUpdater<T> implements Processor<T, T>, ProcessorSetter<MapV
             return null;
 
         String jsonString = JacksonUtils.toJson(targetInstance);
-        Map targetMap = JacksonUtils.fromJsonObject(jsonString, Map.class);
+        Map targetMap = JacksonUtils.fromJson(jsonString, Map.class);
 
         if (mapValueUpdater != null)
             mapValueUpdater.process(targetMap);
 
         jsonString = JacksonUtils.toJson(targetMap);
-        return JacksonUtils.fromJsonObject(jsonString, (Class<T>) targetInstance.getClass());
+        return JacksonUtils.fromJson(jsonString, (Class<T>) targetInstance.getClass());
     }
 
 

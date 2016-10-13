@@ -15,7 +15,7 @@ public class ClassDecorator<T> implements Processor<String, T> {
     public T process(String jsonString) {
         if (!JacksonUtils.isJsonObject(jsonString))
             return null;
-        return JacksonUtils.fromJsonObject(jsonString, targetClass);
+        return JacksonUtils.fromJson(jsonString, targetClass);
     }
 
 //    public static <G> G process(String jsonString, Class<G> cls) {

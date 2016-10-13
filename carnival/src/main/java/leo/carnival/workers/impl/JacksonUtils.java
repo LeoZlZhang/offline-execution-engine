@@ -12,12 +12,14 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Array;
+import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings({"unused", "WeakerAccess", "unchecked"})
 public final class JacksonUtils {
     private static final ObjectMapper mapper = new ObjectMapper().disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES).setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
 
-    public static <T> T firstOneFromJsonArray(File jsonFile, Class<T> cls) throws IOException {
+    public static <T> T firstOneFromJsonArray(File jsonFile, Class<T> cls) {
         T[] ts = fromJsonArray(jsonFile, cls);
         return ts == null ? null : ts.length == 0 ? null : ts[0];
     }
@@ -29,7 +31,7 @@ public final class JacksonUtils {
     }
 
 
-    public static <T> T[] fromJsonArray(File jsonFile, Class<T> cls) throws IOException {
+    public static <T> T[] fromJsonArray(File jsonFile, Class<T> cls) {
         if (jsonFile == null || !jsonFile.exists())
             return null;
         try {
@@ -52,7 +54,7 @@ public final class JacksonUtils {
     }
 
 
-    public static <T> T fromJsonObject(File jsonFile, Class<T> cls) throws IOException {
+    public static <T> T fromJson(File jsonFile, Class<T> cls) {
         if (jsonFile == null || !jsonFile.exists())
             return null;
         try {
@@ -63,7 +65,7 @@ public final class JacksonUtils {
     }
 
 
-    public static <T> T fromJsonObject(String sourceStr, Class<T> cls) {
+    public static <T> T fromJson(String sourceStr, Class<T> cls) {
         if (sourceStr == null)
             return null;
 
@@ -118,5 +120,14 @@ public final class JacksonUtils {
         } catch (JSONException e) {
             return false;
         }
+    }
+
+
+    public static Map fromObject2Map(Object obj){
+        return fromJson(toJson(obj), Map.class);
+    }
+
+    public static List fromObject2List(Object obj){
+        return fromJson(toJson(obj), List.class);
     }
 }

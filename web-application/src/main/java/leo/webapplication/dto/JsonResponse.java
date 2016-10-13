@@ -57,5 +57,9 @@ public class JsonResponse {
     }
 
 
+    public static JsonResponse fail(String message){
+        return JsonResponse.fail(message, null);
+    }
+
 
 }

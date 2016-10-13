@@ -42,7 +42,7 @@ public class TestEngine implements Executor<String, TestResult> {
         String jsonString = FileUtils.readFileToString(gearFile);
         ObjectMapper mapper = new ObjectMapper().disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
         if (JacksonUtils.isJsonObject(jsonString))
-            gear = JacksonUtils.fromJsonObject(jsonString, Gear.class);
+            gear = JacksonUtils.fromJson(jsonString, Gear.class);
         else if (JacksonUtils.isJsonArray(jsonString))
             gear = JacksonUtils.firstOneFromJsonArray(jsonString, Gear.class);
         else

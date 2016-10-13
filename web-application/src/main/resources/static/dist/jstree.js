@@ -5754,6 +5754,35 @@
 						}
 					}
 				},
+				"copyText" : {
+					"separator_before"	: true,
+					"separator_after"	: false,
+					"_disabled"			: false, //(this.check("rename_node", data.reference, this.get_parent(data.reference), "")),
+					"label"				: "Copy Name",
+					/*!
+					 "shortcut"			: 113,
+					 "shortcut_label"	: 'F2',
+					 "icon"				: "glyphicon glyphicon-leaf",
+					 */
+					"action"			: function (data) {
+						var inst = $.jstree.reference(data.reference),
+							obj = inst.get_node(data.reference);
+						var $temp = $("<input>");
+						$("body").append($temp);
+						$temp.val(obj.text).select();
+						document.execCommand("copy");
+						$temp.remove();
+					}
+				},
+				"reloadCatalog" : {
+					"separator_before"	: false,
+					"separator_after"	: false,
+					"_disabled"			: false, //(this.check("rename_node", data.reference, this.get_parent(data.reference), "")),
+					"label"				: "Refresh",
+					"action"			: function (data) {
+						$.jstree.reference(data.reference).trigger('reload.leo', data);
+					}
+				},
 				"ccp" : {
 					"separator_before"	: true,
 					"icon"				: false,

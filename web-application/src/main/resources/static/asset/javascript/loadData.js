@@ -3,49 +3,25 @@
  * for jstree and jseditor
  */
 
-var container = document.getElementById('jsoneditor');
-
-var options = {
-    mode: 'tree',
-    modes: ['code', 'form', 'text', 'tree', 'view'], // allowed modes
-    onError: function (err) {
-        alert(err.toString());
-    },
-    onModeChange: function (newMode, oldMode) {
-        console.log('Mode switched from', oldMode, 'to', newMode);
-    }
-};
-
-
-function loadTestDataFromServer(testCaseName) {
-    var json = {};
-    $.ajax({
-        'url': '/try/api/data/get/byname',
-        'data': {
-            'name': testCaseName
+var editor = new JSONEditor(
+    document.getElementById('jsoneditor'),
+    {
+        mode: 'tree',
+        modes: ['code', 'form', 'text', 'tree', 'view'], // allowed modes
+        onError: function (err) {
+            alert(err.toString());
         },
-        'type': 'get',
-        'contentType': "application/json",
-        'dataType': 'json',
-        'async': false,
-        success: function (data) {
-            json = data.result;
-        },
-        error: function (e) {
-            console.log("fail to get test data from backend" + e);
+        onModeChange: function (newMode, oldMode) {
+            console.log('Mode switched from', oldMode, 'to', newMode);
         }
-    });
-    return json;
-}
+    },
+    null);
 
 
-var editor = new JSONEditor(container, options, '');
-
-
-function loadTreeDataFromServer() {
+function loadCatalogFromServer() {
     var catalog = {};
     $.ajax({
-        'url': '/try/api/catalog/load',
+        'url': '/ee/v1/catalog/load',
         'type': 'get',
         'contentType': "application/json",
         'dataType': 'json',
@@ -60,82 +36,116 @@ function loadTreeDataFromServer() {
     return catalog;
 }
 
-var treeData =
-    {
-        text: "ApiTestData",
-        children: [
-            {
-                text: "advertisement",
-                children: [
-                    {
-                        text: "AdvertisementController",
-                        children: [
-                            {
-                                text: "1_clickAdviertisement",
-                                icon: 'jstree-file'
-                            }
-                        ]
-                    }
-                ]
+
+function saveCatalogData(catalogData) {
+    $.ajax({
+        'url': '/ee/v1/catalog/save',
+        'data': JSON.stringify(catalogData),
+        'type': 'post',
+        'contentType': "application/json",
+        'dataType': 'json',
+        'async': false,
+        error: function (e) {
+            console.log("fail to save catalogJson data to backend" + e);
+        }
+    });
+}
+
+
+var mydata = [{
+    "text": "ApiTestData",
+    "icon": true
+}, {
+    "text": "ApiTestData",
+    "icon": true,
+    "children": [
+        {
+            "_id": "j1_2",
+            "text": "advertisement",
+            "icon": true,
+            "state": {
+                "disabled": false,
+                "opened": true,
+                "selected": false
             },
-            {
-                text: "blackword",
-                children: [
-                    {
-                        text: "BlackWordController",
-                        children: [
-                            {
-                                text: "1_checkNameBlockedWord"
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
-                text: "E2E",
-                children: [
-                    {
-                        text: "ConsumeGift"
+            "children": [
+                {
+                    "_id": "j1_3",
+                    "text": "AdvertisementController",
+                    "icon": true,
+                    "state": {
+                        "disabled": false,
+                        "opened": true,
+                        "selected": false
                     },
-                    {
-                        text: "DiamondVerify"
-                    }
-                ]
-            },
-            {
-                text: "gift",
-                children: [
-                    {
-                        text: "GiftController",
-                        children: [
-                            {
-                                text: "1_sendgift"
+                    "children": [
+                        {
+                            "_id": "j1_4",
+                            "text": "1_clickAdviertisement",
+                            "icon": "jstree-file",
+                            "state": {
+                                "disabled": false,
+                                "opened": false,
+                                "selected": false
                             },
-                            {
-                                text: "2_stopPlay"
-                            }
-                        ]
-                    }
-                ]
-            }
-        ]
-    }
-    ;
+                            "children": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "_id": "j1_5",
+            "text": "213",
+            "icon": "jstree-file",
+            "state": {
+                "disabled": false,
+                "opened": false,
+                "selected": false
+            },
+            "children": []
+        }
+    ]
+}];
+
 
 $('#tree')
     .on('select_node.jstree', function (e, data) {
-        if (data.node.icon === 'jstree-file'){
+        if (data.node.icon === 'jstree-file') {
             console.log('select test case:' + data.node.text);
-            editor.set(loadTestDataFromServer(data.node.text));
-
+            editor.set(loadTestDataFromServer(data.node.text.toString()));
         }
-        var mytree = $.jstree.reference(data.node);
-        console.log(mytree.get_json(-1, ['data-title', 'data-link-type', 'id', 'class']));
+    })
+    .on('delete_node.jstree ' +
+        'rename_node.jstree ' +
+        'delete_node.jstree ' +
+        'move_node.jstree ' +
+        'paste.jstree', function (e, data) {
+        var catalogJson = data.instance.get_json('#', {flat: false});
+        saveCatalogData(catalogJson);
+        console.log("also here1")
+    })
+    .on('reload.leo.jstree', function (e, data) {
+        data.instance.settings.core.data = loadCatalogFromServer();
+        data.instance.refresh();
+    })
+    .on('rename_node.jstree', function (e, data) {
+        var jsonData = editor.get();
+        if (data.node.icon === 'jstree-file' && jsonData !== null && JSON.stringify(jsonData) !== '{}') {
+            jsonData.sourceFileName = data.node.text;
+            editor.set(jsonData);
+            saveTestData(jsonData);
+        }
+    })
+    .on('delete_node.jstree', function (e, data) {
+        if (data.node.icon === 'jstree-file')
+            editor.set('{}');
+            deleteTestData(data.node.text.toString());
     })
     .jstree({
         'core': {
-            // 'data': loadTreeDataFromServer(),
-            'data': treeData,
+            'data': loadCatalogFromServer(),
+            // 'data': mydata,
             "check_callback": true
         },
         "plugins": ["contextmenu"]

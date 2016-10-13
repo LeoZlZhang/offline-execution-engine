@@ -89,7 +89,7 @@ public abstract class AbstractMainTest {
         List<File> fileList = fileFilterAdvance.process(new File(resourceFolderPath));
         List<Map<String, Object>> profileList = new ArrayList<>(fileList.size());
         for (File file : fileList)
-            profileList.add(JacksonUtils.fromJsonObject(file, Map.class));
+            profileList.add(JacksonUtils.fromJson(file, Map.class));
         return ProfilePicker.build(profileList, testInfo.threadNumber());
     }
 

@@ -33,7 +33,7 @@ public class TestProfilePicker {
 
         List<Map<String, Object>> profileList = new ArrayList<>(fileList.size());
         for (File file : fileList)
-            profileList.add(JacksonUtils.fromJsonObject(file, Map.class));
+            profileList.add(JacksonUtils.fromJson(file, Map.class));
 
         ProfilePicker profilePicker = ProfilePicker.build(profileList, 5);
         System.out.println(profilePicker.next());

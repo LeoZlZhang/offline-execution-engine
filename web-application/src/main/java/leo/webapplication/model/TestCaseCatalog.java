@@ -1,5 +1,6 @@
 package leo.webapplication.model;
 
+import leo.webapplication.service.NodeState;
 import org.springframework.data.annotation.Id;
 
 import java.io.Serializable;
@@ -8,12 +9,17 @@ import java.io.Serializable;
  * Created by leo_zlzhang on 10/12/2016.
  * Catalog of test case
  */
-public class TestCaseCatalog implements Serializable{
+@SuppressWarnings("unused")
+public class TestCaseCatalog implements Serializable {
     @Id
     private String id;
     private String text;
+    /**
+     * "jstree-file" as file
+     * null as folder
+     */
+    private Object icon;
     private TestCaseCatalog[] children;
-
 
     public String getId() {
         return id;
@@ -29,6 +35,14 @@ public class TestCaseCatalog implements Serializable{
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public Object getIcon() {
+        return icon;
+    }
+
+    public void setIcon(Object icon) {
+        this.icon = icon;
     }
 
     public TestCaseCatalog[] getChildren() {

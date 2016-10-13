@@ -1,11 +1,8 @@
 package com.vipabc.vliveshow.apitest.bean.asset;
 
 import com.google.api.client.http.HttpResponse;
-import com.google.api.client.json.JsonObjectParser;
-import com.mongodb.util.JSON;
 import leo.carnival.workers.impl.JacksonUtils;
 import org.apache.log4j.Logger;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -19,7 +16,7 @@ public class ResponseContainer {
 
     public ResponseContainer(HttpResponse response) throws IOException {
         this.response = response;
-        this.responseObject = JacksonUtils.fromJsonObject(response.parseAsString(), Map.class);
+        this.responseObject = JacksonUtils.fromJson(response.parseAsString(), Map.class);
 
 //        logger.info(String.format("[%d] Response: %s", Thread.currentThread().getId(), JacksonUtils.toPrettyJson(responseString)));
         logger.info(String.format("[%d] Response: %s", Thread.currentThread().getId(), JacksonUtils.toJson(responseObject)));
@@ -27,7 +24,7 @@ public class ResponseContainer {
 
     public ResponseContainer(String responseObject) {
         if (JacksonUtils.isJsonObject(responseObject))
-            this.responseObject = JacksonUtils.fromJsonObject(responseObject, Map.class);
+            this.responseObject = JacksonUtils.fromJson(responseObject, Map.class);
         else {
             this.responseObject = new LinkedHashMap<String, String>();
             this.responseObject.put("result", responseObject == null ? "" : responseObject);
