@@ -1,7 +1,8 @@
 spring:
   data:
     mongodb:
-      host: 192.168.219.129
+#      host: 192.168.219.129
+      host: 192.168.2.104
       database: tcRepo
       port: 27017
   redis:

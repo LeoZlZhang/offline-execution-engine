@@ -82,9 +82,9 @@ public class TestCaseController {
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public JsonResponse saveApiData(@RequestBody ApiData apiData) {
         if (apiData == null)
-            return JsonResponse.fail("Empty test case");
-        if (apiData.getName() == null || apiData.getName().isEmpty())
-            return JsonResponse.fail("Test case name is empty");
+            return JsonResponse.fail("empty test case");
+        if (apiData.getSourceFileName() == null || apiData.getSourceFileName().isEmpty())
+            return JsonResponse.fail("source file name is empty");
 
         boolean result = testCaseService.saveApiData(apiData);
 

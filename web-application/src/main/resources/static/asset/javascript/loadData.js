@@ -52,61 +52,64 @@ function saveCatalogData(catalogData) {
 }
 
 
-var mydata = [{
-    "text": "ApiTestData",
-    "icon": true
-}, {
-    "text": "ApiTestData",
-    "icon": true,
-    "children": [
-        {
-            "_id": "j1_2",
-            "text": "advertisement",
-            "icon": true,
-            "state": {
-                "disabled": false,
-                "opened": true,
-                "selected": false
+var mydata = [
+    {
+        "text": "ApiTestData",
+        "icon": true,
+        "tcId": 'disfoisudofiusdo980fsd9f89f'
+    },
+    {
+        "text": "ApiTestData",
+        "icon": true,
+        "children": [
+            {
+                "_id": "j1_2",
+                "text": "advertisement",
+                "icon": true,
+                "state": {
+                    "disabled": false,
+                    "opened": true,
+                    "selected": false
+                },
+                "children": [
+                    {
+                        "_id": "j1_3",
+                        "text": "AdvertisementController",
+                        "icon": true,
+                        "state": {
+                            "disabled": false,
+                            "opened": true,
+                            "selected": false
+                        },
+                        "children": [
+                            {
+                                "_id": "j1_4",
+                                "text": "1_clickAdviertisement",
+                                "icon": "jstree-file",
+                                "state": {
+                                    "disabled": false,
+                                    "opened": false,
+                                    "selected": false
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
             },
-            "children": [
-                {
-                    "_id": "j1_3",
-                    "text": "AdvertisementController",
-                    "icon": true,
-                    "state": {
-                        "disabled": false,
-                        "opened": true,
-                        "selected": false
-                    },
-                    "children": [
-                        {
-                            "_id": "j1_4",
-                            "text": "1_clickAdviertisement",
-                            "icon": "jstree-file",
-                            "state": {
-                                "disabled": false,
-                                "opened": false,
-                                "selected": false
-                            },
-                            "children": []
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "_id": "j1_5",
-            "text": "213",
-            "icon": "jstree-file",
-            "state": {
-                "disabled": false,
-                "opened": false,
-                "selected": false
-            },
-            "children": []
-        }
-    ]
-}];
+            {
+                "_id": "j1_5",
+                "text": "213",
+                "icon": "jstree-file",
+                "state": {
+                    "disabled": false,
+                    "opened": false,
+                    "selected": false
+                },
+                "children": []
+            }
+        ]
+    }];
 
 
 $('#tree')
@@ -130,6 +133,7 @@ $('#tree')
         data.instance.refresh();
     })
     .on('rename_node.jstree', function (e, data) {
+        data.instance.select_node(data.node.id);
         var jsonData = editor.get();
         if (data.node.icon === 'jstree-file' && jsonData !== null && JSON.stringify(jsonData) !== '{}') {
             jsonData.sourceFileName = data.node.text;

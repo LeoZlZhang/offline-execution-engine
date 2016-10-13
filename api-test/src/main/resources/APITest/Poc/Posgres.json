@@ -1,0 +1,20 @@
+{
+  "name": "RedisGet",
+  "workflow": "APITest",
+  "assets": [
+    {
+      "info": "---POC for redis get---",
+      "redisOperation": {
+        "get": {
+          "criteria": {
+            "_id" :"",
+            "try": "null"
+          }
+        }
+      },
+      "assertions": {
+        "ResponseString": "[\\w]+"
+      }
+    }
+  ]
+}

@@ -37,7 +37,7 @@ public class TestCaseService {
 
 
     public boolean saveApiData(ApiData data){
-        apiTestMongoRepository.remove(new Query(Criteria.where("name").is(data.getName())));
+        deleteApiDataBySourceFileName(data.getSourceFileName());
         apiTestMongoRepository.save(data);
         return true;
     }

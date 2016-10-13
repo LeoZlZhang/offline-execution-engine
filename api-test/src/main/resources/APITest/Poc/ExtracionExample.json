@@ -1,0 +1,38 @@
+[
+  {
+    "name": "POC GET",
+    "workflow": "APITest",
+    "assets": [
+      {
+        "info": "---this is a demo for requesting YouTube restful api---",
+        "request": {
+          "method": "GET",
+          "url": "https://www.googleapis.com/youtube/v3/search",
+          "param": {
+            "part": "snippet",
+            "q": "ExecutionEngine+Cactus",
+            "type": "video",
+            "key": "AIzaSyBXpFaKcdrc3N70wxmO1Qj6tszmbaoR-GU"
+          }
+        },
+        "extractions": {
+          "etag": "etag"
+        }
+      },
+      {
+        "info": "---this is a demo for requesting YouTube restful api---",
+        "request": {
+          "method": "GET",
+          "url": "https://www.googleapis.com/youtube/v3/search",
+          "param": {
+            "fakePram": "{{etag}}",
+            "part": "snippet",
+            "q": "ExecutionEngine+Cactus",
+            "type": "video",
+            "key": "AIzaSyBXpFaKcdrc3N70wxmO1Qj6tszmbaoR-GU"
+          }
+        }
+      }
+    ]
+  }
+]
