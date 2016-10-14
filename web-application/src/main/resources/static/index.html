@@ -4,20 +4,22 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <title>ExecutionEngine</title>
     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">-->
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>-->
+    <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>-->
+    <link href="dist/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <script src="dist/jquery.min.js"></script>
+    <script src="dist/bootstrap.min.js"></script>
 
-    <!-- jQuery library -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-
-    <!-- Latest compiled JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
+    <!-- plugin: jsoneditor -->
     <link href="dist/jsoneditor.css" rel="stylesheet" type="text/css">
     <script src="dist/jsoneditor.js"></script>
 
+    <!--plugin: jsontree -->
     <link href="dist/themes/default/style.css" rel="stylesheet" type="text/css">
     <script src="dist/jstree.js"></script>
 
+    <!-- customerization -->
     <link href="asset/css/style.css" rel="stylesheet" type="text/css">
 
 </head>
@@ -44,12 +46,13 @@
 
         <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
             <button type="button" class="btn btn-primary btn-block" id="btn_execute">Execute</button>
-            <button type="button" class="btn btn-primary btn-block" id ="btn_save">Save</button>
+            <button type="button" class="btn btn-primary btn-block" id="btn_save">Save</button>
         </div>
     </div>
 </div>
 
-<script src="asset/javascript/loadData.js"></script>
+<script src="asset/javascript/ajaxFactory.js"></script>
 <script src="asset/javascript/buttonControl.js"></script>
+<script src="asset/javascript/initialData.js"></script>
 </body>
 </html>

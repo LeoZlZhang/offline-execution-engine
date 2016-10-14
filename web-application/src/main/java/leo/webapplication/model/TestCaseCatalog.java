@@ -1,6 +1,5 @@
 package leo.webapplication.model;
 
-import leo.webapplication.service.NodeState;
 import org.springframework.data.annotation.Id;
 
 import java.io.Serializable;

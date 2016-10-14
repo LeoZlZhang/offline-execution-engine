@@ -15,8 +15,8 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 @RestController
-@RequestMapping("/v1/apidata")
-public class TestCaseController {
+@RequestMapping("/v1/data")
+public class ApiDataController {
 
     @Autowired
     TestCaseService testCaseService;
@@ -29,7 +29,7 @@ public class TestCaseController {
      * @return JsonResponse
      */
     @RequestMapping(value = "/get", method = RequestMethod.GET)
-    public JsonResponse getApiDataById(ApiData apiData) {
+    public JsonResponse getApiData(ApiData apiData) {
         if (apiData == null)
             return JsonResponse.fail("api data is empty");
 

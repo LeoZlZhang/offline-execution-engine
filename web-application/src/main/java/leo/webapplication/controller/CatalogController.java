@@ -1,6 +1,5 @@
 package leo.webapplication.controller;
 
-import leo.carnival.workers.impl.JacksonUtils;
 import leo.webapplication.dto.JsonResponse;
 import leo.webapplication.model.TestCaseCatalog;
 import leo.webapplication.service.CatalogService;
@@ -30,9 +29,11 @@ public class CatalogController {
      * @return JsonResponse
      */
     @RequestMapping(value = "/load", method = RequestMethod.GET)
-    public JsonResponse loadCatalog() {
+    public JsonResponse loadCatalog(TestCaseCatalog testCaseCatalog) {
+        if (testCaseCatalog == null)
+            return JsonResponse.fail("empty catalog");
 
-        List<TestCaseCatalog> result = catalogService.loadCatalog();
+        List<TestCaseCatalog> result = catalogService.loadCatalog(testCaseCatalog);
 
         return result != null && result.size() > 0 ?
                 JsonResponse.success(result) :
@@ -46,7 +47,7 @@ public class CatalogController {
      * @return JsonResponse
      */
     @RequestMapping(value = "/save", method = RequestMethod.POST)
-    public JsonResponse saveTestCaseCatalog(@RequestBody List<TestCaseCatalog> catalogs) {
+    public JsonResponse saveCatalog(@RequestBody List<TestCaseCatalog> catalogs) {
         if (catalogs == null)
             return JsonResponse.fail("Catalog is null", null);
 
