@@ -8,8 +8,8 @@ import java.util.Map;
 public interface TestData<T, G> extends Executor<T, G>
 {
 
-    String getTestingFlow();
     TestData update(Map<String, Object> profile);
+    String getWorkflow();
     String getSourceFileName();
     void setSourceFileName(String name);
 }

@@ -15,7 +15,7 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 @RestController
-@RequestMapping("/v1/testcase")
+@RequestMapping("/v1/apidata")
 public class TestCaseController {
 
     @Autowired
@@ -23,55 +23,23 @@ public class TestCaseController {
 
 
     /**
-     * Load Apidata by source file name, which is test case file name in tree catalog
+     * Load api data refer to certain key of api data class
      *
-     * @param sourceFileName souce file name, which is also the file name in tree catalog
+     * @param apiData api data with certain key to query with
      * @return JsonResponse
      */
-    @RequestMapping(value = "/getbysourcefilename", method = RequestMethod.GET)
-    public JsonResponse getApiDataBySourceFileName(@RequestParam("name") String sourceFileName) {
-        if (sourceFileName == null || sourceFileName.isEmpty())
-            return JsonResponse.fail("Source file name is empty");
+    @RequestMapping(value = "/get", method = RequestMethod.GET)
+    public JsonResponse getApiDataById(ApiData apiData) {
+        if (apiData == null)
+            return JsonResponse.fail("api data is empty");
 
-        List<ApiData> result = testCaseService.getApiDataBySourceFileName(sourceFileName);
+        List<ApiData> result = testCaseService.getApiData(apiData);
 
         return result != null && result.size() > 0 ?
-                JsonResponse.success(JacksonUtils.fromObject2Map(result.get(0))) :
+                JsonResponse.success(JacksonUtils.fromObject2List(result)) :
                 JsonResponse.fail("not found test case");
     }
 
-    /**
-     * load ApiData by test case name
-     *
-     * @param name api data name
-     * @return JsonResponse
-     */
-    @RequestMapping(value = "/getbyname", method = RequestMethod.GET)
-    public JsonResponse getApiData(@RequestParam("name") String name) {
-        if (name == null || name.isEmpty())
-            return JsonResponse.fail("Test case name is empty");
-
-        List<ApiData> result = testCaseService.getApiDataByName(name);
-
-        return result != null && result.size() > 0 ?
-                JsonResponse.success(JacksonUtils.fromObject2Map(result.get(0))) :
-                JsonResponse.fail("not found test case");
-    }
-
-    /**
-     * Get all api data
-     *
-     * @return JsonResponse
-     */
-    @RequestMapping(value = "/getall", method = RequestMethod.GET)
-    public JsonResponse getAllApiData() {
-
-        List<ApiData> result = testCaseService.getApiDataOfAll();
-
-        return result != null ?
-                JsonResponse.success(JacksonUtils.fromObject2Map(result)) :
-                JsonResponse.fail("not found test case");
-    }
 
     /**
      * Persistent api data to mongo
@@ -83,26 +51,32 @@ public class TestCaseController {
     public JsonResponse saveApiData(@RequestBody ApiData apiData) {
         if (apiData == null)
             return JsonResponse.fail("empty test case");
-        if (apiData.getSourceFileName() == null || apiData.getSourceFileName().isEmpty())
-            return JsonResponse.fail("source file name is empty");
 
         boolean result = testCaseService.saveApiData(apiData);
 
         return result ?
-                JsonResponse.success(apiData.getName()) :
+                JsonResponse.success(JacksonUtils.fromObject2Map(apiData)) :
                 JsonResponse.fail("fail to save test case");
     }
 
-    @RequestMapping(value = "/deletebysourcefilename", method = RequestMethod.DELETE)
-    public JsonResponse deleteApiData(@RequestParam("name") String sourceFileName) {
-        if (sourceFileName == null || sourceFileName.isEmpty())
-            return JsonResponse.fail("Source file name is empty");
 
-        boolean result = testCaseService.deleteApiDataBySourceFileName(sourceFileName);
+    /**
+     * delete api data by id
+     *
+     * @param apiData api data should have id for deleting
+     * @return JsonResponse
+     */
+    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+    public JsonResponse deleteApiData(ApiData apiData) {
+        if (apiData == null)
+            return JsonResponse.fail("empty api data");
 
-        return result ?
-                JsonResponse.success("delete test case " + sourceFileName) :
-                JsonResponse.fail("fail to delete test case");
+
+        Object[] result = testCaseService.deleteApiData(apiData);
+
+        return (boolean)result[0] ?
+                JsonResponse.success(result[1]) :
+                JsonResponse.fail(result[1].toString());
     }
 
 }

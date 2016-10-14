@@ -32,7 +32,7 @@ public class TestEngine implements Executor<String, TestResult> {
     public TestResult execute(TestData testData) {
         try {
             gear.getAppCtx().getContext().put("TestCase", testData);
-            return gear.executeQuietly(testData.getTestingFlow());
+            return gear.executeQuietly(testData.getWorkflow());
         } catch (Exception e) {
             return new TestFail(e);
         }

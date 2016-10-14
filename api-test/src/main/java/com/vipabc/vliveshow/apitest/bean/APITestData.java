@@ -14,7 +14,7 @@ public class APITestData extends TestDataImpl<Map<String, Object>, Map<String, O
     private TestAsset[] assets;
 
 
-    private String sourceFileName = "";
+    private String sourceFileName;
 
     @Override
     public Map<String, Object> execute(Map<String, Object> extractionMap) {
@@ -25,10 +25,6 @@ public class APITestData extends TestDataImpl<Map<String, Object>, Map<String, O
         return extractionMap;
     }
 
-    @Override
-    public String getTestingFlow() {
-        return this.workflow;
-    }
 
     @Override
     public String toString() {

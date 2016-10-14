@@ -1,5 +1,6 @@
 package leo.webapplication.repository;
 
+import com.mongodb.WriteResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
@@ -53,7 +54,7 @@ public abstract class MongoRepository<T> {
     }
 
 
-    public void remove(Query query){
-        mongoTemplate.remove(query, cls);
+    public WriteResult remove(Query query){
+        return mongoTemplate.remove(query, cls);
     }
 }
