@@ -42,12 +42,11 @@ function getApiData(apiData) {
         'dataType': 'json',
         'async': false,
         success: function (data) {
-            if (data.result)
+            if (data.result && data.result.length > 0)
                 json = data.result[0];
-            delete json.id;
         },
         error: function (e) {
-            alert("fail to get test data from backend" + e);
+            json = false;
         }
     });
 
@@ -66,7 +65,7 @@ function saveTestData(testData) {
             testData = data.result;
         },
         error: function (e) {
-            console.log("fail to get test data from backend" + e);
+            testData = false;
         }
     });
 
@@ -75,6 +74,8 @@ function saveTestData(testData) {
 
 
 function deleteTestData(apiTestData) {
+    var result = true;
+
     $.ajax({
         'url': '/ee/v1/data/delete',
         'data': JSON.stringify(apiTestData),
@@ -83,7 +84,9 @@ function deleteTestData(apiTestData) {
         'dataType': 'json',
         'async': false,
         error: function (e) {
-            console.log("fail to get test data from backend" + e);
+            result = false;
         }
     });
+
+    return result;
 }

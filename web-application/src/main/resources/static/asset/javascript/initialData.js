@@ -19,43 +19,42 @@ var editor = new JSONEditor(
 
 
 var lastSelectedTestData = null;
+var myCallBack = null;
 
 $('#tree')
-    .on('select_node.jstree', function (e, data) {
-        if (data.node.icon === 'jstree-file') {
-            console.log('load test case:' + data.node.id);
-            lastSelectedTestData = data.node;
-            editor.set(getApiData({id: data.node.id}));
-
-        }
-    })
     .on('delete_node.jstree ' +
         'rename_node.jstree ' +
-        'delete_node.jstree ' +
         'move_node.jstree ' +
         'paste.jstree', function (e, data) {
         var catalogJson = data.instance.get_json('#', {flat: false});
         saveCatalogData(catalogJson);
-        console.log("also here1")
+    })
+    .on('select_node.jstree', function (e, data) {
+        if (data.node.icon === 'jstree-file') {
+            console.log('load test case:' + data.node.id + ' ' + data.node.text);
+            lastSelectedTestData = data.node;
+            $('#btn_load').click();
+
+        }
     })
     .on('reload.leo.jstree', function (e, data) {
         data.instance.settings.core.data = loadCatalog();
         data.instance.refresh();
     })
     .on('rename_node.jstree', function (e, data) {
+        myCallBack = function () {
+            $('#btn_save').click();
+            myCallBack = null;
+        };
         data.instance.deselect_all();
         data.instance.select_node(data.node.id);
-        var jsonData = editor.get();
-        if (data.node.icon === 'jstree-file' && jsonData !== null && JSON.stringify(jsonData) !== '{}') {
-            jsonData.sourceFileName = data.node.text;
-            editor.set(jsonData);
-            saveTestData(jsonData);
-        }
     })
     .on('delete_node.jstree', function (e, data) {
-        if (data.node.icon === 'jstree-file')
-            editor.set('{}');
-        deleteTestData(data.node.text.toString());
+        // if (data.node.icon === 'jstree-file') {
+            console.log('delete api data ' + data.node.id + ' ' + data.node.text);
+            lastSelectedTestData = data.node;
+            $('#btn_delete').click();
+        // }
     })
     .jstree({
         'core': {

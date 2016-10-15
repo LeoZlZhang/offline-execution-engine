@@ -52,3 +52,13 @@ div#catalog div#catalog-tree div#tree {
 div#jsoneditor {
     height: 80%
 }
+
+
+/*button*/
+button#btn_load {
+    visibility: hidden;
+}
+
+button#btn_delete {
+    visibility: hidden;
+}

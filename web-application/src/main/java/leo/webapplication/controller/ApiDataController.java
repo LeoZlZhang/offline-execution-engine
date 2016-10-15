@@ -67,7 +67,7 @@ public class ApiDataController {
      * @return JsonResponse
      */
     @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
-    public JsonResponse deleteApiData(ApiData apiData) {
+    public JsonResponse deleteApiData(@RequestBody ApiData apiData) {
         if (apiData == null)
             return JsonResponse.fail("empty api data");
 
