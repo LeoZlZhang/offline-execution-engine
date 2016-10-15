@@ -45,7 +45,7 @@ function getApiData(apiData) {
             if (data.result && data.result.length > 0)
                 json = data.result[0];
         },
-        error: function (e) {
+        error: function () {
             json = false;
         }
     });
@@ -64,7 +64,7 @@ function saveTestData(testData) {
         success: function (data) {
             testData = data.result;
         },
-        error: function (e) {
+        error: function () {
             testData = false;
         }
     });
@@ -83,7 +83,7 @@ function deleteTestData(apiTestData) {
         'contentType': "application/json",
         'dataType': 'json',
         'async': false,
-        error: function (e) {
+        error: function () {
             result = false;
         }
     });

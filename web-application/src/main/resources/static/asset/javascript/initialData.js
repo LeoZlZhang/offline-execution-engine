@@ -64,64 +64,64 @@ $('#tree')
         "plugins": ["contextmenu"]
     });
 
-var mydata = [
-    {
-        "text": "ApiTestData",
-        "icon": true,
-        "data": 'disfoisudofiusdo980fsd9f89f'
-    },
-    {
-        "text": "ApiTestData",
-        "icon": true,
-        "children": [
-            {
-                "_id": "j1_2",
-                "text": "advertisement",
-                "icon": true,
-                "state": {
-                    "disabled": false,
-                    "opened": true,
-                    "selected": false
-                },
-                "children": [
-                    {
-                        "_id": "j1_3",
-                        "text": "AdvertisementController",
-                        "icon": true,
-                        "state": {
-                            "disabled": false,
-                            "opened": true,
-                            "selected": false
-                        },
-                        "children": [
-                            {
-                                "_id": "j1_4",
-                                "text": "1_clickAdviertisement",
-                                "icon": "jstree-file",
-                                "data": 'disfoisudofiusdo980fsd9f89f',
-                                "state": {
-                                    "disabled": false,
-                                    "opened": false,
-                                    "selected": false
-                                },
-                                "children": []
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
-                "_id": "j1_5",
-                "text": "213",
-                "icon": "jstree-file",
-                "state": {
-                    "disabled": false,
-                    "opened": false,
-                    "selected": false
-                },
-                "children": []
-            }
-        ]
-    }];
+// var mydata = [
+//     {
+//         "text": "ApiTestData",
+//         "icon": true,
+//         "data": 'disfoisudofiusdo980fsd9f89f'
+//     },
+//     {
+//         "text": "ApiTestData",
+//         "icon": true,
+//         "children": [
+//             {
+//                 "_id": "j1_2",
+//                 "text": "advertisement",
+//                 "icon": true,
+//                 "state": {
+//                     "disabled": false,
+//                     "opened": true,
+//                     "selected": false
+//                 },
+//                 "children": [
+//                     {
+//                         "_id": "j1_3",
+//                         "text": "AdvertisementController",
+//                         "icon": true,
+//                         "state": {
+//                             "disabled": false,
+//                             "opened": true,
+//                             "selected": false
+//                         },
+//                         "children": [
+//                             {
+//                                 "_id": "j1_4",
+//                                 "text": "1_clickAdviertisement",
+//                                 "icon": "jstree-file",
+//                                 "data": 'disfoisudofiusdo980fsd9f89f',
+//                                 "state": {
+//                                     "disabled": false,
+//                                     "opened": false,
+//                                     "selected": false
+//                                 },
+//                                 "children": []
+//                             }
+//                         ]
+//                     }
+//                 ]
+//             },
+//             {
+//                 "_id": "j1_5",
+//                 "text": "213",
+//                 "icon": "jstree-file",
+//                 "state": {
+//                     "disabled": false,
+//                     "opened": false,
+//                     "selected": false
+//                 },
+//                 "children": []
+//             }
+//         ]
+//     }];
 // $('#tree').jstree(true).settings.core.data = mydata;
 // $('#tree').jstree(true).refresh();

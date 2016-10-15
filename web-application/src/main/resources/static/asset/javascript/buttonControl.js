@@ -1,4 +1,4 @@
-$('#btn_load').on('click', function (e, data) {
+$('#btn_load').on('click', function () {
     if (lastSelectedTestData) {
 
         var jsonData = getApiData({id: lastSelectedTestData.id});
@@ -18,7 +18,7 @@ $('#btn_load').on('click', function (e, data) {
 });
 
 
-$('#btn_save').on('click', function (e, data) {
+$('#btn_save').on('click', function () {
     if (lastSelectedTestData) {
         var jsonData = editor.get();
 
@@ -32,7 +32,8 @@ $('#btn_save').on('click', function (e, data) {
         if (jsonData === false) {
             alert('request server fail to save test data!');
         } else {
-            var treeinst = $('#tree').jstree(true)
+            var treeinst = $('#tree').jstree(true);
+            //noinspection JSUnresolvedFunction
             treeinst.set_id(lastSelectedTestData, jsonData.id);
             var catalog = treeinst.get_json('#', {flat: false});
             saveCatalogData(catalog);
@@ -45,10 +46,11 @@ $('#btn_save').on('click', function (e, data) {
 });
 
 
-$('#btn_delete').on('click', function (e, data) {
+$('#btn_delete').on('click', function () {
     if (lastSelectedTestData) {
         var childnode = lastSelectedTestData.children_d;
         for (var ai in childnode) {
+            //noinspection JSUnfilteredForInLoop
             var result = deleteTestData({id: childnode[ai]});
 
             if (result === false) {
@@ -68,7 +70,7 @@ $('#btn_delete').on('click', function (e, data) {
 
 
 
-$('#btn_execute').on('click', function (e, data) {
+$('#btn_execute').on('click', function () {
     if (lastSelectedTestData) {
 
     }
