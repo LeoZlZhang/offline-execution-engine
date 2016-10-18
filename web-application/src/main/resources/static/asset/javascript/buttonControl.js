@@ -39,6 +39,7 @@ $('#btn_save').on('click', function () {
             saveCatalogData(catalog);
             delete jsonData.id;
             editor.set(jsonData);
+            editor.expandAll();
         }
 
     } else
@@ -73,5 +74,11 @@ $('#btn_delete').on('click', function () {
 $('#btn_execute').on('click', function () {
     if (lastSelectedTestData) {
 
+        var resJson = executeByData(editor.get());
+        // var testingTopic = (new Date()).getTime();
+        // myModal.trigger('ee.execute',[testingTopic])
+        // $('#btn_modal').click();
     }
 });
+
+

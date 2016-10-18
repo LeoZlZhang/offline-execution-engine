@@ -86,10 +86,10 @@ public class APITest {
     /**
      * Requesting assertion extraction, including db operation
      * @param apiTestData this is test data which contains all information of testing
-     * @param extractionMao contain necessary db connection, extraction map is also a container inside the apiTestData to store extracted value from response
+     * @param extractionMap contain necessary db connection, extraction map is also a container inside the apiTestData to store extracted value from response
      */
-    public void requestWithHttpClient(APITestData apiTestData, Map<String, Object> extractionMao) {
-        apiTestData.execute(extractionMao);
+    public void requestWithHttpClient(APITestData apiTestData, Map<String, Object> extractionMap) {
+        apiTestData.execute(extractionMap);
     }
 
 

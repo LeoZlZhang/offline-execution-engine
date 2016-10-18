@@ -2,7 +2,9 @@ package leo.engineCore.engineFoundation.Assert;
 
 import org.testng.Assert;
 
-public class TestResult
+import java.io.Serializable;
+
+public class TestResult implements Serializable
 {
     private String expectedValue;
     private String actualValue;
@@ -19,5 +21,29 @@ public class TestResult
     public void Assert()
     {
         Assert.assertEquals(actualValue, expectedValue, message);
+    }
+
+    public String getExpectedValue() {
+        return expectedValue;
+    }
+
+    public void setExpectedValue(String expectedValue) {
+        this.expectedValue = expectedValue;
+    }
+
+    public String getActualValue() {
+        return actualValue;
+    }
+
+    public void setActualValue(String actualValue) {
+        this.actualValue = actualValue;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

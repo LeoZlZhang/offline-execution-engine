@@ -90,3 +90,24 @@ function deleteTestData(apiTestData) {
 
     return result;
 }
+
+
+function executeByData(testData) {
+    var json = {};
+    $.ajax({
+        'url': '/ee/v1/execution/go',
+        'data': JSON.stringify(testData),
+        'type': 'post',
+        'contentType': "application/json",
+        'dataType': 'json',
+        'async': false,
+        success: function (data) {
+            if (data.result && data.result.length > 0)
+                json = data.result[0];
+        },
+        error: function () {
+            json = false;
+        }
+    });
+    return json;
+}

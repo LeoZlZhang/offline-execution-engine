@@ -2,8 +2,10 @@ package leo.engineCore.engineFoundation.Assert;
 
 import org.testng.Assert;
 
+import java.io.Serializable;
 
-public class TestPass extends TestResult
+
+public class TestPass extends TestResult implements Serializable
 {
     public TestPass()
     {

@@ -16,9 +16,23 @@ import java.io.File;
 import java.io.IOException;
 
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class TestEngine implements Executor<String, TestResult> {
     private Gear gear;
+
+
+    public TestEngine() {
+    }
+
+    public TestEngine(Gear gear) {
+        this.gear = gear;
+    }
+
+
+    public static TestEngine build(Gear gear) {
+        return new TestEngine(gear);
+    }
+
 
     @Override
     public TestResult execute(String flowName) {
@@ -51,6 +65,7 @@ public class TestEngine implements Executor<String, TestResult> {
         return this;
     }
 
+
     public static TestEngine build(File gearFile) {
         try {
             return new TestEngine().loadGearFromFile(gearFile);
@@ -58,4 +73,5 @@ public class TestEngine implements Executor<String, TestResult> {
             throw new RuntimeException(e);
         }
     }
+
 }

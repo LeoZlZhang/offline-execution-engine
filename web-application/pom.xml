@@ -42,6 +42,8 @@
         </dependency>
 
 
+
+
         <dependency>
             <groupId>leo.offline-execution-engine</groupId>
             <artifactId>engine-core</artifactId>
@@ -58,6 +60,19 @@
             <groupId>leo.offline-execution-engine</groupId>
             <artifactId>api-test</artifactId>
             <version>1.01-SNAPSHOT</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>9.4-1202-jdbc42</version>
         </dependency>
     </dependencies>
 

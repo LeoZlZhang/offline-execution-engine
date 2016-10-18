@@ -62,3 +62,48 @@ button#btn_load {
 button#btn_delete {
     visibility: hidden;
 }
+
+/*modal*/
+button#btn_modal {
+    visibility: hidden;
+}
+
+div#modal_execute_output div.modal-dialog {
+    width: 75%;
+    height: 90%;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 30px;
+}
+
+div#modal_execute_output div.modal-content {
+    height: 100%;
+}
+
+div#modal_execute_output div.modal-header {
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-Index: 100;
+}
+
+div#modal_execute_output div.modal-body {
+
+    padding-top: 70px;
+    height: 100%;
+    width: 100%;
+    z-Index: 99;
+
+}
+
+div#modal_execute_output div.modal-body div#modal_execute_output_body {
+    overflow-y: auto;
+    overflow-x: auto;
+    height: 100%;
+    width: 100%;
+}
+
+div#modal_execute_output div#modal_execute_output_body p {
+    font-size: 12px;
+    margin-bottom: 2px;
+}

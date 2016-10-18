@@ -16,6 +16,7 @@ import java.util.Map;
  * Created by leo_zlzhang on 10/13/2016.
  * Test case service
  */
+@SuppressWarnings("SpringAutowiredFieldsWarningInspection")
 @Service
 public class TestCaseService {
 

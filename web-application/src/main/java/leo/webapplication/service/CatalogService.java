@@ -15,6 +15,7 @@ import java.util.Map;
  * Created by leo_zlzhang on 10/13/2016.
  * Catalog service
  */
+@SuppressWarnings("SpringAutowiredFieldsWarningInspection")
 @Service
 public class CatalogService {
     @Autowired
