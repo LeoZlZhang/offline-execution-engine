@@ -2,13 +2,18 @@ package leo.webapplication.controller;
 
 import leo.engineCore.engineFoundation.Gear.Gear;
 import leo.engineCore.testEngine.TestEngine;
+import leo.engineData.logging.EELogger;
 import leo.webapplication.dto.JsonResponse;
 import leo.webapplication.model.ApiData;
 import leo.webapplication.service.GearService;
 import leo.webapplication.service.TestCaseService;
 import leo.webapplication.service.WebSocketService;
+import leo.webapplication.util.ExecutionLogPublisher;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -32,6 +37,8 @@ public class ExecutionController {
     GearService gearService;
 
 
+
+
     @RequestMapping(value = "/go", method = RequestMethod.POST)
     public JsonResponse executeByData(@RequestBody ApiData apiData){
         if(apiData == null)
@@ -49,6 +56,7 @@ public class ExecutionController {
             return JsonResponse.fail("not found gear in mongo");
 
         ApiData finalApiData = apiData;
+        finalApiData.setCustomLogger(EELogger.getLogger(ApiData.class).setWorker(ExecutionLogPublisher.build("test", webSocketService)));
 
         new Thread(new Runnable() {
             @Override

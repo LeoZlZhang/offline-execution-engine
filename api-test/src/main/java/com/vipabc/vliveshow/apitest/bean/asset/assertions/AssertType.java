@@ -11,7 +11,7 @@ import org.testng.Assert;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-@SuppressWarnings({"unused", "unchecked"})
+@SuppressWarnings({"unused", "unchecked", "WeakerAccess"})
 public enum AssertType implements Evaluator<ResponseContainer> {
 
     /**
@@ -47,7 +47,10 @@ public enum AssertType implements Evaluator<ResponseContainer> {
         @SuppressWarnings("unchecked")
         @Override
         public boolean evaluate(ResponseContainer response) {
-            new JsonAssert().setExpected((Map) expectedValue).execute((Map) response.getResponseObject());
+            new JsonAssert()
+                    .setLogger(logger)
+                    .setExpected((Map) expectedValue)
+                    .execute((Map) response.getResponseObject());
             return true;
         }
 
@@ -79,7 +82,7 @@ public enum AssertType implements Evaluator<ResponseContainer> {
     };
 
 
-    protected static final Logger logger = Logger.getLogger(AssertType.class);
+    protected Logger logger = Logger.getLogger(AssertType.class);
     protected Object expectedValue = new Object();
 
     public AssertType setExpectedValue(Object expectedValue) {
@@ -90,5 +93,11 @@ public enum AssertType implements Evaluator<ResponseContainer> {
     protected void loggingAssert(String path, Object actual, Object expect) {
         logger.info(String.format("[%d] Assert %s [%s->%s]", Thread.currentThread().getId(), path, actual, expect));
 
+    }
+
+
+    public AssertType setLogger(Logger logger) {
+        this.logger = logger;
+        return this;
     }
 }

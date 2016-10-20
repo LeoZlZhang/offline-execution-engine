@@ -3,6 +3,7 @@ package com.vipabc.vliveshow.apitest.Util;
 import leo.carnival.workers.impl.Executors;
 import leo.carnival.workers.impl.JacksonUtils;
 import leo.carnival.workers.prototype.Executor;
+import org.apache.log4j.Logger;
 import org.testng.Assert;
 
 import java.util.List;
@@ -88,6 +89,11 @@ public class JsonAssert extends AbstractJsonComparator implements Executor<Map<S
     }
 
 
+
+    public JsonAssert setLogger(Logger logger){
+        this.logger = logger;
+        return this;
+    }
 
 
 

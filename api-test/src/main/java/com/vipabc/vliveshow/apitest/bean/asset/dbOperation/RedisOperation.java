@@ -58,7 +58,7 @@ public enum RedisOperation implements Serializable, Executor<DBObject, String> {
         }
     };
 
-    private static final Logger logger = Logger.getLogger(RedisOperation.class);
+    protected Logger logger = Logger.getLogger(RedisOperation.class);
     private JedisCluster jedisCluster;
 
     public RedisOperation setDBConnection(JedisCluster dbConnection) {
@@ -70,4 +70,9 @@ public enum RedisOperation implements Serializable, Executor<DBObject, String> {
         return jedisCluster;
     }
 
+
+    public RedisOperation setLogger(Logger logger) {
+        this.logger = logger;
+        return this;
+    }
 }

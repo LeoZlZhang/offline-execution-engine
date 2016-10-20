@@ -146,7 +146,7 @@ public enum SqlOperation implements Executor<DBObject, String> {
             }
         }
     };
-    private static final Logger logger = Logger.getLogger(SqlOperation.class);
+    protected Logger logger = Logger.getLogger(SqlOperation.class);
     private Connection connection;
 
     public SqlOperation setDBConnection(Connection dbConnection) {
@@ -257,4 +257,9 @@ public enum SqlOperation implements Executor<DBObject, String> {
 
     }
 
+
+    public SqlOperation setLogger(Logger logger) {
+        this.logger = logger;
+        return this;
+    }
 }

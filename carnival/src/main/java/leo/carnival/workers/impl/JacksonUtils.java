@@ -17,7 +17,9 @@ import java.util.Map;
 
 @SuppressWarnings({"unused", "WeakerAccess", "unchecked"})
 public final class JacksonUtils {
-    private static final ObjectMapper mapper = new ObjectMapper().disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES).setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
+    private static final ObjectMapper mapper = new ObjectMapper()
+            .disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES)
+            .setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
 
     public static <T> T firstOneFromJsonArray(File jsonFile, Class<T> cls) {
         T[] ts = fromJsonArray(jsonFile, cls);

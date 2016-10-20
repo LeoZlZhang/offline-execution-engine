@@ -74,10 +74,15 @@ $('#btn_delete').on('click', function () {
 $('#btn_execute').on('click', function () {
     if (lastSelectedTestData) {
 
-        var resJson = executeByData(editor.get());
         // var testingTopic = (new Date()).getTime();
-        // myModal.trigger('ee.execute',[testingTopic])
-        // $('#btn_modal').click();
+        myModal.trigger('ee.execute',['test']);
+        $('#btn_modal').click();
+        setTimeout(function(){
+            console.log("1");
+            var resJson = executeByData(editor.get());
+        }, 1000);
+            console.log("2");
+
     }
 });
 

@@ -12,7 +12,7 @@ import java.util.Map;
 
 @SuppressWarnings({"unchecked", "WeakerAccess"})
 public abstract class AbstractJsonComparator {
-    protected static final Logger logger = Logger.getLogger(AbstractJsonComparator.class);
+    protected Logger logger = Logger.getLogger(AbstractJsonComparator.class);
     protected static final NumberParser numberParser = Processors.NumberParser();
 
     protected abstract void preCheckForHandleMap(Map<String, Object> leftMap, Map<String, Object> rightMap, JsonPathAppender appender);

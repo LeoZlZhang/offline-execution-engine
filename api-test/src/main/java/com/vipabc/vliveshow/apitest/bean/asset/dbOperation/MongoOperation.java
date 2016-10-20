@@ -14,7 +14,7 @@ import java.util.Map;
  * Created by leo_zlzhang on 9/18/2016.
  * CRUD to mongo
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "WeakerAccess"})
 public enum MongoOperation implements Serializable, Executor<DBObject, String> {
 
     create {
@@ -37,11 +37,11 @@ public enum MongoOperation implements Serializable, Executor<DBObject, String> {
     },
     query {
         @Override
-        public String execute(DBObject dbObject){
+        public String execute(DBObject dbObject) {
             if (dbObject == null)
                 throw new RuntimeException("dbObject should not be empty");
-            if(dbObject.getTable() == null || dbObject.getTable().isEmpty()
-                    ||dbObject.getCriteria() == null || dbObject.getCriteria().isEmpty())
+            if (dbObject.getTable() == null || dbObject.getTable().isEmpty()
+                    || dbObject.getCriteria() == null || dbObject.getCriteria().isEmpty())
                 throw new RuntimeException("Invalid query to mongo, miss table or criteria");
 
             DBCollection collection = getCollection(dbObject.getTable());
@@ -56,12 +56,12 @@ public enum MongoOperation implements Serializable, Executor<DBObject, String> {
     },
     update {
         @Override
-        public String execute(DBObject dbObject){
+        public String execute(DBObject dbObject) {
             if (dbObject == null)
                 throw new RuntimeException("dbObject should not be empty");
-            if(dbObject.getTable() == null || dbObject.getTable().isEmpty()
-                    ||dbObject.getCriteria() == null || dbObject.getCriteria().isEmpty()
-                    ||dbObject.getValues() == null || dbObject.getValues().isEmpty())
+            if (dbObject.getTable() == null || dbObject.getTable().isEmpty()
+                    || dbObject.getCriteria() == null || dbObject.getCriteria().isEmpty()
+                    || dbObject.getValues() == null || dbObject.getValues().isEmpty())
                 throw new RuntimeException("Invalid update to mongo, miss table or criteria or values");
 
             DBCollection collection = getCollection(dbObject.getTable());
@@ -77,11 +77,11 @@ public enum MongoOperation implements Serializable, Executor<DBObject, String> {
     },
     delete {
         @Override
-        public String execute(DBObject dbObject){
+        public String execute(DBObject dbObject) {
             if (dbObject == null)
                 throw new RuntimeException("dbObject should not be empty");
-            if(dbObject.getTable() == null || dbObject.getTable().isEmpty()
-                    ||dbObject.getCriteria() == null || dbObject.getCriteria().isEmpty())
+            if (dbObject.getTable() == null || dbObject.getTable().isEmpty()
+                    || dbObject.getCriteria() == null || dbObject.getCriteria().isEmpty())
                 throw new RuntimeException("Invalid delete to mongo, miss table or criteria");
 
             DBCollection collection = getCollection(dbObject.getTable());
@@ -94,7 +94,7 @@ public enum MongoOperation implements Serializable, Executor<DBObject, String> {
         }
     };
 
-    private static final Logger logger = Logger.getLogger(MongoOperation.class);
+    protected Logger logger = Logger.getLogger(MongoOperation.class);
     private DB db;
 
     public MongoOperation setDBConnection(DB dbConnection) {
@@ -111,7 +111,7 @@ public enum MongoOperation implements Serializable, Executor<DBObject, String> {
     }
 
     protected BasicDBObject buildDoc(Map<String, Object> map) {
-        if(map == null || map.isEmpty())
+        if (map == null || map.isEmpty())
             throw new RuntimeException("Empty value for mongo operation");
 
         BasicDBObject doc = new BasicDBObject();
@@ -125,5 +125,8 @@ public enum MongoOperation implements Serializable, Executor<DBObject, String> {
 
     }
 
-
+    public MongoOperation setLogger(Logger logger) {
+        this.logger = logger;
+        return this;
     }
+}

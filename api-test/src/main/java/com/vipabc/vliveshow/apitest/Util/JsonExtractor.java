@@ -2,6 +2,7 @@ package com.vipabc.vliveshow.apitest.Util;
 
 import leo.carnival.workers.impl.JacksonUtils;
 import leo.carnival.workers.prototype.Executor;
+import org.apache.log4j.Logger;
 import org.testng.Assert;
 
 import java.util.HashMap;
@@ -71,6 +72,10 @@ public class JsonExtractor extends AbstractJsonComparator implements Executor<Ma
     }
 
 
+    public JsonExtractor setLogger(Logger logger) {
+        this.logger = logger;
+        return this;
+    }
 
 }
 

@@ -5,7 +5,7 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.vipabc.vliveshow.apitest.bean.asset.request.RrequestEntity.JsonBody;
 import com.vipabc.vliveshow.apitest.bean.asset.request.RrequestEntity.MultiPartEntity.MultiPartEntity;
 import com.vipabc.vliveshow.apitest.bean.asset.request.RrequestEntity.RequestParam;
-import org.apache.log4j.Logger;
+import leo.engineData.testData.Bean;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -13,11 +13,10 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 
 @SuppressWarnings({"DefaultAnnotationParam", "unused", "MismatchedQueryAndUpdateOfCollection"})
-public class Request implements Serializable {
-    private static final Logger logger = Logger.getLogger(Request.class);
-//    private static final HttpTransport httpTransport = new NetHttpTransport();
-      private static final Proxy proxy = new Proxy(java.net.Proxy.Type.HTTP, new InetSocketAddress("192.168.23.199", 8080));
-  private static final HttpTransport httpTransport = new NetHttpTransport.Builder().setProxy(proxy).build();
+public class Request extends Bean<Object, HttpResponse> implements Serializable {
+//        private static final HttpTransport httpTransport = new NetHttpTransport();
+    private static final Proxy proxy = new Proxy(java.net.Proxy.Type.HTTP, new InetSocketAddress("192.168.23.199", 8080));
+    private static final HttpTransport httpTransport = new NetHttpTransport.Builder().setProxy(proxy).build();
     private static final HttpRequestFactory requestFactory = httpTransport.createRequestFactory();
 
     private String method;
@@ -27,23 +26,27 @@ public class Request implements Serializable {
     private JsonBody jsonBody;
 
 
-    public HttpResponse process() throws IOException {
+    @Override
+    public HttpResponse execute(Object o) {
+        try {
+            String url = param == null ? this.url : param.process(this.url);
 
-        String url = param == null ? this.url : param.process(this.url);
+            logger.info(String.format("[%d] %s", Thread.currentThread().getId(), url));
 
-        logger.info(String.format("[%d] %s", Thread.currentThread().getId(), url));
+            HttpContent content = null;
 
-        HttpContent content = null;
+            if (multiPartEntity != null)
+                content = multiPartEntity.process();
 
-        if (multiPartEntity != null)
-            content = multiPartEntity.process();
+            if (jsonBody != null)
+                content = jsonBody.process(null);
 
-        if (jsonBody != null)
-            content = jsonBody.process(null);
+            HttpRequest httpRequest = requestFactory.buildRequest(method, new GenericUrl(url), content);
 
-        HttpRequest httpRequest = requestFactory.buildRequest(method, new GenericUrl(url), content);
-
-        return httpRequest.execute();
+            return httpRequest.execute();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
@@ -98,4 +101,6 @@ public class Request implements Serializable {
     public void setJsonBody(JsonBody jsonBody) {
         this.jsonBody = jsonBody;
     }
+
+
 }

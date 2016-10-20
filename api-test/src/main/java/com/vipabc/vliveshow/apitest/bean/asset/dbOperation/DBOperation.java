@@ -1,6 +1,6 @@
 package com.vipabc.vliveshow.apitest.bean.asset.dbOperation;
 
-import leo.carnival.workers.prototype.Processor;
+import leo.engineData.testData.Bean;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -10,23 +10,19 @@ import java.util.Map;
  * Bean of DBOperation
  */
 @SuppressWarnings({"unused", "MismatchedQueryAndUpdateOfCollection"})
-public class DBOperation implements Serializable, Processor<Map<String, Object>, String> {
+public class DBOperation extends Bean<Map<String, Object>, String> implements Serializable {
 
     private Mongo mongo;
     private Redis redis;
     private Sql sql;
 
-    @Override
-    public String process(Map<String, Object> extractionMap) {
-        return
-                mongo != null ? mongo.process(extractionMap) :
-                        redis != null ? redis.process(extractionMap) :
-                                sql != null ? sql.process(extractionMap) : null;
-    }
 
     @Override
     public String execute(Map<String, Object> extractionMap) {
-        return process(extractionMap);
+        return
+                mongo != null ? mongo.setLogger(logger).process(extractionMap) :
+                        redis != null ? redis.setLogger(logger).process(extractionMap) :
+                                sql != null ? sql.setLogger(logger).process(extractionMap) : null;
     }
 
 

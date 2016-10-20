@@ -10,19 +10,24 @@ import java.util.Map;
 
 @SuppressWarnings({"WeakerAccess", "unchecked"})
 public class ResponseContainer {
-    private static final Logger logger = Logger.getLogger(ResponseContainer.class);
+    private Logger logger = Logger.getLogger(ResponseContainer.class);
     private Map responseObject;
     private HttpResponse response;
 
-    public ResponseContainer(HttpResponse response) throws IOException {
-        this.response = response;
-        this.responseObject = JacksonUtils.fromJson(response.parseAsString(), Map.class);
+    private ResponseContainer(HttpResponse response, Logger logger) {
+        try {
+            this.response = response;
+            this.responseObject = JacksonUtils.fromJson(response.parseAsString(), Map.class);
 
-//        logger.info(String.format("[%d] Response: %s", Thread.currentThread().getId(), JacksonUtils.toPrettyJson(responseString)));
-        logger.info(String.format("[%d] Response: %s", Thread.currentThread().getId(), JacksonUtils.toJson(responseObject)));
+            logger.info(String.format("[%d] Response: %s", Thread.currentThread().getId(), JacksonUtils.toPrettyJson(responseObject)));
+//            logger.info(String.format("[%d] Response: %s", Thread.currentThread().getId(), JacksonUtils.toJson(responseObject)));
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public ResponseContainer(String responseObject) {
+    private ResponseContainer(String responseObject) {
         if (JacksonUtils.isJsonObject(responseObject))
             this.responseObject = JacksonUtils.fromJson(responseObject, Map.class);
         else {
@@ -30,8 +35,13 @@ public class ResponseContainer {
             this.responseObject.put("result", responseObject == null ? "" : responseObject);
         }
 
-//        logger.info(String.format("[%d] Response: %s", Thread.currentThread().getId(), JacksonUtils.toPrettyJson(this.responseObject)));
-        logger.info(String.format("[%d] Response: %s", Thread.currentThread().getId(), JacksonUtils.toJson(this.responseObject)));
+        logger.info(String.format("[%d] Response: %s", Thread.currentThread().getId(), JacksonUtils.toPrettyJson(this.responseObject)));
+//        logger.info(String.format("[%d] Response: %s", Thread.currentThread().getId(), JacksonUtils.toJson(this.responseObject)));
+    }
+
+
+    public static ResponseContainer build(HttpResponse response) {
+        return new ResponseContainer(response);
     }
 
     public Object getResponseObject() {

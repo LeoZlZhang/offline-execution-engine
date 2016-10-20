@@ -9,16 +9,13 @@ import com.vipabc.vliveshow.apitest.bean.asset.setting.Setting;
 import leo.carnival.workers.impl.Executors;
 import leo.carnival.workers.impl.JsonUtils.InstanceUpdater;
 import leo.carnival.workers.impl.JsonUtils.MapValueUpdater;
-import leo.carnival.workers.prototype.Executor;
-import org.apache.log4j.Logger;
+import leo.engineData.testData.Bean;
 
 import java.io.Serializable;
 import java.util.Map;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
-public class TestAsset implements Serializable, Executor<Map<String, Object>, Map<String, Object>> {
-    private static final Logger logger = Logger.getLogger(TestAsset.class);
-
+public class TestAsset extends Bean<Map<String, Object>, Map<String, Object>> implements Serializable {
     private String info;
     private Request request;
     private DBOperation dbOperation;
@@ -42,6 +39,10 @@ public class TestAsset implements Serializable, Executor<Map<String, Object>, Ma
     }
 
 
+    /**
+     * To execute this asset;
+     * @param extractionKVMap extraction map
+     */
     public void executeLocal(Map<String, Object> extractionKVMap) {
 
         TestAsset asset = (TestAsset) InstanceUpdater.build(MapValueUpdater.build(extractionKVMap).setScriptEngine(Executors.scriptExecutor())).process(this);
@@ -54,13 +55,13 @@ public class TestAsset implements Serializable, Executor<Map<String, Object>, Ma
             ResponseContainer responseContainer = null;
 
             if (asset.getRequest() != null)
-                responseContainer = new ResponseContainer(asset.getRequest().process());
+                responseContainer = new ResponseContainer(asset.getRequest().setCustomLogger(logger).execute(null));
 
             else if (asset.getDbOperation() != null)
-                responseContainer = new ResponseContainer(asset.getDbOperation().process(extractionKVMap));
+                responseContainer = new ResponseContainer(asset.getDbOperation().setCustomLogger(logger).execute(extractionKVMap));
 
             if (asset.getAssertions() != null)
-                asset.getAssertions().evaluate(responseContainer);
+                asset.getAssertions().setLogger(logger).evaluate(responseContainer);
 
             if (asset.getExtractions() != null)
                 asset.getExtractions().setExtractionMap(extractionKVMap).process(responseContainer);
@@ -74,6 +75,11 @@ public class TestAsset implements Serializable, Executor<Map<String, Object>, Ma
     }
 
 
+    /**
+     * For repeating mode
+     * Each loop should use the asset not injected, so not decorate asset here
+     * @param extractionKVMap extraction map
+     */
     public void executeAssets(Map<String, Object> extractionKVMap) {
         if (info != null)
             logger.info(info);
@@ -124,6 +130,7 @@ public class TestAsset implements Serializable, Executor<Map<String, Object>, Ma
     public Setting getSettings() {
         return settings;
     }
+
 
     /**
      * Setter

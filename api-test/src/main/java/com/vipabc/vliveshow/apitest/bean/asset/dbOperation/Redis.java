@@ -1,6 +1,7 @@
 package com.vipabc.vliveshow.apitest.bean.asset.dbOperation;
 
 import leo.carnival.workers.prototype.Processor;
+import org.apache.log4j.Logger;
 import redis.clients.jedis.JedisCluster;
 
 import java.io.Serializable;
@@ -13,6 +14,8 @@ import java.util.Map;
  */
 @SuppressWarnings("WeakerAccess")
 public class Redis extends LinkedHashMap<RedisOperation, DBObject> implements Processor<Map<String, Object>, String>, Serializable {
+    Logger logger = Logger.getLogger(Redis.class);
+
     @Override
     public String process(Map<String, Object> extractionMap) {
         String rtnString = null;
@@ -22,7 +25,7 @@ public class Redis extends LinkedHashMap<RedisOperation, DBObject> implements Pr
             JedisCluster jedisCluster = (JedisCluster) extractionMap.get("redisConnection");
 
             for (Map.Entry<RedisOperation, DBObject> entry : entrySet())
-                rtnString = entry.getKey().setDBConnection(jedisCluster).execute(entry.getValue());
+                rtnString = entry.getKey().setLogger(logger).setDBConnection(jedisCluster).execute(entry.getValue());
         }
 
         return rtnString;
@@ -31,5 +34,15 @@ public class Redis extends LinkedHashMap<RedisOperation, DBObject> implements Pr
     @Override
     public String execute(Map<String, Object> extractionMap) {
         return process(extractionMap);
+    }
+
+
+    public Logger getLogger() {
+        return logger;
+    }
+
+    public Redis setLogger(Logger logger) {
+        this.logger = logger;
+        return this;
     }
 }

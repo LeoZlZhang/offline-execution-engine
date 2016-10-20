@@ -1,26 +1,24 @@
 package com.vipabc.vliveshow.apitest.bean;
 
 import com.vipabc.vliveshow.apitest.bean.asset.TestAsset;
-import leo.engineData.testData.TestDataImpl;
+import leo.engineData.testData.TestData;
 
 import java.io.Serializable;
 import java.util.Map;
 
 
-@SuppressWarnings({"unused", "FieldCanBeLocal"})
-public class APITestData extends TestDataImpl<Map<String, Object>, Map<String, Object>> implements Serializable {
+public class APITestData extends TestData<Map<String, Object>, Map<String, Object>> implements Serializable {
+
     private String name;
-    private String workflow;
     private TestAsset[] assets;
 
 
-    private String sourceFileName;
 
     @Override
     public Map<String, Object> execute(Map<String, Object> extractionMap) {
 
         for(TestAsset testAsset : assets)
-            testAsset.execute(extractionMap);
+            testAsset.setCustomLogger(logger).execute(extractionMap);
 
         return extractionMap;
     }
@@ -28,8 +26,12 @@ public class APITestData extends TestDataImpl<Map<String, Object>, Map<String, O
 
     @Override
     public String toString() {
-        return String.format("'%s'--->'%s'", sourceFileName, name);
+        return String.format("'%s'--->'%s'", getSourceFileName(), name);
     }
+
+
+
+
 
     /**
      * Getter
@@ -38,9 +40,6 @@ public class APITestData extends TestDataImpl<Map<String, Object>, Map<String, O
         return name;
     }
 
-    public String getWorkflow() {
-        return workflow;
-    }
 
     public TestAsset[] getAssets() {
         return assets;
@@ -53,21 +52,9 @@ public class APITestData extends TestDataImpl<Map<String, Object>, Map<String, O
         this.name = name;
     }
 
-    public void setWorkflow(String workflow) {
-        this.workflow = workflow;
-    }
 
     public void setAssets(TestAsset[] assets) {
         this.assets = assets;
     }
 
-    @Override
-    public String getSourceFileName() {
-        return sourceFileName;
-    }
-
-    @Override
-    public void setSourceFileName(String sourceFileName) {
-        this.sourceFileName = sourceFileName;
-    }
 }
