@@ -14,7 +14,7 @@ import java.net.Proxy;
 
 @SuppressWarnings({"DefaultAnnotationParam", "unused", "MismatchedQueryAndUpdateOfCollection"})
 public class Request extends Bean<Object, HttpResponse> implements Serializable {
-//        private static final HttpTransport httpTransport = new NetHttpTransport();
+    //        private static final HttpTransport httpTransport = new NetHttpTransport();
     private static final Proxy proxy = new Proxy(java.net.Proxy.Type.HTTP, new InetSocketAddress("192.168.23.199", 8080));
     private static final HttpTransport httpTransport = new NetHttpTransport.Builder().setProxy(proxy).build();
     private static final HttpRequestFactory requestFactory = httpTransport.createRequestFactory();

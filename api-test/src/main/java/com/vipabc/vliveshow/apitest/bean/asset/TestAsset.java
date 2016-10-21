@@ -55,16 +55,16 @@ public class TestAsset extends Bean<Map<String, Object>, Map<String, Object>> im
             ResponseContainer responseContainer = null;
 
             if (asset.getRequest() != null)
-                responseContainer = new ResponseContainer(asset.getRequest().setCustomLogger(logger).execute(null));
+                responseContainer = new ResponseContainer(asset.getRequest().setCustomLogger(logger).execute(null), logger);
 
             else if (asset.getDbOperation() != null)
-                responseContainer = new ResponseContainer(asset.getDbOperation().setCustomLogger(logger).execute(extractionKVMap));
+                responseContainer = new ResponseContainer(asset.getDbOperation().setCustomLogger(logger).execute(extractionKVMap), logger);
 
             if (asset.getAssertions() != null)
                 asset.getAssertions().setLogger(logger).evaluate(responseContainer);
 
             if (asset.getExtractions() != null)
-                asset.getExtractions().setExtractionMap(extractionKVMap).process(responseContainer);
+                asset.getExtractions().setLogger(logger).setExtractionMap(extractionKVMap).process(responseContainer);
 
             if (asset.getSettings() != null)
                 asset.getSettings().process(extractionKVMap);

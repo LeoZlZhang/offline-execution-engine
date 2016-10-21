@@ -10,11 +10,10 @@ import java.util.Map;
 
 @SuppressWarnings({"WeakerAccess", "unchecked"})
 public class ResponseContainer {
-    private Logger logger = Logger.getLogger(ResponseContainer.class);
     private Map responseObject;
     private HttpResponse response;
 
-    private ResponseContainer(HttpResponse response, Logger logger) {
+    public ResponseContainer(HttpResponse response, Logger logger) {
         try {
             this.response = response;
             this.responseObject = JacksonUtils.fromJson(response.parseAsString(), Map.class);
@@ -27,7 +26,7 @@ public class ResponseContainer {
         }
     }
 
-    private ResponseContainer(String responseObject) {
+    public ResponseContainer(String responseObject, Logger logger) {
         if (JacksonUtils.isJsonObject(responseObject))
             this.responseObject = JacksonUtils.fromJson(responseObject, Map.class);
         else {
@@ -35,13 +34,9 @@ public class ResponseContainer {
             this.responseObject.put("result", responseObject == null ? "" : responseObject);
         }
 
-        logger.info(String.format("[%d] Response: %s", Thread.currentThread().getId(), JacksonUtils.toPrettyJson(this.responseObject)));
-//        logger.info(String.format("[%d] Response: %s", Thread.currentThread().getId(), JacksonUtils.toJson(this.responseObject)));
-    }
+        logger.info(String.format("[%d] Response: %s", Thread.currentThread().getId(), JacksonUtils.toPrettyJson(responseObject)));
+//            logger.info(String.format("[%d] Response: %s", Thread.currentThread().getId(), JacksonUtils.toJson(responseObject)));
 
-
-    public static ResponseContainer build(HttpResponse response) {
-        return new ResponseContainer(response);
     }
 
     public Object getResponseObject() {

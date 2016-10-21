@@ -79,8 +79,8 @@ $('#btn_execute').on('click', function () {
         $('#btn_modal').click();
         setTimeout(function(){
             console.log("1");
-            var resJson = executeByData(editor.get());
-        }, 1000);
+            executeByData(editor.get());
+        }, 300);
             console.log("2");
 
     }
