@@ -57,7 +57,7 @@ public class JsonAssert extends AbstractJsonComparator implements Executor<Map<S
 
     @Override
     protected void ending(Object leftObject, Object rightObject, JsonPathAppender processor) {
-        logger.info(String.format("[%d] Assert %s:[%s->%s]",
+        logger.warn(String.format("[%d] Assert %s:[%s->%s]",
                 Thread.currentThread().getId(),
                 processor.get(),
                 rightObject instanceof Number ? numberParser.execute(rightObject) : rightObject,

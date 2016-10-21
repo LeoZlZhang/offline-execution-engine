@@ -2,14 +2,14 @@ package leo.engineCore.engineFoundation.Step;
 
 import leo.carnival.workers.impl.Processors;
 import leo.engineCore.engineFoundation.ApplicationContext;
-import leo.carnival.workers.prototype.Executor;
+import leo.engineData.testData.Bean;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 
 @SuppressWarnings({"unused", "WeakerAccess", "FieldCanBeLocal"})
-public class Step implements Executor<ApplicationContext, Step> {
+public class Step extends Bean<ApplicationContext, Step> {
 
     private String sourceClass;
     private String method;
@@ -23,8 +23,8 @@ public class Step implements Executor<ApplicationContext, Step> {
             throw new RuntimeException("Invalid method declared!");
 
         applicationContext.setStepName(method);
-        applicationContext.printExecutionInfo();
         applicationContext.setMethodRepo(Processors.ClassLoader().process(sourceClass));
+        applicationContext.printExecutionInfo();
 
 
         //Step inputs

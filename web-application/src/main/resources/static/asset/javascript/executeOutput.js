@@ -16,7 +16,12 @@ function connect(topic) {
 
 
 function printOutput(message) {
-    modalBody.append("<p>" + message + "</p>");
+    if (message.startsWith('{') && message.endsWith('}')) {
+        var mapMessage = JSON.parse(message);
+        modalBody.append("<p style='color: " + mapMessage.color + ";'>" + mapMessage.message + "</p>");
+    }else
+        modalBody.append("<p>" + message + "</p>");
+
     modalBody[0].scrollTop = modalBody[0].scrollHeight;
 
 }

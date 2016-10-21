@@ -1,5 +1,7 @@
 package leo.engineCore.engineFoundation;
 
+import org.apache.log4j.Logger;
+
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.AbstractMap;
@@ -10,8 +12,9 @@ import java.util.Map;
  * Created by leozhang on 8/28/16.
  * Container of execution context
  */
+@SuppressWarnings("unused")
 public class ApplicationContext implements Serializable{
-    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(ApplicationContext.class);
+    private Logger logger;
 
     private Map<String, Object> context = new HashMap<>();
     private Map<String, Map.Entry<Method, Object>> methodRepo = new HashMap<>();
@@ -61,5 +64,14 @@ public class ApplicationContext implements Serializable{
 
     public void printExecutionInfo(){
         logger.info(String.format("[%d][%s][%s][%s]...", Thread.currentThread().getId(), gearName, flowName, stepName));
+    }
+
+
+    public Logger getLogger() {
+        return logger;
+    }
+
+    public void setLogger(Logger logger) {
+        this.logger = logger;
     }
 }

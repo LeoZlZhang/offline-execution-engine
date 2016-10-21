@@ -2,13 +2,13 @@ package leo.engineCore.engineFoundation.Flow;
 
 
 import leo.carnival.workers.impl.Processors;
-import leo.carnival.workers.prototype.Executor;
 import leo.engineCore.engineFoundation.ApplicationContext;
 import leo.engineCore.engineFoundation.Step.Step;
+import leo.engineData.testData.Bean;
 
 
 @SuppressWarnings("unused")
-public class Flow implements Executor<ApplicationContext, Flow> {
+public class Flow extends Bean<ApplicationContext, Flow> {
     private String sourceClass;
     private String name;
     private Step[] steps;
@@ -18,7 +18,7 @@ public class Flow implements Executor<ApplicationContext, Flow> {
         applicationContext.setFlowName(name);
         applicationContext.setMethodRepo(Processors.ClassLoader().process(sourceClass));
         for (Step step : steps)
-            step.execute(applicationContext);
+            step.setCustomLogger(logger).execute(applicationContext);
         return this;
     }
 

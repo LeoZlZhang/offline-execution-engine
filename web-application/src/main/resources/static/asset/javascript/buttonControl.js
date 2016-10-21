@@ -73,17 +73,19 @@ $('#btn_delete').on('click', function () {
 
 $('#btn_execute').on('click', function () {
     if (lastSelectedTestData) {
+        var data = editor.get();
+        var key1 = parseInt(Math.random()*1000).toString();
+        var key2 = (new Date()).getTime().toString();
+        data.channel = key1 + key2;
 
-        // var testingTopic = (new Date()).getTime();
-        myModal.trigger('ee.execute',['test']);
+        myModal.trigger('ee.execute',[data.channel]);
         $('#btn_modal').click();
         setTimeout(function(){
-            console.log("1");
-            executeByData(editor.get());
-        }, 300);
-            console.log("2");
 
-    }
+            executeByData(data);
+        }, 800);
+    }else
+        alert('Please select a data');
 });
 
 

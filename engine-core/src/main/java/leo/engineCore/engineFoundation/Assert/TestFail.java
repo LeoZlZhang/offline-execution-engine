@@ -1,6 +1,5 @@
 package leo.engineCore.engineFoundation.Assert;
 
-import com.google.common.base.Throwables;
 import org.testng.Assert;
 
 import java.io.Serializable;
@@ -23,9 +22,10 @@ public class TestFail extends TestResult implements Serializable {
     public void Assert() {
         StringBuilder sb = new StringBuilder();
         sb.append("Test fail with reason: \r\n");
-        Assert.fail(sb.append(Throwables.getStackTraceAsString(e)).toString());
+        e.printStackTrace();
+        Assert.fail(sb.append(e.getMessage()).toString());
+//        Assert.fail(sb.append(Throwables.getStackTraceAsString(e)).toString());
     }
-
 
     public Exception getE() {
         return e;

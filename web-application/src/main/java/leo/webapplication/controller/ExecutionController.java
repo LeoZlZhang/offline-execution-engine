@@ -2,12 +2,12 @@ package leo.webapplication.controller;
 
 import leo.engineCore.engineFoundation.Gear.Gear;
 import leo.engineCore.testEngine.TestEngine;
-import leo.engineData.logging.EELogger;
 import leo.webapplication.dto.JsonResponse;
 import leo.webapplication.model.ApiData;
 import leo.webapplication.service.GearService;
 import leo.webapplication.service.TestCaseService;
 import leo.webapplication.service.WebSocketService;
+import leo.webapplication.util.EELogger;
 import leo.webapplication.util.ExecutionLogPublisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,14 +37,15 @@ public class ExecutionController {
     GearService gearService;
 
 
-
-
     @RequestMapping(value = "/go", method = RequestMethod.POST)
-    public JsonResponse executeByData(@RequestBody ApiData apiData){
-        if(apiData == null)
+    public JsonResponse executeByData(@RequestBody ApiData apiData) {
+        if (apiData == null)
             return JsonResponse.fail("empty api data");
+        if (apiData.getChannel() == null || apiData.getChannel().isEmpty())
+            return JsonResponse.fail("web socket channel not defined");
 
-        if(apiData.getId() != null && !apiData.getId().isEmpty()) {
+        //Get data by id
+        if (apiData.getId() != null && !apiData.getId().isEmpty()) {
             List<ApiData> datas = testCaseService.getApiData(apiData);
             if (datas == null || datas.size() == 0)
                 return JsonResponse.fail("not found test data in mongo: " + apiData.getId());
@@ -56,12 +57,14 @@ public class ExecutionController {
             return JsonResponse.fail("not found gear in mongo");
 
         ApiData finalApiData = apiData;
-        finalApiData.setCustomLogger(EELogger.getLogger(ApiData.class).setWorker(ExecutionLogPublisher.build("test", webSocketService)));
 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                TestEngine.build(gear).execute(finalApiData).Assert();
+                EELogger webSocketLogger = EELogger.getLogger(ApiData.class).setWorker(ExecutionLogPublisher.build(finalApiData.getChannel(), webSocketService));
+                TestEngine engine = TestEngine.build(gear);
+                engine.setCustomLogger(webSocketLogger);
+                engine.execute(finalApiData).AssertForWeb(webSocketLogger);
             }
         }).run();
 

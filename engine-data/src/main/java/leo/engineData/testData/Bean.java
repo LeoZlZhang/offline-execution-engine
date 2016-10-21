@@ -11,7 +11,8 @@ import java.io.Serializable;
  */
 abstract public class Bean<T, G> implements Worker<T, G>, Serializable{
 
-    protected Logger logger = Logger.getLogger(Bean.class);
+    protected Logger logger;
+
 
     /**
      * Setter

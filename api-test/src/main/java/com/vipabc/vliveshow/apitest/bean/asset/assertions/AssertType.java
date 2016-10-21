@@ -69,7 +69,7 @@ public enum AssertType implements Evaluator<ResponseContainer> {
         public boolean evaluate(ResponseContainer response) {
             String expect = expectedValue.toString();
             String actual = response.getResponseObject().toString();
-            logger.info(String.format("[%d] Assert [%s->%s]", Thread.currentThread().getId(), actual, expect));
+            logger.warn(String.format("[%d] Assert [%s->%s]", Thread.currentThread().getId(), actual, expect));
             Assert.assertTrue(Pattern.matches(expect, actual), String.format("Evaluate fail, Expected:%s, Actual:%s\n", expect, actual));
             return true;
         }
@@ -91,7 +91,7 @@ public enum AssertType implements Evaluator<ResponseContainer> {
     }
 
     protected void loggingAssert(String path, Object actual, Object expect) {
-        logger.info(String.format("[%d] Assert %s [%s->%s]", Thread.currentThread().getId(), path, actual, expect));
+        logger.warn(String.format("[%d] Assert %s [%s->%s]", Thread.currentThread().getId(), path, actual, expect));
 
     }
 

@@ -2,7 +2,7 @@ package leo.webapplication.model;
 
 /**
  * Created by leo_zlzhang on 10/19/2016.
- * Message object to published to client by websocket
+ * SocketMessage object to published to client by websocket
  * Contain a channel name and a message object
  */
 @SuppressWarnings("WeakerAccess")

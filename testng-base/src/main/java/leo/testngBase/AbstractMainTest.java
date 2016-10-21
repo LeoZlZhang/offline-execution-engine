@@ -15,6 +15,7 @@ import leo.engineCore.worker.ProfilePicker;
 import leo.engineData.DataProvider.ContentReplacer;
 import leo.engineData.DataProvider.TestDataTransfer;
 import leo.engineData.testData.TestData;
+import org.apache.log4j.Logger;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.DataProvider;
@@ -43,6 +44,7 @@ public abstract class AbstractMainTest {
         List<File> gearFile = Processors.FileFilter(Evaluators.FileEvaluator(Evaluators.RegexEvaluator("gear\\.json"))).process(new File(resourceFolderPath));
         engine.loadGearFromFile(gearFile.get(0));
         engine.execute("BeforeTestFlow");
+        engine.setCustomLogger(Logger.getLogger(TestEngine.class));
     }
 
     @TestInfo(testDataClass = TestData.class,

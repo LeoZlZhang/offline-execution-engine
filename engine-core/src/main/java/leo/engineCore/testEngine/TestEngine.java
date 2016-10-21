@@ -2,14 +2,12 @@ package leo.engineCore.testEngine;
 
 
 import leo.carnival.workers.impl.JacksonUtils;
-import leo.carnival.workers.prototype.Executor;
 import leo.engineCore.engineFoundation.Assert.TestFail;
 import leo.engineCore.engineFoundation.Assert.TestResult;
 import leo.engineCore.engineFoundation.Gear.Gear;
+import leo.engineData.testData.Bean;
 import leo.engineData.testData.TestData;
 import org.apache.commons.io.FileUtils;
-import org.codehaus.jackson.map.DeserializationConfig;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONException;
 
 import java.io.File;
@@ -17,9 +15,8 @@ import java.io.IOException;
 
 
 @SuppressWarnings({"unused", "WeakerAccess"})
-public class TestEngine implements Executor<String, TestResult> {
+public class TestEngine extends Bean<String, TestResult> {
     private Gear gear;
-
 
     public TestEngine() {
     }
@@ -37,7 +34,7 @@ public class TestEngine implements Executor<String, TestResult> {
     @Override
     public TestResult execute(String flowName) {
         try {
-            return gear.execute(flowName);
+            return gear.setCustomLogger(logger).execute(flowName);
         } catch (Exception e) {
             return new TestFail(e);
         }
@@ -45,8 +42,8 @@ public class TestEngine implements Executor<String, TestResult> {
 
     public TestResult execute(TestData testData) {
         try {
-            gear.getAppCtx().getContext().put("TestCase", testData);
-            return gear.executeQuietly(testData.getWorkflow());
+            gear.getAppCtx().getContext().put("TestCase", testData.setCustomLogger(logger));
+            return gear.setCustomLogger(logger).execute(testData.getWorkflow());
         } catch (Exception e) {
             return new TestFail(e);
         }
@@ -54,7 +51,6 @@ public class TestEngine implements Executor<String, TestResult> {
 
     public TestEngine loadGearFromFile(File gearFile) throws IOException, JSONException {
         String jsonString = FileUtils.readFileToString(gearFile);
-        ObjectMapper mapper = new ObjectMapper().disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
         if (JacksonUtils.isJsonObject(jsonString))
             gear = JacksonUtils.fromJson(jsonString, Gear.class);
         else if (JacksonUtils.isJsonArray(jsonString))
@@ -63,15 +59,6 @@ public class TestEngine implements Executor<String, TestResult> {
             throw new RuntimeException("Bad formatted json string:" + gearFile.getPath());
 
         return this;
-    }
-
-
-    public static TestEngine build(File gearFile) {
-        try {
-            return new TestEngine().loadGearFromFile(gearFile);
-        } catch (IOException | JSONException e) {
-            throw new RuntimeException(e);
-        }
     }
 
 }
