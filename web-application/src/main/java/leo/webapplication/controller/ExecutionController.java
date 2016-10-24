@@ -66,9 +66,11 @@ public class ExecutionController {
                 EELogger webSocketLogger = EELogger.getLogger(ApiData.class).setWorker(ExecutionLogPublisher.build(apiData.getChannel(), webSocketService));
                 TestEngine engine = TestEngine.build(gears.get(0));
                 engine.setCustomLogger(webSocketLogger);
+                engine.execute("BeforeTestFlow");
                 engine.execute(apiData.update(profiles.get(0).getProfile())).AssertForWeb(webSocketLogger);
+                engine.execute("AfterTestFlow");
             }
-        }).run();
+        }).start();
 
         return JsonResponse.success(null);
     }

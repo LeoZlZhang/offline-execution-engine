@@ -70,7 +70,7 @@ public class APITest {
         return rtnObjects;
     }
 
-    public void printTCName(APITestData apiTestData){
+    public void printTCName(APITestData apiTestData) {
         logger.info(String.format("Execute test case: \"%s\" ---> \"%s\"", apiTestData.getSourceFileName(), apiTestData.getName()));
     }
 
@@ -85,7 +85,8 @@ public class APITest {
 
     /**
      * Requesting assertion extraction, including db operation
-     * @param apiTestData this is test data which contains all information of testing
+     *
+     * @param apiTestData   this is test data which contains all information of testing
      * @param extractionMap contain necessary db connection, extraction map is also a container inside the apiTestData to store extracted value from response
      */
     public void requestWithHttpClient(APITestData apiTestData, Map<String, Object> extractionMap) {
@@ -93,7 +94,16 @@ public class APITest {
     }
 
 
-    public void end() {
-        logger.info("End");
+    public void end(DB mongoConnection, JedisCluster redisConnection, Jdbc42Connection sqlConnection) {
+        logger.info("Close ");
+        try {
+            mongoConnection.getMongo().close();
+            redisConnection.close();
+            sqlConnection.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
     }
 }

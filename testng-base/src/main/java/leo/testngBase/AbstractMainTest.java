@@ -66,6 +66,7 @@ public abstract class AbstractMainTest {
 
     @AfterSuite
     public void finalization() {
+        engine.execute("AfterTestFlow");
     }
 
     private TestInfo testInfo() throws IllegalAccessException, InstantiationException {

@@ -19,7 +19,7 @@
     {
       "name": "AfterTestFlow", "type": "AfterTest",
       "steps": [
-        {"method": "end"}
+        {"method": "end", "input":["MongoConnection", "RedisConnection", "SqlConnection"]}
       ]
     }
   ]
