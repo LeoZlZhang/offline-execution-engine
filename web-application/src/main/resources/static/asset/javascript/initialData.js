@@ -51,9 +51,9 @@ $('#tree')
     })
     .on('delete_node.jstree', function (e, data) {
         // if (data.node.icon === 'jstree-file') {
-            console.log('delete api data ' + data.node.id + ' ' + data.node.text);
-            lastSelectedTestData = data.node;
-            $('#btn_delete').click();
+        console.log('delete api data ' + data.node.id + ' ' + data.node.text);
+        lastSelectedTestData = data.node;
+        $('#btn_delete').click();
         // }
     })
     .jstree({
@@ -64,64 +64,50 @@ $('#tree')
         "plugins": ["contextmenu"]
     });
 
-// var mydata = [
-//     {
-//         "text": "ApiTestData",
-//         "icon": true,
-//         "data": 'disfoisudofiusdo980fsd9f89f'
-//     },
-//     {
-//         "text": "ApiTestData",
-//         "icon": true,
-//         "children": [
-//             {
-//                 "_id": "j1_2",
-//                 "text": "advertisement",
-//                 "icon": true,
-//                 "state": {
-//                     "disabled": false,
-//                     "opened": true,
-//                     "selected": false
-//                 },
-//                 "children": [
-//                     {
-//                         "_id": "j1_3",
-//                         "text": "AdvertisementController",
-//                         "icon": true,
-//                         "state": {
-//                             "disabled": false,
-//                             "opened": true,
-//                             "selected": false
-//                         },
-//                         "children": [
-//                             {
-//                                 "_id": "j1_4",
-//                                 "text": "1_clickAdviertisement",
-//                                 "icon": "jstree-file",
-//                                 "data": 'disfoisudofiusdo980fsd9f89f',
-//                                 "state": {
-//                                     "disabled": false,
-//                                     "opened": false,
-//                                     "selected": false
-//                                 },
-//                                 "children": []
-//                             }
-//                         ]
-//                     }
-//                 ]
-//             },
-//             {
-//                 "_id": "j1_5",
-//                 "text": "213",
-//                 "icon": "jstree-file",
-//                 "state": {
-//                     "disabled": false,
-//                     "opened": false,
-//                     "selected": false
-//                 },
-//                 "children": []
-//             }
-//         ]
-//     }];
-// $('#tree').jstree(true).settings.core.data = mydata;
-// $('#tree').jstree(true).refresh();
+//load gear and profile
+var gearId;
+var profileId;
+$(function () {
+
+    var gears = loadAllGear();
+    for (var i in gears) {
+        //noinspection JSUnfilteredForInLoop
+        $("#gears").append(
+            "<li><a class='item' id='" + gears[i].id + "'>" + gears[i].name + "</a></li>"
+        );
+        //noinspection JSUnfilteredForInLoop
+        $('.alertRow').append(
+            "<div class='alert alert-info' role='alert' style='display: none;' id='alert_" + gears[i].id + "'>" +
+            "<b>[" + gears[i].name + "]</b> gear is selected" +
+            "</div>"
+        );
+    }
+
+    var profiles = loadAllProfile();
+    //noinspection JSDuplicatedDeclaration
+    for (i in profiles) {
+        //noinspection JSUnfilteredForInLoop
+        $("#profiles").append(
+            "<li><a class='item' id='" + profiles[i].id + "'>" + profiles[i].name + "</a></li>"
+        );
+        //noinspection JSUnfilteredForInLoop
+        $('.alertRow').append(
+            "<div class='alert alert-warning' role='alert' style='display: none;' id='alert_" + profiles[i].id + "'>" +
+            "<b>[" + profiles[i].name + "]</b> profile is selected" +
+            "</div>"
+        );
+
+    }
+
+
+    //noinspection JSJQueryEfficiency
+    $('ul#gears').find('li a.item').on('click', function (e) {
+        $('.alert#alert_' + e.target.id).slideDown('slow').delay(1700).slideUp('slow');
+        gearId = e.target.id;
+    });
+
+    $('ul#profiles li a.item').on('click', function (e) {
+        $('.alert#alert_' + e.target.id).slideDown('slow').delay(1700).slideUp('slow');
+        profileId = e.target.id;
+    });
+});

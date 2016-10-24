@@ -1,11 +1,11 @@
 body {
     height: 100%;
+    overflow-y:hidden;
 }
 
 div#main {
     height: inherit;
-    padding-top: 40px;
-    padding-bottom: 5px;
+    padding: 40px 0 5px;
 }
 
 div nav.navbar {
@@ -17,8 +17,17 @@ div nav .navbar-brand {
     padding: 5px 30px;
 }
 
+div nav .nav li a {
+    height: 30px;
+    padding: 5px 30px;
+}
+
 div.row, div.col-lg-2, div.col-lg-4, div.col-lg-6 {
     height: inherit;
+}
+
+div.alertRow {
+    height: auto;
 }
 
 /*Catalog*/

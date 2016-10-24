@@ -39,7 +39,7 @@ public class Gear extends Bean<String, TestResult> {
     }
 
 
-    public ApplicationContext getAppCtx() {
+    public ApplicationContext appCtx() {
         return applicationContext;
     }
 

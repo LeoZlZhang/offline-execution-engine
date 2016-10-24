@@ -73,6 +73,14 @@ $('#btn_delete').on('click', function () {
 
 $('#btn_execute').on('click', function () {
     if (lastSelectedTestData) {
+        if(!gearId){
+            alert("please a gear");
+            return;
+        }
+        if(!profileId){
+            alert("please a profile");
+            return;
+        }
         var data = editor.get();
         var key1 = parseInt(Math.random()*1000).toString();
         var key2 = (new Date()).getTime().toString();
@@ -82,7 +90,7 @@ $('#btn_execute').on('click', function () {
         $('#btn_modal').click();
         setTimeout(function(){
 
-            executeByData(data);
+            executeByData(data, gearId, profileId);
         }, 800);
     }else
         alert('Please select a data');

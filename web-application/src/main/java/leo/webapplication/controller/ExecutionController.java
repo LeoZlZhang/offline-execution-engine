@@ -1,19 +1,18 @@
 package leo.webapplication.controller;
 
-import leo.engineCore.engineFoundation.Gear.Gear;
 import leo.engineCore.testEngine.TestEngine;
 import leo.webapplication.dto.JsonResponse;
 import leo.webapplication.model.ApiData;
+import leo.webapplication.model.EEGear;
+import leo.webapplication.model.EEProfile;
 import leo.webapplication.service.GearService;
+import leo.webapplication.service.ProfileService;
 import leo.webapplication.service.TestCaseService;
 import leo.webapplication.service.WebSocketService;
 import leo.webapplication.util.EELogger;
 import leo.webapplication.util.ExecutionLogPublisher;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -36,35 +35,38 @@ public class ExecutionController {
     @Autowired
     GearService gearService;
 
+    @Autowired
+    ProfileService profileService;
+
 
     @RequestMapping(value = "/go", method = RequestMethod.POST)
-    public JsonResponse executeByData(@RequestBody ApiData apiData) {
+    public JsonResponse executeByData(@RequestParam(name = "gearId") String gearId,
+                                      @RequestParam(name = "profileId") String profileId,
+                                      @RequestBody ApiData apiData) {
         if (apiData == null)
             return JsonResponse.fail("empty api data");
         if (apiData.getChannel() == null || apiData.getChannel().isEmpty())
             return JsonResponse.fail("web socket channel not defined");
 
-        //Get data by id
-        if (apiData.getId() != null && !apiData.getId().isEmpty()) {
-            List<ApiData> datas = testCaseService.getApiData(apiData);
-            if (datas == null || datas.size() == 0)
-                return JsonResponse.fail("not found test data in mongo: " + apiData.getId());
-            apiData = datas.get(0);
-        }
-
-        Gear gear = gearService.getOneGear();
-        if (gear == null)
+        List<EEGear> gears = gearService.loadGear(new EEGear(gearId));
+        if (gears == null || gears.size() == 0)
             return JsonResponse.fail("not found gear in mongo");
+        if (gears.size() > 1)
+            return JsonResponse.fail("found more than one gear in mongo");
 
-        ApiData finalApiData = apiData;
+        List<EEProfile> profiles = profileService.loadProfile(new EEProfile(profileId));
+        if (profiles == null || profiles.size() == 0)
+            return JsonResponse.fail("not found profile in mongo");
+        if (profiles.size() > 1)
+            return JsonResponse.fail("found more than one profile in mongo");
 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                EELogger webSocketLogger = EELogger.getLogger(ApiData.class).setWorker(ExecutionLogPublisher.build(finalApiData.getChannel(), webSocketService));
-                TestEngine engine = TestEngine.build(gear);
+                EELogger webSocketLogger = EELogger.getLogger(ApiData.class).setWorker(ExecutionLogPublisher.build(apiData.getChannel(), webSocketService));
+                TestEngine engine = TestEngine.build(gears.get(0));
                 engine.setCustomLogger(webSocketLogger);
-                engine.execute(finalApiData).AssertForWeb(webSocketLogger);
+                engine.execute(apiData.update(profiles.get(0).getProfile())).AssertForWeb(webSocketLogger);
             }
         }).run();
 

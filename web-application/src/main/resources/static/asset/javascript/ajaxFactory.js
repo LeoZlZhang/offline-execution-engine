@@ -35,8 +35,7 @@ function saveCatalogData(catalogData) {
 function getApiData(apiData) {
     var json = {};
     $.ajax({
-        'url': '/ee/v1/data/get',
-        'data': apiData,
+        'url': '/ee/v1/data/get?' + jQuery.param(apiData),
         'type': 'get',
         'contentType': "application/json",
         'dataType': 'json',
@@ -92,10 +91,10 @@ function deleteTestData(apiTestData) {
 }
 
 
-function executeByData(testData) {
+function executeByData(testData, gearId, profileId) {
     var json = {};
     $.ajax({
-        'url': '/ee/v1/execution/go',
+        'url': '/ee/v1/execution/go?' + jQuery.param({gearId: gearId, profileId: profileId}),
         'data': JSON.stringify(testData),
         'type': 'post',
         'contentType': "application/json",
@@ -111,3 +110,48 @@ function executeByData(testData) {
     });
     return json;
 }
+
+
+function loadAllGear() {
+    var gears = {};
+    $.ajax({
+        'url': '/ee/v1/gear/load',
+        'type': 'get',
+        'contentType': "application/json",
+        'dataType': 'json',
+        'async': false,
+        success: function (data) {
+            if (data.status && data.result)
+                gears = data.result;
+            else
+                console.log("fail to load gear from backend");
+        },
+        error: function (e) {
+            console.log("fail to load gear from backend " + e);
+        }
+    });
+    return gears;
+}
+
+
+function loadAllProfile() {
+    var profiles = {};
+    $.ajax({
+        'url': '/ee/v1/profile/load',
+        'type': 'get',
+        'contentType': "application/json",
+        'dataType': 'json',
+        'async': false,
+        success: function (data) {
+            if (data.status && data.result)
+                profiles = data.result;
+            else
+                console.log("fail to load profile from backend");
+        },
+        error: function (e) {
+            console.log("fail to load profile from backend " + e);
+        }
+    });
+    return profiles;
+}
+

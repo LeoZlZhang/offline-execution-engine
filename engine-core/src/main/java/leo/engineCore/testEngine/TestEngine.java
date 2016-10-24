@@ -42,7 +42,7 @@ public class TestEngine extends Bean<String, TestResult> {
 
     public TestResult execute(TestData testData) {
         try {
-            gear.getAppCtx().getContext().put("TestCase", testData.setCustomLogger(logger));
+            gear.appCtx().getContext().put("TestCase", testData.setCustomLogger(logger));
             return gear.setCustomLogger(logger).execute(testData.getWorkflow());
         } catch (Exception e) {
             return new TestFail(e);
