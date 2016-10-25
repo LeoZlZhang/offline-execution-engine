@@ -61,7 +61,7 @@ $('#tree')
             'data': loadCatalog(),
             "check_callback": true
         },
-        "plugins": ["contextmenu"]
+        "plugins": ["contextmenu", "dnd"]
     });
 
 //load gear and profile
