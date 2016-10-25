@@ -29,6 +29,16 @@ $('#tree')
         var catalogJson = data.instance.get_json('#', {flat: false});
         saveCatalogData(catalogJson);
     })
+    .on('copy_node.jstree', function (e, data) {
+        var jsonData = editor.get();
+        myCallBack = function () {
+            editor.set(jsonData);
+            $('#btn_save').click();
+            myCallBack = null;
+        };
+        data.instance.deselect_all();
+        data.instance.select_node(data.node.id);
+    })
     .on('select_node.jstree', function (e, data) {
         if (data.node.icon === 'jstree-file') {
             console.log('load test case:' + data.node.id + ' ' + data.node.text);
@@ -110,16 +120,16 @@ $(function () {
         $('.alert#alert_' + e.target.id).slideDown('slow').delay(1700).slideUp('slow');
         profileId = e.target.id;
     });
-}).keyup(function(e){
+}).keyup(function (e) {
     if (e.keyCode == 27)
         $('button.close').click();
-}).keydown(function(e){
-    if (e.ctrlKey && e.keyCode == 83){
+}).keydown(function (e) {
+    if (e.ctrlKey && e.keyCode == 83) {
+        e.preventDefault();
         $('#btn_save').click();
-        e.preventDefault();
     }
-    if (e.ctrlKey && e.keyCode == 69){
-        $('#btn_execute').click();
+    if (e.ctrlKey && e.keyCode == 69) {
         e.preventDefault();
+        $('#btn_execute').click();
     }
 });
