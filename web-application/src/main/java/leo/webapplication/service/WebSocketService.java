@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 @SuppressWarnings("SpringAutowiredFieldsWarningInspection")
 @Service
-public class WebSocketService{
+public class WebSocketService {
 
     @Autowired
     private SimpMessagingTemplate template;
@@ -21,10 +21,14 @@ public class WebSocketService{
 
 
     @Scheduled(fixedRate = 200)
-    public void scheduledPublish() {
+    public void scheduledPublish() throws InterruptedException {
         ChannelMessage channelMessage = messageQueue.poll();
-        if (channelMessage != null)
+        while (channelMessage != null) {
             template.convertAndSend(String.format("/topic/%s", channelMessage.getChannel()), channelMessage.getMessage());
+            channelMessage = messageQueue.poll();
+            Thread.sleep(50);
+        }
+
     }
 
     public void publishMessage(ChannelMessage channelMessage) {
