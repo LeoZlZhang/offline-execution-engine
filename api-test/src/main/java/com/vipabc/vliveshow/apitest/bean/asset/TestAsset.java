@@ -48,7 +48,7 @@ public class TestAsset extends Bean<Map<String, Object>, Map<String, Object>> im
         TestAsset asset = (TestAsset) InstanceUpdater.build(MapValueUpdater.build(extractionKVMap).setScriptEngine(Executors.scriptExecutor())).process(this);
 
         if (asset.getInfo() != null)
-            logger.info(asset.getInfo());
+            logger.debug(asset.getInfo());
 
         try {
 

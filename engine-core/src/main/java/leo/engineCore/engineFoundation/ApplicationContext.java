@@ -63,7 +63,7 @@ public class ApplicationContext implements Serializable{
     }
 
     public void printExecutionInfo(){
-        logger.info(String.format("[%d][%s][%s][%s]...", Thread.currentThread().getId(), gearName, flowName, stepName));
+        logger.debug(String.format("[%d][%s][%s][%s]...", Thread.currentThread().getId(), gearName, flowName, stepName));
     }
 
 

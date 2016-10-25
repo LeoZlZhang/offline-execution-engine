@@ -62,7 +62,7 @@ public class JsonExtractor extends AbstractJsonComparator implements Executor<Ma
     @Override
     protected void ending(Object leftObject, Object rightObject, JsonPathAppender appender) {
         Object extractedRB = rightObject instanceof Number ? numberParser.execute(rightObject) : rightObject;
-        logger.info(String.format("[%d] Extract %s:[%s as %s]", Thread.currentThread().getId(), appender.get(), extractedRB, leftObject));
+        logger.warn(String.format("[%d] Extract %s:[%s as %s]", Thread.currentThread().getId(), appender.get(), extractedRB, leftObject));
         appender.getExtractionMap().put(String.valueOf(leftObject), extractedRB); //response object could be String, list, map
     }
 

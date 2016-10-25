@@ -55,6 +55,16 @@ public class EELogger extends Logger {
     }
 
 
+    @Override
+    public void debug(Object message) {
+        super.warn(message);
+        if (publisher != null)
+            publisher.execute(
+                    message instanceof Map ?
+                            message :
+                            SocketMessage.build("blue", message));
+    }
+
     /**
      * Getter
      */
