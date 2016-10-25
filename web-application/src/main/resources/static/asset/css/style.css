@@ -34,7 +34,7 @@ div.alertRow {
 div#catalog {
     border: 1px solid #3883fa;
     margin: 0 -15px;
-    height: 80%
+    height: 95%
 }
 
 div#catalog div#catalog-bar {
@@ -59,7 +59,7 @@ div#catalog div#catalog-tree div#tree {
 
 /*Json editor*/
 div#jsoneditor {
-    height: 80%
+    height: 95%
 }
 
 
