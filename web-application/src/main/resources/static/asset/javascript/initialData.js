@@ -110,4 +110,16 @@ $(function () {
         $('.alert#alert_' + e.target.id).slideDown('slow').delay(1700).slideUp('slow');
         profileId = e.target.id;
     });
+}).keyup(function(e){
+    if (e.keyCode == 27)
+        $('button.close').click();
+}).keydown(function(e){
+    if (e.ctrlKey && e.keyCode == 83){
+        $('#btn_save').click();
+        e.preventDefault();
+    }
+    if (e.ctrlKey && e.keyCode == 69){
+        $('#btn_execute').click();
+        e.preventDefault();
+    }
 });
