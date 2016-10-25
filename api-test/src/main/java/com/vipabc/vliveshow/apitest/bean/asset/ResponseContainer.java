@@ -18,7 +18,7 @@ public class ResponseContainer {
             this.response = response;
             this.responseObject = JacksonUtils.fromJson(response.parseAsString(), Map.class);
 
-            logger.info(String.format("[%d] Response: %s", Thread.currentThread().getId(), JacksonUtils.toPrettyJson(responseObject)));
+            logger.info(String.format("[%d] Response: %s", Thread.currentThread().getId(), JacksonUtils.toPrettyJson(this.responseObject)));
 //            logger.info(String.format("[%d] Response: %s", Thread.currentThread().getId(), JacksonUtils.toJson(responseObject)));
 
         } catch (IOException e) {
@@ -34,7 +34,7 @@ public class ResponseContainer {
             this.responseObject.put("result", responseObject == null ? "" : responseObject);
         }
 
-        logger.info(String.format("[%d] Response: %s", Thread.currentThread().getId(), JacksonUtils.toPrettyJson(responseObject)));
+        logger.info(String.format("[%d] Response: %s", Thread.currentThread().getId(), JacksonUtils.toPrettyJson(this.responseObject)));
 //            logger.info(String.format("[%d] Response: %s", Thread.currentThread().getId(), JacksonUtils.toJson(responseObject)));
 
     }
