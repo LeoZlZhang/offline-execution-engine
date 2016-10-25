@@ -70,29 +70,29 @@ $('#btn_delete').on('click', function () {
 });
 
 
-
 $('#btn_execute').on('click', function () {
     if (lastSelectedTestData) {
-        if(!gearId){
+        if (!gearId) {
             alert("please a gear");
             return;
         }
-        if(!profileId){
+        if (!profileId) {
             alert("please a profile");
             return;
         }
         var data = editor.get();
-        var key1 = parseInt(Math.random()*1000).toString();
+        var key1 = parseInt(Math.random() * 1000).toString();
         var key2 = (new Date()).getTime().toString();
         data.channel = key1 + key2;
 
-        myModal.trigger('ee.execute',[data.channel]);
+        myModal.trigger('ee.execute', [data.channel]);
+        $('h4.modal-title:first').text(data.sourceFileName + ': execution output...');
         $('#btn_modal').click();
-        setTimeout(function(){
+        setTimeout(function () {
 
             executeByData(data, gearId, profileId);
         }, 800);
-    }else
+    } else
         alert('Please select a data');
 });
 
