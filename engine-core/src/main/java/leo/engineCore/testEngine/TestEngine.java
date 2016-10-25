@@ -8,6 +8,7 @@ import leo.engineCore.engineFoundation.Gear.Gear;
 import leo.engineData.testData.Bean;
 import leo.engineData.testData.TestData;
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
 import org.json.JSONException;
 
 import java.io.File;
@@ -19,9 +20,11 @@ public class TestEngine extends Bean<String, TestResult> {
     private Gear gear;
 
     public TestEngine() {
+        logger = Logger.getLogger(TestEngine.class);
     }
 
     public TestEngine(Gear gear) {
+        logger = Logger.getLogger(TestEngine.class);
         this.gear = gear;
     }
 
