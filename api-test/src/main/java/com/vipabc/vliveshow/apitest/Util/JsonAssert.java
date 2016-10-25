@@ -60,14 +60,14 @@ public class JsonAssert extends AbstractJsonComparator implements Executor<Map<S
         logger.warn(String.format("[%d] Assert %s:[%s->%s]",
                 Thread.currentThread().getId(),
                 processor.get(),
-                rightObject instanceof Number ? numberParser.execute(rightObject) : rightObject,
-                leftObject instanceof Number ? numberParser.execute(leftObject) : leftObject));
+                rightObject,
+                leftObject));
+//                rightObject instanceof Number ? numberParser.execute(rightObject) : rightObject,
+//                leftObject instanceof Number ? numberParser.execute(leftObject) : leftObject));
 
         if (leftObject instanceof String) {
             String expect = String.valueOf(leftObject);
-            String actual = (rightObject instanceof String || rightObject instanceof Boolean) ?
-                    String.valueOf(rightObject) : (rightObject instanceof Number) ?
-                    numberParser.execute(rightObject).toString() : null;
+            String actual = String.valueOf(rightObject);
 
             if (actual == null)
                 Assert.fail(String.format("[%d] Actual json structure is different from expected [%s->%s]",
@@ -78,6 +78,10 @@ public class JsonAssert extends AbstractJsonComparator implements Executor<Map<S
             else
                 Assert.assertTrue(Pattern.matches(expect, actual), String.format("Evaluate fail, Expected:%s, Actual:%s\n", expect, actual));
 
+        } else if (leftObject instanceof Number) {
+            Number expect = numberParser.execute(leftObject);
+            Number actual = numberParser.execute(rightObject);
+            Assert.assertEquals(actual, expect);
         } else
             Assert.assertEquals(rightObject, leftObject);
 
@@ -89,12 +93,10 @@ public class JsonAssert extends AbstractJsonComparator implements Executor<Map<S
     }
 
 
-
-    public JsonAssert setLogger(Logger logger){
+    public JsonAssert setLogger(Logger logger) {
         this.logger = logger;
         return this;
     }
-
 
 
 }
